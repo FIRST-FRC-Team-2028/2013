@@ -14,7 +14,10 @@ public class ClimbingSystem {
    * @element-type climbWheel
    */
   public climbWheel  wheel;
-
+  public ClimbingSystem()
+  {
+      arm = new Arm();
+  }
 
   /** 
    *  This method will extend the arms far enough to reach the first level

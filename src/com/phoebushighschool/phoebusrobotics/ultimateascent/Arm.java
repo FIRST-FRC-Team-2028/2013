@@ -2,37 +2,37 @@ package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.CANJaguar;
+import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 public class Arm {
 
   protected boolean catchState;
 
-  protected Relay motor;
+  protected CANJaguar motor;
   protected DigitalInput latchSwitch;
   protected DigitalInput outLimitSwitch;
   protected DigitalInput inLimitSwitch;
     
-  public Arm(int latchSwitchchannel)
+  public Arm()
   {
-      latchSwitch = new DigitalInput(1, latchSwitchchannel);
+      latchSwitch = new DigitalInput(1, Parameters.latchLimitSwitch);
+        try {
+            motor = new CANJaguar(Parameters.ArmMovementSomething);
+            motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
   }
 
   public void extend() 
   {
-      motor.setDirection(Relay.Direction.kForward);
-      if (isFullyExtended())
-          motor.set(Relay.Value.kOff);
-      else
-          motor.set(Relay.Value.kOn);
+      
   }
 
   public void retract() 
   {
-      motor.setDirection(Relay.Direction.kReverse);
-      if(isFullyRetracted())
-      {
-          stop();
-      }
+
   }
 
   public boolean isLatched() 
@@ -55,7 +55,11 @@ public class Arm {
 
   public void stop()
   {
-      motor.set(Relay.Value.kOff);
+        try {
+            motor.setX(0.0);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
   }
 
 }
