@@ -1,4 +1,5 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-public class Direction {
+public class Direction
+{
 }

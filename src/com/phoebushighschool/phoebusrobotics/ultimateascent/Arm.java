@@ -8,16 +8,46 @@ public class Arm {
   protected boolean catchState;
 
     protected Relay motor;
-      protected DigitalInput latched;
-
-  public void start(Direction direction) {
+    protected DigitalInput latchSwitch;
+  public Arm(int latchSwitchchannel)
+  {
+      latchSwitch = new DigitalInput(1, latchSwitchchannel);
   }
 
-  public void stop() {
+  public void extend() 
+  {
+      motor.setDirection(Relay.Direction.kForward);
+      if (isFullyExtended())
+          motor.set(Relay.Value.kOff);
+      else
+          motor.set(Relay.Value.kOn);
   }
 
-  public boolean isLatched() {
-  return false;
+  public void retract() 
+  {
+      motor.setDirection(Relay.Direction.kReverse);
   }
 
+  public boolean isLatched() 
+  {
+      if(latchSwitch.get())
+        catchState = true;
+      else catchState = false;
+  return catchState;
+  }
+  
+  public boolean isFullyExtended()
+  {
+      return false;
+  }
+  
+  public boolean isFullyRetracted()
+  {
+      return false;
+  }
+
+  public void stop()
+  {
+      motor.set(Relay.Value.kOff);
+  }
 }
