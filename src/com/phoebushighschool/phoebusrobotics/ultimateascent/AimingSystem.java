@@ -85,8 +85,8 @@ public class AimingSystem implements PIDSource {
                 scores[i].rectangularity = scoreRectangularity(r);
                 scores[i].aspectRatioHigh = scoreAspectRatio(filteredImage, r, i, false);
                 scores[i].aspectRatioMiddle = scoreAspectRatio(filteredImage, r, i, true);
-                scores[i].xEdge = scoreXEdge(filteredImage, r);
-                scores[i].yEdge = scoreYEdge(filteredImage, r);
+                scores[i].xEdge = scoreXEdge(thresholdImage, r);
+                scores[i].yEdge = scoreYEdge(thresholdImage, r);
 
                 if (scoreCompare(scores[i], false)) {
                     highTargets[nHigh].aspectRatio = scores[i].aspectRatioHigh;
@@ -173,7 +173,7 @@ public class AimingSystem implements PIDSource {
      * This method scores the particle from 0 - 100 based on how solid the
      * vertical edges are and how hollow the center of the particle are.
      *
-     * @param image the image from which the particle originated
+     * @param image the image from which the particle originated, needs to be pre convex hull
      * @param report the analysis of the particle
      * @return the score of the particle from 0 - 100
      * @throws NIVisionException
@@ -201,7 +201,7 @@ public class AimingSystem implements PIDSource {
      * This method scores the particle from 0 - 100 based on how solid the
      * horizontal edges are and how hollow the center of the particle are.
      *
-     * @param image the image from which the particle originated
+     * @param image the image from which the particle originated, needs to be pre convex hull
      * @param report the analysis of the particle
      * @return the score of the particle from 0 -100
      * @throws NIVisionException
