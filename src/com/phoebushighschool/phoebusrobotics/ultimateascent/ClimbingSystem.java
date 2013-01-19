@@ -21,14 +21,14 @@ public class ClimbingSystem {
    *  This method will check the limit switch to see if the arm is extended.
    */
   public boolean isExtended() {
-  return arm.isFullyExtended();
+  return outLimitSwitch.get();
   }
 
   /** 
    *  This method will check to see if the arms are fully retracted.
    */
   public boolean isRetracted() {
-  return arm.isFullyRetracted();
+  return inLimitSwitch.get();
   }
 
   /** 
