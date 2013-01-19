@@ -14,18 +14,22 @@ public class Arm {
       latchSwitch = new DigitalInput(1, latchSwitchchannel);
   }
 
-  public void extend() 
+  public void extend(boolean limitOut) 
   {
       motor.setDirection(Relay.Direction.kForward);
-      if (isFullyExtended())
+      if (isFullyExtended(limitOut))
           motor.set(Relay.Value.kOff);
       else
           motor.set(Relay.Value.kOn);
   }
 
-  public void retract() 
+  public void retract(boolean limitIn) 
   {
       motor.setDirection(Relay.Direction.kReverse);
+      if(isFullyRetracted(limitIn))
+      {
+          stop();
+      }
   }
 
   public boolean isLatched() 
@@ -36,12 +40,12 @@ public class Arm {
   return catchState;
   }
   
-  public boolean isFullyExtended()
+  public boolean isFullyExtended(boolean limitOut)
   {
       return false;
   }
   
-  public boolean isFullyRetracted()
+  public boolean isFullyRetracted(boolean limitIn)
   {
       return false;
   }

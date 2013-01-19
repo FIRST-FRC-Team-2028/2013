@@ -38,7 +38,7 @@ public class ClimbingSystem {
   {
       if(!arm.isLatched())
       {
-          arm.extend();
+          arm.extend(isExtended());
           return false;
       }
       else
@@ -51,7 +51,10 @@ public class ClimbingSystem {
    */
   public void retract() 
   {
-      
+      if (extendToLatch())
+      {
+          arm.retract(isRetracted());
+      }
   }
 
 }
