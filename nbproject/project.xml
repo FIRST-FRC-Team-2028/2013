@@ -9,7 +9,11 @@
     <type>org.netbeans.modules.ant.freeform</type>
     <configuration>
         <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+<<<<<<< HEAD
             <name>UltimateAscentBot</name>
+=======
+            <name>UltimateAscent</name>
+>>>>>>> branch 'master' of http://github.com/FIRST-FRC-Team-2028/2013.git
             <properties>
                 <property-file>${user.home}/.sunspotfrc.properties</property-file>
                 <property-file>build.properties</property-file>
