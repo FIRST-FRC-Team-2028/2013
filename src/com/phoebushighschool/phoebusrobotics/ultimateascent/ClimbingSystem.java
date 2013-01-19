@@ -15,7 +15,7 @@ public class ClimbingSystem {
    * 
    * @element-type climbWheel
    */
-  public Vector  wheel;
+  public climbWheel  wheel;
 
   /** 
    *  This method will check the limit switch to see if the arm is extended.
