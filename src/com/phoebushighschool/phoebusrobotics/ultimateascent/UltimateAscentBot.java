@@ -6,7 +6,12 @@ import edu.wpi.first.wpilibj.PIDController;
 
 /*
  */
-public class UltimateAscentBot extends SimpleRobot {
+/**
+ *
+ * @author jmiller015
+ */
+public class UltimateAscentBot extends SimpleRobot 
+{
 
     protected AimingSystem visionSystem;
     protected TankDrive drive;
