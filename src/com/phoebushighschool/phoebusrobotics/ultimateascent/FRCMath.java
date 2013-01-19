@@ -17,12 +17,28 @@ public class FRCMath {
   /** 
    *  This methhod takes a radian and returns degrees
    */
-  public static double convertRadiansToDegrees(double value) {
-  return 0.0;
-  }
+    public double ConvertRadiansToDegrees(double radians)
+    {
+        return (radians * 180.0) / 3.1415926535898;
+    }
 
-  public static double normalize(String value) {
-  return 0.0;
-  }
+    /***
+     * Normalize()
+     * 
+     * this method reduces a number to 5 decimal places
+     * 
+     * @param num a very long decimal
+     * @return 
+     */
+    static public String Normalize(double num)
+    {
+        int t = ((int)(num * 1000.0));
+        double d = t / 1000.0;
+        String str = "" + d;
+        while (str.length() < 5)
+            str += "0";
+        return str;
+        //return String.format("%10.4f", num);
+    }
 
 }
