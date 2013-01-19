@@ -7,26 +7,29 @@ public class Arm {
 
   protected boolean catchState;
 
-    protected Relay motor;
-    protected DigitalInput latchSwitch;
+  protected Relay motor;
+  protected DigitalInput latchSwitch;
+  protected DigitalInput outLimitSwitch;
+  protected DigitalInput inLimitSwitch;
+    
   public Arm(int latchSwitchchannel)
   {
       latchSwitch = new DigitalInput(1, latchSwitchchannel);
   }
 
-  public void extend(boolean limitOut) 
+  public void extend() 
   {
       motor.setDirection(Relay.Direction.kForward);
-      if (isFullyExtended(limitOut))
+      if (isFullyExtended())
           motor.set(Relay.Value.kOff);
       else
           motor.set(Relay.Value.kOn);
   }
 
-  public void retract(boolean limitIn) 
+  public void retract() 
   {
       motor.setDirection(Relay.Direction.kReverse);
-      if(isFullyRetracted(limitIn))
+      if(isFullyRetracted())
       {
           stop();
       }
@@ -40,18 +43,19 @@ public class Arm {
   return catchState;
   }
   
-  public boolean isFullyExtended(boolean limitOut)
+  public boolean isFullyExtended()
   {
-      return false;
+      return outLimitSwitch.get();
   }
   
-  public boolean isFullyRetracted(boolean limitIn)
+  public boolean isFullyRetracted()
   {
-      return false;
+      return inLimitSwitch.get();
   }
 
   public void stop()
   {
       motor.set(Relay.Value.kOff);
   }
+
 }

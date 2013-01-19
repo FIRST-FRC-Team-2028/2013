@@ -8,8 +8,6 @@ import java.util.Vector;
 public class ClimbingSystem {
 
     protected TankDrive drive;
-    protected DigitalInput outLimitSwitch;
-    protected DigitalInput inLimitSwitch;
     public Arm arm;
     /**
    * 
@@ -17,19 +15,6 @@ public class ClimbingSystem {
    */
   public climbWheel  wheel;
 
-  /** 
-   *  This method will check the limit switch to see if the arm is extended.
-   */
-  public boolean isExtended() {
-  return outLimitSwitch.get();
-  }
-
-  /** 
-   *  This method will check to see if the arms are fully retracted.
-   */
-  public boolean isRetracted() {
-  return inLimitSwitch.get();
-  }
 
   /** 
    *  This method will extend the arms far enough to reach the first level
@@ -38,7 +23,7 @@ public class ClimbingSystem {
   {
       if(!arm.isLatched())
       {
-          arm.extend(isExtended());
+          arm.extend();
           return false;
       }
       else
@@ -53,7 +38,7 @@ public class ClimbingSystem {
   {
       if (extendToLatch())
       {
-          arm.retract(isRetracted());
+          arm.retract();
       }
   }
 
