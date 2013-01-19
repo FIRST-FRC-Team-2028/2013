@@ -2,7 +2,7 @@ package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.CANJaguar;
-
+import java.util.Timer;
 /*
  */
 /** 
@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.CANJaguar;
  */
 public class Shooter {
 
-  protected speedTimer:Timer;
+  protected Timer speedTimer;
 
     public GameMech gameMech;
     public CANJaguar secondDrive;
@@ -32,12 +32,14 @@ public class Shooter {
   public void stopWheeels() {
   }
 
-  public boolean isShooterUpToSpeed-() {
-  return false;
+  public boolean isShooterUpToSpeed() 
+  {
+    return false;
   }
 
-  public boolean isDiscLoaded() {
-  return false;
+  public boolean isDiscLoaded() 
+  {
+    return false;
   }
 
 }

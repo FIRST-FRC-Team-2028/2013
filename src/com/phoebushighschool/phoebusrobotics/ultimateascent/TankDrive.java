@@ -14,13 +14,13 @@ public class TankDrive implements PIDOutput {
   /** 
    *  This method takes a joystick value, and turns the robot according to the value
    */
-  public void turn(double joystickInput) {
+  public void turnByJoystick(double joystickInput) {
   }
 
   /** 
    *  This method will take a setting in degrees, and turn the robot to face that heading.
    */
-  public void turn(double degrees) {
+  public void turnByDegrees(double degrees) {
   }
 
   /** 

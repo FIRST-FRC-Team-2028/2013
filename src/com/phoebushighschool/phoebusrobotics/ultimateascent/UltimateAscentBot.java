@@ -30,7 +30,9 @@ public class UltimateAscentBot extends SimpleRobot {
   /** 
    *  This method will check to see if the target is within +/- one degree of the center.
    */
-  public boolean isAimedAtTarget() {
+  public boolean isAimedAtTarget() 
+  {
+      return false;
   }
 
 }
