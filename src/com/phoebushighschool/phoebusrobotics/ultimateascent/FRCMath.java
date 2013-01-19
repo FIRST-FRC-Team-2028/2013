@@ -10,8 +10,12 @@ public class FRCMath {
   /** 
    *  This method will take the absolute value of a number
    */
-  public static double abs(double value) {
-  return 0.0;
+  public static double abs(double value) 
+  {
+  if(value < 0.0)
+      return value * -1.0;
+  else
+      return value;
   }
 
   /** 
