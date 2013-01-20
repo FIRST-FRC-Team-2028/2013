@@ -9,14 +9,14 @@ public class Parameters {
   public static final int leftTreadCanID = 6;
 
   public static final int rightTreadCanID = 7;
+ 
+  public static final int WheelOneCANJaguarCANID = 8;
 
-  public static final int FullyExtendedLimitGPIOChannel = 1;
-
-  public static final int FullyRetractedLimitGPIOChannel = 2;
+  public static final int WheelTwoCANJaguarCANID = 9;
+  
+  public static final int ArmMovementSomething = 10;
 
   public static final int MaxMotorOutputVoltage = 12;
-
-  public static final int ArmMovementSomething = -1;            // FIX ME!!!
 
   public static final int DiscIndexerRelayChannel = 2;
 
@@ -26,9 +26,6 @@ public class Parameters {
 
   public static final int PushDiscIntoWheelsSomething = -1;     // FIX ME!!!
 
-  public static final int WheelOneCANJaguarCANID = 8;
-
-  public static final int WheelTwoCANJaguarCANID = 9;
   public static final int latchLimitSwitch = 3;
 
 }

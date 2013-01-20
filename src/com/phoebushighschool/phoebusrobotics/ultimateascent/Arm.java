@@ -10,17 +10,14 @@ public class Arm {
     protected boolean catchState;
     protected CANJaguar motor;
     protected DigitalInput latchSwitch;
-    protected DigitalInput outLimitSwitch;
-    protected DigitalInput inLimitSwitch;
 
     public Arm() 
     {
         latchSwitch = new DigitalInput(1, Parameters.latchLimitSwitch);
-        outLimitSwitch = new DigitalInput(1, Parameters.FullyExtendedLimitGPIOChannel);
-        inLimitSwitch = new DigitalInput(1, Parameters.FullyRetractedLimitGPIOChannel);
         try {
             motor = new CANJaguar(Parameters.ArmMovementSomething);
             motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
+            motor.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -43,12 +40,12 @@ public class Arm {
         return catchState;
     }
 
-    public boolean isFullyExtended() {
-        return outLimitSwitch.get();
+    public boolean isFullyExtended() throws CANTimeoutException {
+        return motor.getForwardLimitOK();
     }
 
-    public boolean isFullyRetracted() {
-        return inLimitSwitch.get();
+    public boolean isFullyRetracted() throws CANTimeoutException {
+        return motor.getReverseLimitOK();
     }
 
     public void stop() {
