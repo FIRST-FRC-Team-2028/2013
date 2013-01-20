@@ -1,7 +1,5 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-import java.util.Vector;
-
 public class Parameters {
 
   public static final String cameraIP = "10.20.28.11";
