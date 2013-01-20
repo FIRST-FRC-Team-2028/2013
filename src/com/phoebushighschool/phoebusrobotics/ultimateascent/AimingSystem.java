@@ -33,8 +33,8 @@ public class AimingSystem implements PIDSource {
     BinaryImage convexHullImage;
     BinaryImage filteredImage;
     ParticleAnalysisReport r;
-    HighTargets[] highTargets;
-    MiddleTargets[] middleTargets;
+    Target[] highTargets;
+    Target[] middleTargets;
     Target target;
 
     public AimingSystem() {
@@ -55,18 +55,6 @@ public class AimingSystem implements PIDSource {
         double aspectRatioMiddle;
         double xEdge;
         double yEdge;
-    }
-
-    public class HighTargets {
-
-        double aspectRatioHigh;
-        double center_mass_x;
-    }
-
-    public class MiddleTargets {
-
-        double aspectRatioMiddle;
-        double center_mass_x;
     }
 
     public class Target {
@@ -101,11 +89,11 @@ public class AimingSystem implements PIDSource {
                 scores[i].yEdge = scoreYEdge(filteredImage, r);
 
                 if (scoreCompare(scores[i], false)) {
-                    highTargets[nHigh].aspectRatioHigh = scores[i].aspectRatioHigh;
+                    highTargets[nHigh].aspectRatio = scores[i].aspectRatioHigh;
                     highTargets[nHigh].center_mass_x = r.center_mass_x;
                     nHigh++;
                 } else if (scoreCompare(scores[i], true)) {
-                    middleTargets[nMiddle].aspectRatioMiddle = scores[i].aspectRatioMiddle;
+                    middleTargets[nMiddle].aspectRatio = scores[i].aspectRatioMiddle;
                     middleTargets[nMiddle].center_mass_x = r.center_mass_x;
                     nMiddle++;
                 }
@@ -277,25 +265,25 @@ public class AimingSystem implements PIDSource {
      * target, false if the target we are shooting at is the high target.
      * @return the target we are shooting at.
      */
-    Target TargetCompare(HighTargets[] highT, MiddleTargets[] middleT, boolean middle) {
+    Target TargetCompare(Target[] highT, Target[] middleT, boolean middle) {
         Target t = null;
         if (middle) {
             for (int i = 0; i < middleT.length; i++) {
                 if (t == null) {
-                    t.aspectRatio = middleT[i].aspectRatioMiddle;
+                    t.aspectRatio = middleT[i].aspectRatio;
                     t.center_mass_x = middleT[i].center_mass_x;
-                } else if (t.aspectRatio < middleT[i].aspectRatioMiddle) {
-                    t.aspectRatio = middleT[i].aspectRatioMiddle;
+                } else if (t.aspectRatio < middleT[i].aspectRatio) {
+                    t.aspectRatio = middleT[i].aspectRatio;
                     t.center_mass_x = middleT[i].center_mass_x;
                 }
             }
         } else {
             for (int i = 0; i < highT.length; i++) {
                 if (t == null) {
-                    t.aspectRatio = highT[i].aspectRatioHigh;
+                    t.aspectRatio = highT[i].aspectRatio;
                     t.center_mass_x = highT[i].center_mass_x;
-                } else if (t.aspectRatio < highT[i].aspectRatioHigh) {
-                    t.aspectRatio = highT[i].aspectRatioHigh;
+                } else if (t.aspectRatio < highT[i].aspectRatio) {
+                    t.aspectRatio = highT[i].aspectRatio;
                     t.center_mass_x = highT[i].center_mass_x;
                 }
             }
