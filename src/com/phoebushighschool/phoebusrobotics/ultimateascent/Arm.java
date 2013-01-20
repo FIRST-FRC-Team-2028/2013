@@ -1,7 +1,7 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.CANJaguar;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 public class Arm {
@@ -24,6 +24,7 @@ public class Arm {
 
     public void extend() 
     {
+        
     }
 
     public void retract() 

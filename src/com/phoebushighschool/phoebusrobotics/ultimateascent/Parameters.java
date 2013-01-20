@@ -6,6 +6,7 @@ public class Parameters {
 
   public static final String cameraIP = "10.20.28.11";
 
+  // CAN ID info
   public static final int leftTreadCanID = 6;
 
   public static final int rightTreadCanID = 7;
@@ -16,16 +17,27 @@ public class Parameters {
   
   public static final int ArmMovementSomething = 10;
 
+// basic necessities
   public static final int MaxMotorOutputVoltage = 12;
 
+  // Relay channels
   public static final int DiscIndexerRelayChannel = 2;
 
+  public static final int CompressorRelayChannel = 3;
+  
+  public static final int PushDiscIntoWheelsSolenoid = 1;     // FIX ME!!!
+ 
+  //sensors on analog
   public static final int GyrometerAnalogChannel = 1;
-
+  
+  public static final int CompressorSwitch = 2;
+  
+// cRIO module numbers, all the same
   public static final int AnalogModule = 1;
+  
+  public static final int RelayModule = 1;
 
-  public static final int PushDiscIntoWheelsSomething = -1;     // FIX ME!!!
-
+  //Digital inputs
   public static final int latchLimitSwitch = 3;
 
 }

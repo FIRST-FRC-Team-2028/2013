@@ -3,6 +3,7 @@ package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import java.util.Vector;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Compressor;
 
 /*
  */
@@ -19,8 +20,18 @@ public class UltimateAscentBot extends SimpleRobot
     public Parameters param;
     public Vector  myFRCMath;
     public PIDController aimControlelr;
+    protected Compressor compressor;
+    
+  public UltimateAscentBot()
+  {
+      param = new Parameters();
+      compressor = new Compressor(param.CompressorSwitch, param.AnalogModule,
+              param.CompressorRelayChannel, param.RelayModule);
+  }
 
-  public void operatorControl() {
+  public void operatorControl() 
+  {
+      compressor.start();
   }
 
   public void autonomous() {
