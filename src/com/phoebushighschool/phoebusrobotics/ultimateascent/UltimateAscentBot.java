@@ -18,8 +18,8 @@ public class UltimateAscentBot extends SimpleRobot
     protected TankDrive drive;
     public GameMech gameMech;
     public Parameters param;
-    public Vector  myFRCMath;
-    public PIDController aimControlelr;
+    public FRCMath  myFRCMath;
+    public PIDController aimController;
     protected Compressor compressor;
     
   public UltimateAscentBot()
@@ -27,14 +27,26 @@ public class UltimateAscentBot extends SimpleRobot
       param = new Parameters();
       compressor = new Compressor(param.CompressorSwitch, param.AnalogModule,
               param.CompressorRelayChannel, param.RelayModule);
+      visionSystem = new AimingSystem();
+      drive = new TankDrive();
+      gameMech = new GameMech();
+      myFRCMath = new FRCMath();
   }
 
   public void operatorControl() 
   {
-      compressor.start();
+      while (isEnabled() && isOperatorControl())
+      {
+        compressor.start();  
+      }
   }
 
-  public void autonomous() {
+  public void autonomous() 
+  {
+      while (isEnabled() && isAutonomous())
+      {
+          
+      }
   }
 
   /** 
