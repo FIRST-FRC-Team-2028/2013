@@ -21,14 +21,12 @@ public class ClimbingSystem {
    */
   public boolean extendToLatch() 
   {
-      if(!arm.isLatched())
-      {
-          arm.extend();
-          return false;
-      }
-      else
-          arm.stop();
-          return true;
+          if(arm.extend())
+          {
+            return true;
+          }
+          return false
+                  ;
   }
 
   /** 

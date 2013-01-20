@@ -6,13 +6,17 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 public class Arm {
 
-    protected boolean catchState;
+    protected boolean catchState = false;
     protected CANJaguar motor;
     protected DigitalInput latchSwitch;
+    protected DigitalInput handOffSwitch;
 
     public Arm() 
     {
-        latchSwitch = new DigitalInput(1, Parameters.latchLimitSwitch);
+        latchSwitch = new DigitalInput(1,
+                Parameters.latchLimitSwitchGPIOChannel);
+        handOffSwitch = new DigitalInput(1
+                , Parameters.handOffLimitSwitchGPIOChannel);
         try {
             motor = new CANJaguar(Parameters.ArmMovementSomething);
             motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
@@ -22,23 +26,31 @@ public class Arm {
         }
     }
 
-    public void extend() 
+    public boolean extend()
     {
-        
+        try {
+            motor.setX(12.0);
+            if (!motor.getForwardLimitOK())
+                motor.setX(0.0);
+                System.out.println("All the way out!");
+                return true;
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     public void retract() 
     {
+        
     }
-
-    public boolean isLatched() {
-        if (latchSwitch.get()) {
-            catchState = true;
-        } else {
-            catchState = false;
-        }
-        return catchState;
-    }
+//
+//    public boolean isLatched() {
+//        if (latchSwitch.get()) {
+//            catchState = true;
+//        }
+//        return catchState;
+//    }
 
     public boolean isFullyExtended() throws CANTimeoutException {
         return motor.getForwardLimitOK();

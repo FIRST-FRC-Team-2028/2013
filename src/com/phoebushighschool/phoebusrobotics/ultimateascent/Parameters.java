@@ -37,7 +37,9 @@ public class Parameters {
   
   public static final int RelayModule = 1;
 
-  //Digital inputs
-  public static final int latchLimitSwitch = 3;
+  //GPIO inputs
+  public static final int latchLimitSwitchGPIOChannel = 3;
+  
+  public static final int handOffLimitSwitchGPIOChannel = 4;
 
 }
