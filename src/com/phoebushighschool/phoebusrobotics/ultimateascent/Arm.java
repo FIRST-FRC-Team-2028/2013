@@ -7,59 +7,55 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 public class Arm {
 
-  protected boolean catchState;
+    protected boolean catchState;
+    protected CANJaguar motor;
+    protected DigitalInput latchSwitch;
+    protected DigitalInput outLimitSwitch;
+    protected DigitalInput inLimitSwitch;
 
-  protected CANJaguar motor;
-  protected DigitalInput latchSwitch;
-  protected DigitalInput outLimitSwitch;
-  protected DigitalInput inLimitSwitch;
-    
-  public Arm()
-  {
-      latchSwitch = new DigitalInput(1, Parameters.latchLimitSwitch);
+    public Arm() 
+    {
+        latchSwitch = new DigitalInput(1, Parameters.latchLimitSwitch);
+        outLimitSwitch = new DigitalInput(1, Parameters.FullyExtendedLimitGPIOChannel);
+        inLimitSwitch = new DigitalInput(1, Parameters.FullyRetractedLimitGPIOChannel);
         try {
             motor = new CANJaguar(Parameters.ArmMovementSomething);
             motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
-  }
+    }
 
-  public void extend() 
-  {
-      
-  }
+    public void extend() 
+    {
+    }
 
-  public void retract() 
-  {
+    public void retract() 
+    {
+    }
 
-  }
+    public boolean isLatched() {
+        if (latchSwitch.get()) {
+            catchState = true;
+        } else {
+            catchState = false;
+        }
+        return catchState;
+    }
 
-  public boolean isLatched() 
-  {
-      if(latchSwitch.get())
-        catchState = true;
-      else catchState = false;
-  return catchState;
-  }
-  
-  public boolean isFullyExtended()
-  {
-      return outLimitSwitch.get();
-  }
-  
-  public boolean isFullyRetracted()
-  {
-      return inLimitSwitch.get();
-  }
+    public boolean isFullyExtended() {
+        return outLimitSwitch.get();
+    }
 
-  public void stop()
-  {
+    public boolean isFullyRetracted() {
+        return inLimitSwitch.get();
+    }
+
+    public void stop() {
         try {
             motor.setX(0.0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
-  }
-
+    }
 }

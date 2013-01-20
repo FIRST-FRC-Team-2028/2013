@@ -1,8 +1,5 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import java.util.Vector;
-
 /*
  */
 public class ClimbingSystem {
