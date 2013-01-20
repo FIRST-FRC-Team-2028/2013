@@ -18,6 +18,12 @@ public class AimingSystem implements PIDSource {
     final double yMin[] = {.4, .6, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05,
         .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05,
         .05, .05, .6, 0};
+    
+    final int RECTANGULARITY_LIMIT = 60;
+    final int ASPECT_RATIO_LIMIT = 75;
+    final int X_EDGE_LIMIT = 40;
+    final int Y_EDGE_LIMIT = 60;
+    
     protected UltimateAscentBot robot;
     public AxisCamera camera;
     public Ultrasonic ultrasonicSensor;
@@ -27,6 +33,9 @@ public class AimingSystem implements PIDSource {
     BinaryImage convexHullImage;
     BinaryImage filteredImage;
     ParticleAnalysisReport r;
+    HighTargets[] highTargets;
+    MiddleTargets[] middleTargets;
+    Target target;
 
     public AimingSystem() {
         camera = AxisCamera.getInstance(Parameters.cameraIP);
@@ -47,17 +56,40 @@ public class AimingSystem implements PIDSource {
         double yEdge;
     }
 
+    public class HighTargets {
+        double rectangularity;
+        double aspectRatioHigh;
+        double xEdge;
+        double yEdge;
+    }
+    
+    public class MiddleTargets {
+        double rectangularity;
+        double aspectRatioMiddle;
+        double xEdge;
+        double yEdge;
+    }
+    
+    public class Target {
+        double rectangularity;
+        double aspectRatio;
+        double xEdge;
+        double yEdge;
+    }
     /**
      * This method will find the target we are aiming at, and it's center of
      * mass in the x axis.
      */
-    public void processImage() {
+    public void processImage(boolean leftTarget) {
         try {
             image = camera.getImage();
             thresholdImage = image.thresholdHSV(110, 150, 200, 255, 240, 255);
             convexHullImage = thresholdImage.convexHull(true);
             filteredImage = convexHullImage.particleFilter(cc);
             Scores scores[] = new Scores[filteredImage.getNumberParticles()];
+            
+            int nHigh = 0;
+            int nMiddle = 0;
 
             for (int i = 0; i < scores.length; i++) {
                 r = filteredImage.getParticleAnalysisReport(i);
@@ -66,6 +98,21 @@ public class AimingSystem implements PIDSource {
                 scores[i].rectangularity = scoreRectangularity(r);
                 scores[i].aspectRatioHigh = scoreAspectRatio(filteredImage, r, i, false);
                 scores[i].aspectRatioMiddle = scoreAspectRatio(filteredImage, r, i, true);
+                scores[i].xEdge = scoreXEdge(filteredImage, r);
+                scores[i].yEdge = scoreYEdge(filteredImage, r);
+                
+                if (scoreCompare(scores[i], false)) {
+                    highTargets[nHigh].rectangularity = scores[i].rectangularity;
+                    highTargets[nHigh].aspectRatioHigh = scores[i].aspectRatioHigh;
+                    highTargets[nHigh].xEdge = scores[i].xEdge;
+                    highTargets[nHigh].yEdge = scores[i].yEdge;
+                    nHigh++;
+                } else if (scoreCompare(scores[i], true)) {
+                    middleTargets[nMiddle].rectangularity = scores[i].rectangularity;
+                    middleTargets[nMiddle].aspectRatioMiddle = scores[i].aspectRatioMiddle;
+                    middleTargets[nMiddle].xEdge = scores[i].xEdge;
+                    middleTargets[nMiddle].yEdge = scores[i].yEdge;
+                }
             }
 
             filteredImage.free();
@@ -128,6 +175,61 @@ public class AimingSystem implements PIDSource {
         return total;
     }
 
+    public double scoreYEdge(BinaryImage image, ParticleAnalysisReport report) throws NIVisionException
+    {
+        double total = 0;
+        LinearAverages averages;
+        
+        NIVision.Rect rect = new NIVision.Rect(report.boundingRectTop, report.boundingRectLeft, report.boundingRectHeight, report.boundingRectWidth);
+        averages = NIVision.getLinearAverages(image.image, LinearAverages.LinearAveragesMode.IMAQ_ROW_AVERAGES, rect);
+        float rowAverages[] = averages.getRowAverages();
+        for(int i=0; i < (rowAverages.length); i++){
+                if(yMin[(i*(YMINSIZE-1)/rowAverages.length)] < rowAverages[i] 
+                   && rowAverages[i] < yMax[i*(YMAXSIZE-1)/rowAverages.length]){
+                        total++;
+                }
+        }
+        total = 100*total/(rowAverages.length);
+        return total;
+    }
+    
+    boolean scoreCompare(Scores scores, boolean outer){
+            boolean isTarget = true;
+
+            isTarget &= scores.rectangularity > RECTANGULARITY_LIMIT;
+            if(outer){
+                    isTarget &= scores.aspectRatioMiddle > ASPECT_RATIO_LIMIT;
+            } else {
+                    isTarget &= scores.aspectRatioHigh > ASPECT_RATIO_LIMIT;
+            }
+            isTarget &= scores.xEdge > X_EDGE_LIMIT;
+            isTarget &= scores.yEdge > Y_EDGE_LIMIT;
+
+            return isTarget;
+    }
+    
+    Target TargetCompare(HighTargets[] highT, MiddleTargets[] middleT, boolean middle, boolean leftTarget) {
+        Target t = null;
+        if (middle) {
+            
+        } else {
+            for (int i = 0; i < highT.length; i++) {
+                if (t == null) {
+                    t.rectangularity = highT[i].rectangularity;
+                    t.aspectRatio = highT[i].aspectRatioHigh;
+                    t.xEdge = highT[i].xEdge;
+                    t.yEdge = highT[i].yEdge;
+                } else if (t.rectangularity < highT[i].rectangularity
+                        && t.aspectRatio < highT[i].aspectRatioHigh) {
+                    t.rectangularity = highT[i].rectangularity;
+                    t.aspectRatio = highT[i].aspectRatioHigh;
+                    t.xEdge = highT[i].xEdge;
+                    t.yEdge = highT[i].yEdge;
+                }
+            }
+        }
+        return t;
+    }
     /**
      * This method returns true if the target is +/- x degree of the camera's
      * center, and false otherwise.
