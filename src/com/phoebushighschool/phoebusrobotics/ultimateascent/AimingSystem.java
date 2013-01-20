@@ -173,7 +173,8 @@ public class AimingSystem implements PIDSource {
      * This method scores the particle from 0 - 100 based on how solid the
      * vertical edges are and how hollow the center of the particle are.
      *
-     * @param image the image from which the particle originated, needs to be pre convex hull
+     * @param image the image from which the particle originated, needs to be 
+     * pre-convex hull
      * @param report the analysis of the particle
      * @return the score of the particle from 0 - 100
      * @throws NIVisionException
@@ -201,7 +202,8 @@ public class AimingSystem implements PIDSource {
      * This method scores the particle from 0 - 100 based on how solid the
      * horizontal edges are and how hollow the center of the particle are.
      *
-     * @param image the image from which the particle originated, needs to be pre convex hull
+     * @param image the image from which the particle originated, needs to be 
+     * pre-convex hull
      * @param report the analysis of the particle
      * @return the score of the particle from 0 -100
      * @throws NIVisionException
