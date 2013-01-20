@@ -40,9 +40,14 @@ public class Arm {
         return false;
     }
 
-    public void retract() 
+    public void retract() throws CANTimeoutException 
     {
-        
+        if(!isFullyRetracted())
+        {
+            motor.setX(12.0);
+        }
+        else 
+            motor.setX(0.0);
     }
 //
 //    public boolean isLatched() {
