@@ -1,5 +1,7 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
+import edu.wpi.first.wpilibj.can.CANTimeoutException;
+
 /*
  */
 public class ClimbingSystem {
@@ -32,7 +34,7 @@ public class ClimbingSystem {
   /** 
    *  This method will retract the arms to within the frame perimeter
    */
-  public void retract() 
+  public void retract() throws CANTimeoutException 
   {
       if (extendToLatch())
       {
