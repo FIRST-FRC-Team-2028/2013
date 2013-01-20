@@ -24,6 +24,9 @@ public class Ultrasonic {
         return (value / 5.0) / 512.0;
     }
 
+    public double pidGet() {
+        return getDistance();
+    }
     public double getVoltage() {
         return ultrasonic.getVoltage(channel);
     }
