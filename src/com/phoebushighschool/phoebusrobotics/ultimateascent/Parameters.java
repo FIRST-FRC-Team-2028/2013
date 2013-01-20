@@ -20,7 +20,7 @@ public class Parameters {
 
   public static final int DiscIndexerRelayChannel = 2;
 
-  public static final int GyrometerAnalogChannel = 1;
+  public static final int UltrasonicAnalogChannel = 1;
 
   public static final int AnalogModule = 1;
 
