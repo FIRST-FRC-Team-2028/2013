@@ -312,7 +312,7 @@ public class AimingSystem implements PIDSource {
     }
 
     public double pidGet() {
-        return 0.0;
+        return getDegreesToTarget();
     }
 
     /**
