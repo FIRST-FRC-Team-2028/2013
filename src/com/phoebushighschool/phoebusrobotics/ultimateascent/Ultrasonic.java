@@ -27,8 +27,9 @@ public class Ultrasonic {
     }
 
     /**
+     * getDistance()
+     * 
      * Return the actual distance to a target in inches.
-     *
      * The distance is based on the current voltage values.
      *
      * @returns double - distance to the target in inches
