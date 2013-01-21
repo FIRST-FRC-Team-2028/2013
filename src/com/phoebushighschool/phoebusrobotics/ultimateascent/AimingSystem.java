@@ -58,9 +58,9 @@ public class AimingSystem implements PIDSource {
     }
 
     public class Target {
-
         double aspectRatio;
         double center_mass_x;
+        boolean middle;
     }
 
     /**
@@ -91,10 +91,12 @@ public class AimingSystem implements PIDSource {
                 if (scoreCompare(scores[i], false)) {
                     highTargets[nHigh].aspectRatio = scores[i].aspectRatioHigh;
                     highTargets[nHigh].center_mass_x = r.center_mass_x;
+                    highTargets[nHigh].middle = false;
                     nHigh++;
                 } else if (scoreCompare(scores[i], true)) {
                     middleTargets[nMiddle].aspectRatio = scores[i].aspectRatioMiddle;
                     middleTargets[nMiddle].center_mass_x = r.center_mass_x;
+                    highTargets[nHigh].middle = true;
                     nMiddle++;
                 }
             }
@@ -270,6 +272,7 @@ public class AimingSystem implements PIDSource {
     AimingSystem.Target TargetCompare(AimingSystem.Target[] highT, AimingSystem.Target[] middleT, boolean middle) {
         AimingSystem.Target t = null;
         if (middle) {
+            t.middle = true;
             for (int i = 0; i < middleT.length; i++) {
                 if (t == null) {
                     t.aspectRatio = middleT[i].aspectRatio;
@@ -280,6 +283,7 @@ public class AimingSystem implements PIDSource {
                 }
             }
         } else {
+            t.middle = false;
             for (int i = 0; i < highT.length; i++) {
                 if (t == null) {
                     t.aspectRatio = highT[i].aspectRatio;
@@ -294,8 +298,11 @@ public class AimingSystem implements PIDSource {
     }
 
     /**
-     * This method returns true if the target is +/- x degree of the camera's
-     * center, and false otherwise.
+     * isAimedAtTarget()
+     * 
+     * This method determines if we are aimed at the target.
+     * @return true if the target is within +/- 1 degree, false if outside of 
+     * that range
      */
     public boolean isAimedAtTarget() {
         if (getDegreesToTarget() < 1.0 && getDegreesToTarget() > -1.0) {
@@ -308,6 +315,13 @@ public class AimingSystem implements PIDSource {
         return 0.0;
     }
 
+    /**
+     * getDegreesToTarget()
+     * 
+     * This method returns the angle to the target.
+     * @return the angle to the target, negative th robot needs to turn left, 
+     * positive, right
+     */
     public double getDegreesToTarget() {
         double offset = 0.0;
         if (r != null) {
@@ -317,10 +331,23 @@ public class AimingSystem implements PIDSource {
         return ConvertRadiansToDegrees(offset);
     }
 
+    /**
+     * ConvertRadiansToDegrees()
+     * 
+     * This method converts a radian measure to degrees.
+     * @param radians an angle in radians
+     * @return an angle in degrees
+     */
     public double ConvertRadiansToDegrees(double radians) {
         return (radians * 180.0) / 3.1415926535898;
     }
 
+    /**
+     * getDistance()
+     * 
+     * This method returns the distance to what the robot is facing.
+     * @return the distance to what the robot is facing
+     */
     public double getDistance() {
         return ultrasonicSensor.getDistance();
     }
