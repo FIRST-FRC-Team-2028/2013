@@ -12,27 +12,30 @@ public class UltimateAscentBot extends SimpleRobot {
     protected TankDrive drive;
     public GameMech gameMech;
     public Parameters param;
-    public Vector  myFRCMath;
-    public PIDController aimControlelr;
+    public Vector myFRCMath;
+    public PIDController aimController;
 
-  public void operatorControl() {
-  }
+    public UltimateAscentBot() {
+        visionSystem = new AimingSystem();
+    }
 
-  public void autonomous() {
-  }
+    public void operatorControl() {
+    }
 
-  /** 
-   *  This method will align the robot with the target +/- one degree
-   */
-  public void aim() {
-  }
+    public void autonomous() {
+    }
 
-  /** 
-   *  This method will check to see if the target is within +/- one degree of the center.
-   */
-  public boolean isAimedAtTarget() 
-  {
-      return false;
-  }
+    /**
+     * This method will align the robot with the target +/- one degree
+     */
+    public void aim() {
+    }
 
+    /**
+     * This method will check to see if the target is within +/- one degree of
+     * the center.
+     */
+    public boolean isAimedAtTarget() {
+        return visionSystem.isAimedAtTarget();
+    }
 }
