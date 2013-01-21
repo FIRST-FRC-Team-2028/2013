@@ -22,9 +22,9 @@ public class Tread {
      */
     public static class Gear {
 
-        public static final int kLowValue = 1;
-        public static final int kHighValue = 2;
-        public final int value;
+        private static final int kLowValue = 1;
+        private static final int kHighValue = 2;
+        private final int value;
         public static final Gear kLow = new Gear(Gear.kLowValue);
         public static final Gear kHigh = new Gear(Gear.kHighValue);
 

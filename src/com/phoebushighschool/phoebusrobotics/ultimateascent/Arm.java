@@ -19,10 +19,13 @@ public class Arm {
   public boolean isLatched() {
   return false;
   }
-
+  
+    /**
+     * this method sets the direction and speed of the tread.
+     */
     public static class Direction {
-        
-        public final int value;
+
+        private final int value;
         private static final int kForwardValue = 1;
         private static final int kReverseValue = 2;
         public static final Direction kForward = new Direction(kForwardValue);
