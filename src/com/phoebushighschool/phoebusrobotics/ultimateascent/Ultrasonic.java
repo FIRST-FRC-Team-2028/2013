@@ -35,7 +35,7 @@ public class Ultrasonic {
      */
     public double getDistance() {
         double value = ultrasonicSensor.getVoltage(channel);
-        return (value / (5.0 / 512.0));  //TODO: fix this value
+        return (value * 2077) / 20;  //TODO: fix this value
     }
 
     public double pidGet() {
