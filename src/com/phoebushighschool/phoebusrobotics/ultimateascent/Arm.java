@@ -23,7 +23,7 @@ public class Arm {
     /**
      * this method sets the direction and speed of the tread.
      */
-    public static class Direction {
+    public class Direction {
 
         private final int value;
         private static final int kForwardValue = 1;
