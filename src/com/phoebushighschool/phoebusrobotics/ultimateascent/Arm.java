@@ -20,4 +20,17 @@ public class Arm {
   return false;
   }
 
+    public static class Direction {
+        
+        public final int value;
+        private static final int kForwardValue = 1;
+        private static final int kReverseValue = 2;
+        public static final Direction kForward = new Direction(kForwardValue);
+        public static final Direction kReverse = new Direction(kReverseValue);
+
+        public Direction(int direction) 
+        {
+            this.value = direction;
+        }
+    }
 }
