@@ -389,6 +389,7 @@ public class AimingSystem implements PIDSource {
      * If the camera distance and the ultrasonic distance are outside of +/- 5% 
      * of each other, we choose the larger value.  If they are within 5% of each 
      * other we take the average of both and return that.
+     * 
      * @return the distance to the target.
      */
     public double getDistanceToTarget() {
