@@ -28,8 +28,7 @@ public class AimingSystem implements PIDSource {
     final int IMAGE_HEIGHT = 240;
     final double TARGET_HEIGHT_HIGH = 5 / 3;
     final double TARGET_HEIGHT_MIDDLE = 29 / 12;
-    protected UltimateAscentBot robot;
-    public AxisCamera camera;
+    AxisCamera camera;
     Ultrasonic ultrasonicSensor;
     CriteriaCollection cc;
     ColorImage image;
