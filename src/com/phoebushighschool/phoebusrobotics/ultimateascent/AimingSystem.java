@@ -62,6 +62,7 @@ public class AimingSystem implements PIDSource {
     }
 
     public class Target {
+
         double aspectRatio;
         boolean middle;
         double center_mass_x;
@@ -182,7 +183,7 @@ public class AimingSystem implements PIDSource {
      * This method scores the particle from 0 - 100 based on how solid the
      * vertical edges are and how hollow the center of the particle are.
      *
-     * @param image the image from which the particle originated, needs to be 
+     * @param image the image from which the particle originated, needs to be
      * pre-convex hull
      * @param report the analysis of the particle
      * @return the score of the particle from 0 - 100
@@ -211,7 +212,7 @@ public class AimingSystem implements PIDSource {
      * This method scores the particle from 0 - 100 based on how solid the
      * horizontal edges are and how hollow the center of the particle are.
      *
-     * @param image the image from which the particle originated, needs to be 
+     * @param image the image from which the particle originated, needs to be
      * pre-convex hull
      * @param report the analysis of the particle
      * @return the score of the particle from 0 -100
@@ -310,9 +311,10 @@ public class AimingSystem implements PIDSource {
 
     /**
      * isAimedAtTarget()
-     * 
+     *
      * This method determines if we are aimed at the target.
-     * @return true if the target is within +/- 1 degree, false if outside of 
+     *
+     * @return true if the target is within +/- 1 degree, false if outside of
      * that range
      */
     public boolean isAimedAtTarget() {
@@ -328,9 +330,10 @@ public class AimingSystem implements PIDSource {
 
     /**
      * getDegreesToTarget()
-     * 
+     *
      * This method returns the angle to the target.
-     * @return the angle to the target, negative th robot needs to turn left, 
+     *
+     * @return the angle to the target, negative th robot needs to turn left,
      * positive, right
      */
     public double getDegreesToTarget() {
@@ -344,8 +347,9 @@ public class AimingSystem implements PIDSource {
 
     /**
      * ConvertRadiansToDegrees()
-     * 
+     *
      * This method converts a radian measure to degrees.
+     *
      * @param radians an angle in radians
      * @return an angle in degrees
      */
@@ -355,22 +359,47 @@ public class AimingSystem implements PIDSource {
 
     /**
      * getDistanceWUltrasonic()
-     * 
+     *
      * This method returns the distance to what the robot is facing.
-     * @return the distance to what the robot is facing
+     *
+     * @return the distance to what the robot is facing in inches
      */
     public double getDistanceWUltrasonic() {
         return ultrasonicSensor.getDistance();
     }
-    
+
     /**
      * getDistanceWCamera()
-     * 
+     *
      * This method gets the distance to the target using the camera.
-     * @return the distance to the target in inches
+     *
+     * @return the distance to what the camera thinks is the target in inches
      */
     public double getDistanceWCamera() {
-        double w = (TARGET_WIDTH * IMAGE_WIDTH) / target.target_width;
+        double w = 0.0;
+        if (target != null) {
+            w = (TARGET_WIDTH * IMAGE_WIDTH) / target.target_width;
+        }
         return (w / Math.tan(23.5)) * 12.0;
+    }
+
+    /**
+     * getDistanceToTarget()
+     * 
+     * This method returns what we believe to be the distance to the target.  
+     * If the camera distance and the ultrasonic distance are outside of +/- 5% 
+     * of each other, we choose the larger value.  If they are within 5% of each 
+     * other we take the average of both and return that.
+     * @return the distance to the target.
+     */
+    public double getDistanceToTarget() {
+        double cameraD = getDistanceWCamera();
+        double ultrasonicD = getDistanceWUltrasonic();
+        if ((cameraD / ultrasonicD) > 1.05
+                || (cameraD / ultrasonicD) < 0.95) {
+            return Math.max(cameraD, ultrasonicD);
+        } else {
+            return (cameraD + ultrasonicD) / 2.0;
+        }
     }
 }
