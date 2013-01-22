@@ -8,15 +8,14 @@ public class Arm {
 
     protected boolean catchState = false;
     protected CANJaguar motor;
-    protected DigitalInput latchSwitch;
-    protected DigitalInput handOffSwitch;
+//    protected DigitalInput latchSwitch;
+//    protected DigitalInput handOffSwitch;
 
-    public Arm() 
-    {
-        latchSwitch = new DigitalInput(1,
-                Parameters.latchLimitSwitchGPIOChannel);
-        handOffSwitch = new DigitalInput(1
-                , Parameters.handOffLimitSwitchGPIOChannel);
+    public Arm() {
+//        latchSwitch = new DigitalInput(1,
+//                Parameters.latchLimitSwitchGPIOChannel);
+//        handOffSwitch = new DigitalInput(1
+//                , Parameters.handOffLimitSwitchGPIOChannel);
         try {
             motor = new CANJaguar(Parameters.ArmMovementSomething);
             motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
@@ -26,28 +25,22 @@ public class Arm {
         }
     }
 
-    public boolean extend()
-    {
-        try {
-            motor.setX(12.0);
-            if (!motor.getForwardLimitOK())
-                motor.setX(0.0);
-                System.out.println("All the way out!");
-                return true;
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
+    public boolean extend() throws CANTimeoutException {
+        motor.setX(12.0);
+        if (!motor.getForwardLimitOK()) {
+            motor.setX(0.0);
+            System.out.println("All the way out!");
+            return true;
         }
         return false;
     }
 
-    public void retract() throws CANTimeoutException 
-    {
-        if(!isFullyRetracted())
-        {
-            motor.setX(12.0);
-        }
-        else 
+    public void retract() throws CANTimeoutException {
+        if (!isFullyRetracted()) {
+            motor.setX(-12.0);
+        } else {
             motor.setX(0.0);
+        }
     }
 //
 //    public boolean isLatched() {
