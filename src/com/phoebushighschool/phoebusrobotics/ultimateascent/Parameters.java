@@ -23,7 +23,7 @@ public class Parameters {
 
   public static final int CompressorRelayChannel = 3;
   
-  public static final int PushDiscIntoWheelsSolenoid = 1;     // FIX ME!!!
+  public static final int PushDiscIntoShooterSolenoid = 1;     // FIX ME!!!
  
   //sensors on analog
   public static final int GyrometerAnalogChannel = 1;
