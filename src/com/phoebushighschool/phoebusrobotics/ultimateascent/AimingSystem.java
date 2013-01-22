@@ -24,6 +24,10 @@ public class AimingSystem implements PIDSource {
     final int X_EDGE_LIMIT = 40;
     final int Y_EDGE_LIMIT = 60;
     final int IMAGE_WIDTH = 320;
+    final double TARGET_WIDTH = 5;
+    final int IMAGE_HEIGHT = 240;
+    final double TARGET_HEIGHT_HIGH = 5 / 3;
+    final double TARGET_HEIGHT_MIDDLE = 29 / 12;
     protected UltimateAscentBot robot;
     public AxisCamera camera;
     Ultrasonic ultrasonicSensor;
@@ -59,8 +63,9 @@ public class AimingSystem implements PIDSource {
 
     public class Target {
         double aspectRatio;
-        double center_mass_x;
         boolean middle;
+        double center_mass_x;
+        double target_width;
     }
 
     /**
@@ -91,11 +96,13 @@ public class AimingSystem implements PIDSource {
                 if (scoreCompare(scores[i], false)) {
                     highTargets[nHigh].aspectRatio = scores[i].aspectRatioHigh;
                     highTargets[nHigh].center_mass_x = r.center_mass_x;
+                    highTargets[nHigh].target_width = r.boundingRectWidth;
                     highTargets[nHigh].middle = false;
                     nHigh++;
                 } else if (scoreCompare(scores[i], true)) {
                     middleTargets[nMiddle].aspectRatio = scores[i].aspectRatioMiddle;
                     middleTargets[nMiddle].center_mass_x = r.center_mass_x;
+                    middleTargets[nMiddle].target_width = r.boundingRectWidth;
                     highTargets[nHigh].middle = true;
                     nMiddle++;
                 }
@@ -277,9 +284,11 @@ public class AimingSystem implements PIDSource {
                 if (t == null) {
                     t.aspectRatio = middleT[i].aspectRatio;
                     t.center_mass_x = middleT[i].center_mass_x;
+                    t.target_width = middleT[i].target_width;
                 } else if (t.aspectRatio < middleT[i].aspectRatio) {
                     t.aspectRatio = middleT[i].aspectRatio;
                     t.center_mass_x = middleT[i].center_mass_x;
+                    t.target_width = middleT[i].target_width;
                 }
             }
         } else {
@@ -288,9 +297,11 @@ public class AimingSystem implements PIDSource {
                 if (t == null) {
                     t.aspectRatio = highT[i].aspectRatio;
                     t.center_mass_x = highT[i].center_mass_x;
+                    t.target_width = highT[i].target_width;
                 } else if (t.aspectRatio < highT[i].aspectRatio) {
                     t.aspectRatio = highT[i].aspectRatio;
                     t.center_mass_x = highT[i].center_mass_x;
+                    t.target_width = highT[i].target_width;
                 }
             }
         }
@@ -343,12 +354,23 @@ public class AimingSystem implements PIDSource {
     }
 
     /**
-     * getDistance()
+     * getDistanceWUltrasonic()
      * 
      * This method returns the distance to what the robot is facing.
      * @return the distance to what the robot is facing
      */
-    public double getDistance() {
+    public double getDistanceWUltrasonic() {
         return ultrasonicSensor.getDistance();
+    }
+    
+    /**
+     * getDistanceWCamera()
+     * 
+     * This method gets the distance to the target using the camera.
+     * @return the distance to the target in inches
+     */
+    public double getDistanceWCamera() {
+        double w = (TARGET_WIDTH * IMAGE_WIDTH) / target.target_width;
+        return (w / Math.tan(23.5)) * 12.0;
     }
 }
