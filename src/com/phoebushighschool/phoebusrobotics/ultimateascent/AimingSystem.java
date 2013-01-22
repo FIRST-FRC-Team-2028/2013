@@ -75,7 +75,7 @@ public class AimingSystem implements PIDSource {
     public void processImage(boolean middle) {
         try {
             image = camera.getImage();
-            thresholdImage = image.thresholdHSV(110, 150, 200, 255, 240, 255);
+            thresholdImage = image.thresholdRGB(0, 25, 230, 255, 195, 225);
             convexHullImage = thresholdImage.convexHull(true);
             filteredImage = convexHullImage.particleFilter(cc);
             AimingSystem.Scores scores[] = new AimingSystem.Scores[filteredImage.getNumberParticles()];
