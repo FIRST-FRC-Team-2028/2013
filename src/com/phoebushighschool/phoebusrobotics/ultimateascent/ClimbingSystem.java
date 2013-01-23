@@ -21,7 +21,7 @@ public class ClimbingSystem {
     /**
      * This method will extend the arms far enough to reach the next level
      */
-    public boolean extendToLatch() {
+    public boolean extendToLatch() throws CANTimeoutException {
         if (arm.extend()) {
             return true;
         }

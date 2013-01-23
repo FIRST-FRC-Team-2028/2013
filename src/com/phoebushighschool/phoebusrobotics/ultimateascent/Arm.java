@@ -42,7 +42,7 @@ public class Arm {
             motor.setX(0.0);
         }
     }
-//
+//       too narrow
 //    public boolean isLatched() {
 //        if (latchSwitch.get()) {
 //            catchState = true;
