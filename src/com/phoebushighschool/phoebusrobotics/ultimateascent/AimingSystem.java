@@ -339,8 +339,8 @@ public class AimingSystem implements PIDSource {
     public double getDegreesToTarget() {
         double offset = 0.0;
         if (target != null) {
-            offset = target.center_mass_x - (IMAGE_WIDTH / 2);
-            offset = offset * (TARGET_WIDTH / target.target_width);
+            offset = target.center_mass_x - (IMAGE_WIDTH / 2.0 );
+            offset = offset * ((TARGET_WIDTH * 12.0) / target.target_width);
             offset = MathUtils.atan(offset / getDistanceToTarget());
         }
         return ConvertRadiansToDegrees(offset);

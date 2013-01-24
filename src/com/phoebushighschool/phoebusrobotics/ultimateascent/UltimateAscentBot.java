@@ -1,8 +1,8 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-import edu.wpi.first.wpilibj.SimpleRobot;
-import java.util.Vector;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.SimpleRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 /*
  */
@@ -12,23 +12,53 @@ public class UltimateAscentBot extends SimpleRobot {
     protected TankDrive drive;
     public GameMech gameMech;
     public Parameters param;
-    public Vector myFRCMath;
+    public FRCMath math;
     public PIDController aimController;
+    boolean turning = false;
 
     public UltimateAscentBot() {
         visionSystem = new AimingSystem();
-    }
-
-    public void operatorControl() {
+        aimController = new PIDController(Parameters.kRobotProportional,
+                Parameters.kRobotIntegral, Parameters.kRobotDifferential,
+                visionSystem, drive);
+        aimController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
+        drive = new TankDrive();
     }
 
     public void autonomous() {
+        while (isAutonomous() && isEnabled()) {
+            Timer.delay(Parameters.TIMER_DELAY);
+            getWatchdog().feed();
+        }
+    }
+
+    public void operatorControl() {
+        while (isOperatorControl() && isEnabled()) {
+            Timer.delay(Parameters.TIMER_DELAY);
+            getWatchdog().feed();
+        }
+    }
+
+    public void test() {
+        while (isTest() && isEnabled()) {
+            Timer.delay(Parameters.TIMER_DELAY);
+            getWatchdog().feed();
+        }
     }
 
     /**
      * This method will align the robot with the target +/- one degree
      */
-    public void aim() {
+    public boolean aim() {
+        if (isAimedAtTarget()) {
+            DisableTurnController();
+            return true;
+        } else {
+            double setPoint = visionSystem.getDegreesToTarget();
+            EnableTurnController();
+            aimController.setSetpoint(setPoint);
+            return false;
+        }
     }
 
     /**
@@ -37,5 +67,19 @@ public class UltimateAscentBot extends SimpleRobot {
      */
     public boolean isAimedAtTarget() {
         return visionSystem.isAimedAtTarget();
+    }
+
+    public void DisableTurnController() {
+        if (turning) {
+            aimController.disable();
+        }
+        turning = false;
+    }
+    
+    public void EnableTurnController() {
+        if (!turning) {
+            aimController.enable();
+        }
+        turning = true;
     }
 }
