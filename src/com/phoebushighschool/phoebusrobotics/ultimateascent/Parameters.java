@@ -14,7 +14,7 @@ public class Parameters {
 
   public static final int MaxMotorOutputVoltage = 12;
 
-  public static final int ArmMovementSomething; // = tbd;
+  public static final int ArmMovementSomething = -1; //TODO: fix this value
 
   public static final int DiscIndexerRelayChannel = 2;
 
@@ -22,7 +22,7 @@ public class Parameters {
 
   public static final int AnalogModule = 1;
 
-  public static final int PushDiscIntoWheelsSomething; // = tbd;
+  public static final int PushDiscIntoWheelsSomething = -1; //TODO: fix this value
 
   public static final int WheelOneCANJaguarCANID = 8;
 
