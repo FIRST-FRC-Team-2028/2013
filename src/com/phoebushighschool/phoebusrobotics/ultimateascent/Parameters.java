@@ -29,5 +29,9 @@ public class Parameters {
   public static final int WheelOneCANJaguarCANID = 8;
 
   public static final int WheelTwoCANJaguarCANID = 9;
+  
+  public static final int DiscIsLoadedInput = 1;
+  
+  public static final int discCountInit = 3;
 
 }
