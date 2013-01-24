@@ -1,6 +1,8 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-public class climbWheel {
+/*
+ */
+public class ClimbingWheel {
 
   
   public void start() {

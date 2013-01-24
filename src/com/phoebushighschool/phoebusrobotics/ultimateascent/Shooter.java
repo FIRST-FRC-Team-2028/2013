@@ -1,8 +1,9 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.CANJaguar;
 import java.util.Timer;
+import edu.wpi.first.wpilibj.CANJaguar;
+
 /*
  */
 /** 
@@ -12,34 +13,28 @@ public class Shooter {
 
   protected Timer speedTimer;
 
-    public GameMech gameMech;
-    public CANJaguar secondDrive;
-    public CANJaguar firstDrive;
-    public DigitalInput discSensor;
+    protected GameMech gameMech;
+    protected DigitalInput discSensor;
+    protected CANJaguar motor;
 
   /** 
-   *  This method will push the disc into the spinning wheels.
+   *  This method will turn the cam the small amount necesary for the arm to release from the cam and shoot the frisbee.
    */
   public void shoot() {
   }
 
+  public boolean isShooterCocked() {
+  return false;
+  }
+
+  public boolean isDiscLoaded() {
+  return false;
+  }
+
   /** 
-   *  This method will start the wheels so that the disc can be launched.
+   *  This method rotates the cam until the arm is ready to fire.
    */
-  public void startWheels() {
-  }
-
-  public void stopWheeels() {
-  }
-
-  public boolean isShooterUpToSpeed() 
-  {
-    return false;
-  }
-
-  public boolean isDiscLoaded() 
-  {
-    return false;
+  public void cock() {
   }
 
 }

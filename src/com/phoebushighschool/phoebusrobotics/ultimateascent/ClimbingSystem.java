@@ -1,6 +1,5 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import java.util.Vector;
 
 /*
@@ -8,14 +7,12 @@ import java.util.Vector;
 public class ClimbingSystem {
 
     protected TankDrive drive;
-    protected DigitalInput outLimitSwitch;
-    protected DigitalInput inLimitSwitch;
-    public Arm arm;
     /**
    * 
-   * @element-type climbWheel
+   * @element-type ClimbingWheel
    */
   public Vector  wheel;
+    protected Arm arm;
 
   /** 
    *  This method will check the limit switch to see if the arm is extended.
@@ -34,13 +31,23 @@ public class ClimbingSystem {
   /** 
    *  This method will extend the arms far enough to reach the first level
    */
-  public void extend() {
+  public boolean extendToLatch() {
+  return false;
   }
 
   /** 
    *  This method will retract the arms to within the frame perimeter
    */
-  public void retract() {
+  public boolean retractToHandoff() {
+  return false;
+  }
+
+  public boolean extend() {
+  return false;
+  }
+
+  public boolean retract() {
+  return false;
   }
 
 }

@@ -12,15 +12,9 @@ public class TankDrive implements PIDOutput {
     protected Tread leftTread;
 
   /** 
-   *  This method takes a joystick value, and turns the robot according to the value
-   */
-  public void turnByJoystick(double joystickInput) {
-  }
-
-  /** 
    *  This method will take a setting in degrees, and turn the robot to face that heading.
    */
-  public void turnByDegrees(double degrees) {
+  public void turn(double percentSpeed) {
   }
 
   /** 
@@ -29,7 +23,10 @@ public class TankDrive implements PIDOutput {
   public void drive(double percent) {
   }
 
-  public void pidWrite(double degreesToTarget) {
+  public void pidWrite(double percentTurnSpeed) {
+  }
+
+  public void setGear(Tread.Gear gear) {
   }
 
 }

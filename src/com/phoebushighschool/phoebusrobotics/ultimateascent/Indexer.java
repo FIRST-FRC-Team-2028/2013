@@ -9,8 +9,8 @@ public class Indexer {
 
     protected GameMech gameMech;
     protected Relay indexer;
-    public DigitalInput discPast;
-    public DigitalInput discLoaded;
+    protected DigitalInput discPast;
+    protected DigitalInput discLoaded;
 
   /** 
    *  This method will index one disc into the shooter.

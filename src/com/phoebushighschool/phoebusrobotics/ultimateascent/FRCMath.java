@@ -1,6 +1,5 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-import java.lang.String;
 
 /*
  */
@@ -15,7 +14,7 @@ public class FRCMath {
   }
 
   /** 
-   *  This methhod takes a radian and returns degrees
+   *  This method takes a radian and returns degrees
    */
   public static double convertRadiansToDegrees(double value) {
   return 0.0;
