@@ -16,4 +16,21 @@ public class Tread {
   public void drive(double percentSpeed) {
   }
 
+    /**
+     *
+     * @author Dunn
+     */
+    public static class Gear {
+
+        private static final int kLowValue = 1;
+        private static final int kHighValue = 2;
+        private final int value;
+        public static final Gear kLow = new Gear(Gear.kLowValue);
+        public static final Gear kHigh = new Gear(Gear.kHighValue);
+
+        protected Gear(int gear) 
+        {
+            this.value = gear;
+        }
+    }
 }

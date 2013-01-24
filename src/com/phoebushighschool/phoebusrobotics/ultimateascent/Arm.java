@@ -50,6 +50,10 @@ public class Arm {
 //        return catchState;
 //    }
 
+    public boolean isLatched() {
+        return false;
+    }
+
     public boolean isFullyExtended() throws CANTimeoutException {
         return !motor.getForwardLimitOK();
     }
@@ -63,6 +67,24 @@ public class Arm {
             motor.setX(0.0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    /**
+     * this inner class is used as a parameter to specify the direction the arm
+     * should move in.
+     */
+    public static class Direction {
+
+        private final int value;
+        private static final int kForwardValue = 1;
+        private static final int kReverseValue = 2;
+        public static final Direction kForward = new Direction(kForwardValue);
+        public static final Direction kReverse = new Direction(kReverseValue);
+
+        public Direction(int direction) {
+            this.value = direction;
+
         }
     }
 }
