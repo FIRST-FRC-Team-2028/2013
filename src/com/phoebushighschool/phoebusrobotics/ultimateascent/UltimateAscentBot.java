@@ -1,8 +1,8 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-import edu.wpi.first.wpilibj.SimpleRobot;
-import java.util.Vector;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.SimpleRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 /*
  */
@@ -12,27 +12,75 @@ public class UltimateAscentBot extends SimpleRobot {
     protected TankDrive drive;
     public GameMech gameMech;
     public Parameters param;
-    public Vector  myFRCMath;
-    public PIDController aimControlelr;
+    public FRCMath math;
+    public PIDController aimController;
+    boolean turning = false;
 
-  public void operatorControl() {
-  }
+    public UltimateAscentBot() {
+        visionSystem = new AimingSystem();
+        aimController = new PIDController(Parameters.kRobotProportional,
+                Parameters.kRobotIntegral, Parameters.kRobotDifferential,
+                visionSystem, drive);
+        aimController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
+        drive = new TankDrive();
+    }
 
-  public void autonomous() {
-  }
+    public void autonomous() {
+        while (isAutonomous() && isEnabled()) {
+            Timer.delay(Parameters.TIMER_DELAY);
+            getWatchdog().feed();
+        }
+    }
 
-  /** 
-   *  This method will align the robot with the target +/- one degree
-   */
-  public void aim() {
-  }
+    public void operatorControl() {
+        while (isOperatorControl() && isEnabled()) {
+            Timer.delay(Parameters.TIMER_DELAY);
+            getWatchdog().feed();
+        }
+    }
 
-  /** 
-   *  This method will check to see if the target is within +/- one degree of the center.
-   */
-  public boolean isAimedAtTarget() 
-  {
-      return false;
-  }
+    public void test() {
+        while (isTest() && isEnabled()) {
+            Timer.delay(Parameters.TIMER_DELAY);
+            getWatchdog().feed();
+        }
+    }
 
+    /**
+     * This method will align the robot with the target +/- one degree
+     */
+    public boolean aim() {
+        if (turning && isAimedAtTarget()) {
+            DisableTurnController();
+            return true;
+        }
+        if (!turning) {
+            double setPoint = visionSystem.getDegreesToTarget();
+            EnableTurnController();
+            aimController.setSetpoint(setPoint);
+        }
+        return false;
+    }
+
+    /**
+     * This method will check to see if the target is within +/- one degree of
+     * the center.
+     */
+    public boolean isAimedAtTarget() {
+        return visionSystem.isAimedAtTarget();
+    }
+
+    public void DisableTurnController() {
+        if (turning) {
+            aimController.disable();
+        }
+        turning = false;
+    }
+
+    public void EnableTurnController() {
+        if (!turning) {
+            aimController.enable();
+        }
+        turning = true;
+    }
 }

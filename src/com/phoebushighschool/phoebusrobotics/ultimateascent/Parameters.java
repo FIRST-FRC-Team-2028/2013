@@ -20,7 +20,7 @@ public class Parameters {
 
   public static final int DiscIndexerRelayChannel = 2;
 
-  public static final int GyrometerAnalogChannel = 1;
+  public static final int UltrasonicAnalogChannel = 1;
 
   public static final int AnalogModule = 1;
 
@@ -30,4 +30,16 @@ public class Parameters {
 
   public static final int WheelTwoCANJaguarCANID = 9;
 
+  public static final double kRobotProportional = 0.0;
+  
+  public static final double kRobotDifferential = 0.0;
+  
+  public static final double kRobotIntegral = 0.0;
+  
+  public static final double TIMER_DELAY = 0.1;
+  
+  public static final double MAX_OUTPUT = 1.0;
+  
+  public static final double MIN_OUTPUT = -1.0;
+  
 }
