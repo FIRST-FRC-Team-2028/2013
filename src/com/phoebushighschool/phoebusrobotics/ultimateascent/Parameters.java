@@ -12,6 +12,7 @@ public class Parameters {
   public static final int ArmMovementCANID = 10;
   
   //Digital Sidecar GPIO Channels
+  public static final int DiscIsLoadedInputGPIOChannel = 1;
   public static final int latchLimitSwitchGPIOChannel = 3;
   public static final int handOffLimitSwitchGPIOChannel = 4;
   public static final int CompressorPressureSwitchGPIOChannel = 2;  
@@ -28,7 +29,10 @@ public class Parameters {
   public static final int UltrasonicAnalogChannel = 1;
 
   // cRIO 9472 24V Solenoid Module
+  public static final int crioRelayModule = 1;
   public static final int PushDiscIntoShooterSolenoid = 1;
+  public static final int leftGearShifterSolenoidChannel = 2;
+  public static final int rightGearShifterSolenoidChannel = 3;
 
   // Aiming PID Constants
   public static final double kRobotProportional = 0.0;
@@ -41,4 +45,6 @@ public class Parameters {
   
   public static final double MIN_OUTPUT = -1.0;
   
+  public static final int discCountInit = 3;
+
 }
