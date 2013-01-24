@@ -10,6 +10,11 @@ public class TankDrive implements PIDOutput {
     protected ClimbingSystem leftArm;
     protected Tread rightTread;
     protected Tread leftTread;
+    
+    public TankDrive()
+    {
+        leftArm = new ClimbingSystem();
+    }
 
   /** 
    *  This method takes a joystick value, and turns the robot according to the value

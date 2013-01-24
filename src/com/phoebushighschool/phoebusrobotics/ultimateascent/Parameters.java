@@ -1,34 +1,34 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-import java.util.Vector;
-
 public class Parameters {
 
   public static final String cameraIP = "10.20.28.11";
 
+  // CAN ID info
   public static final int leftTreadCanID = 6;
-
   public static final int rightTreadCanID = 7;
-
-  public static final int FullyExtendedLimitGPIOChannel = 1;
-
-  public static final int FullyRetractedLimitGPIOChannel = 2;
+  public static final int WheelOneCANJaguarCANID = 8;
+  public static final int WheelTwoCANJaguarCANID = 9;
+  public static final int ArmMovementCANID = 10;
+  
+  //Digital Sidecar GPIO Channels
+  public static final int latchLimitSwitchGPIOChannel = 3;
+  public static final int handOffLimitSwitchGPIOChannel = 4;
+  public static final int CompressorPressureSwitchGPIOChannel = 2;  
 
   public static final int MaxMotorOutputVoltage = 12;
 
-  public static final int ArmMovementSomething = -1;            // FIX ME!!!
-
+  // Digital Sidecar 12V Relay channels
+  public static final int RelayModule = 1;  
   public static final int DiscIndexerRelayChannel = 2;
-
+  public static final int CompressorRelayChannel = 3;
+  
+  // cRIO 9201 Analog Module Channels
+  public static final int AnalogModule = 1;  
   public static final int UltrasonicAnalogChannel = 1;
 
-  public static final int AnalogModule = 1;
-
-  public static final int PushDiscIntoWheelsSomething = -1;     // FIX ME!!!
-
-  public static final int WheelOneCANJaguarCANID = 8;
-
-  public static final int WheelTwoCANJaguarCANID = 9;
+  // cRIO 9472 24V Solenoid Module
+  public static final int PushDiscIntoShooterSolenoid = 1;
 
   public static final double kRobotProportional = 0.0;
   
