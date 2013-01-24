@@ -26,7 +26,7 @@ public class Arm {
 
     public boolean extend() throws CANTimeoutException {
         motor.setX(12.0);
-        if (!motor.getForwardLimitOK()) {
+        if (isFullyExtended()) {
             motor.setX(0.0);
             System.out.println("All the way out!");
             return true;
@@ -35,7 +35,7 @@ public class Arm {
     }
 
     public void retract() throws CANTimeoutException {
-        if (!isFullyRetracted()) {
+        if (isFullyRetracted()) {
             motor.setX(-12.0);
         } else {
             motor.setX(0.0);
@@ -50,11 +50,11 @@ public class Arm {
 //    }
 
     public boolean isFullyExtended() throws CANTimeoutException {
-        return motor.getForwardLimitOK();
+        return !motor.getForwardLimitOK();
     }
 
     public boolean isFullyRetracted() throws CANTimeoutException {
-        return motor.getReverseLimitOK();
+        return !motor.getReverseLimitOK();
     }
 
     public void stop() {
