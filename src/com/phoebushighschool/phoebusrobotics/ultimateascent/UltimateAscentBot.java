@@ -50,15 +50,16 @@ public class UltimateAscentBot extends SimpleRobot {
      * This method will align the robot with the target +/- one degree
      */
     public boolean aim() {
-        if (isAimedAtTarget()) {
+        if (turning && isAimedAtTarget()) {
             DisableTurnController();
             return true;
-        } else {
+        }
+        if (!turning) {
             double setPoint = visionSystem.getDegreesToTarget();
             EnableTurnController();
             aimController.setSetpoint(setPoint);
-            return false;
         }
+        return false;
     }
 
     /**
@@ -75,7 +76,7 @@ public class UltimateAscentBot extends SimpleRobot {
         }
         turning = false;
     }
-    
+
     public void EnableTurnController() {
         if (!turning) {
             aimController.enable();
