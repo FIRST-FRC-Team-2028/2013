@@ -52,7 +52,6 @@ public class AimingSystem implements PIDSource {
     }
 
     public class Scores {
-
         double rectangularity;
         double aspectRatioHigh;
         double aspectRatioMiddle;
@@ -61,7 +60,6 @@ public class AimingSystem implements PIDSource {
     }
 
     public class Target {
-
         double aspectRatio;
         boolean middle;
         double center_mass_x;
