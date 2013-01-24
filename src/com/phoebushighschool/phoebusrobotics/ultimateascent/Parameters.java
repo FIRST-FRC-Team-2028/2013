@@ -28,7 +28,10 @@ public class Parameters {
   public static final int UltrasonicAnalogChannel = 1;
 
   // cRIO 9472 24V Solenoid Module
+  public static final int crioRelayModule = 1;
   public static final int PushDiscIntoShooterSolenoid = 1;
+  public static final int leftGearShifterSolenoidChannel = 2;
+  public static final int rightGearShifterSolenoidChannel = 3;
 
   // Aiming PID Constants
   public static final double kRobotProportional = 0.0;
