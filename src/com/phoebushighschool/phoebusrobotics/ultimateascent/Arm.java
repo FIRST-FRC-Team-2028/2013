@@ -16,7 +16,7 @@ public class Arm {
 //        handOffSwitch = new DigitalInput(1
 //                , Parameters.handOffLimitSwitchGPIOChannel);
         try {
-            motor = new CANJaguar(Parameters.ArmMovementSomething);
+            motor = new CANJaguar(Parameters.ArmMovementCANID);
             motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
             motor.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             motor.configNeutralMode(CANJaguar.NeutralMode.kBrake);

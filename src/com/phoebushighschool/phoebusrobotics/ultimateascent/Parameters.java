@@ -8,13 +8,13 @@ public class Parameters {
     public static final int rightTreadCanID = 7;
     public static final int WheelOneCANJaguarCANID = 8;
     public static final int WheelTwoCANJaguarCANID = 9;
-    public static final int ArmMovementSomething = 10;
+    public static final int ArmMovementCANID = 10;
     // basic necessities
     public static final int MaxMotorOutputVoltage = 12;
     // Relay channels
     public static final int DiscIndexerRelayChannel = 2;
     public static final int CompressorRelayChannel = 3;
-    public static final int PushDiscIntoShooterSolenoid = 1;     // FIX ME!!!
+    public static final int PushDiscIntoShooterSolenoid = 1;
     // sensors on analog
     public static final int GyrometerAnalogChannel = 1;
     public static final int CompressorSwitch = 2;
