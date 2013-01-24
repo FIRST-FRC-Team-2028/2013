@@ -12,7 +12,7 @@ public class Parameters {
   public static final int ArmMovementCANID = 10;
   
   //Digital Sidecar GPIO Channels
-  public static final int DiscIsLoadedInput = 1;
+  public static final int DiscIsLoadedInputGPIOChannel = 1;
   public static final int latchLimitSwitchGPIOChannel = 3;
   public static final int handOffLimitSwitchGPIOChannel = 4;
   public static final int CompressorPressureSwitchGPIOChannel = 2;  

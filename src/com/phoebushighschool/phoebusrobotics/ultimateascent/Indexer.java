@@ -16,7 +16,7 @@ public class Indexer {
   {
       gameMech = new GameMech();
       indexer = new Relay(Parameters.DiscIndexerRelayChannel);
-      discPreIndex = new DigitalInput(Parameters.DiscIsLoadedInput);
+      discPreIndex = new DigitalInput(Parameters.DiscIsLoadedInputGPIOChannel);
       discCountCurrent = Parameters.discCountInit;
       
   }
