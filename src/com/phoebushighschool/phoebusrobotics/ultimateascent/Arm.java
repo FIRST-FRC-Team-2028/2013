@@ -19,13 +19,14 @@ public class Arm {
             motor = new CANJaguar(Parameters.ArmMovementSomething);
             motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
             motor.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            motor.configNeutralMode(CANJaguar.NeutralMode.kBrake);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }
 
     public boolean extend() throws CANTimeoutException {
-        motor.setX(12.0);
+        motor.setX(1.0);
         if (isFullyExtended()) {
             motor.setX(0.0);
             System.out.println("All the way out!");
@@ -36,7 +37,7 @@ public class Arm {
 
     public void retract() throws CANTimeoutException {
         if (isFullyRetracted()) {
-            motor.setX(-12.0);
+            motor.setX(-1.0);
         } else {
             motor.setX(0.0);
         }
