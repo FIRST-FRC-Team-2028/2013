@@ -30,10 +30,9 @@ public class Parameters {
   // cRIO 9472 24V Solenoid Module
   public static final int PushDiscIntoShooterSolenoid = 1;
 
+  // Aiming PID Constants
   public static final double kRobotProportional = 0.0;
-  
   public static final double kRobotDifferential = 0.0;
-  
   public static final double kRobotIntegral = 0.0;
   
   public static final double TIMER_DELAY = 0.1;
