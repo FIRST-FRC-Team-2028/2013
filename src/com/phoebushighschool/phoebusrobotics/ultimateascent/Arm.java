@@ -17,7 +17,7 @@ public class Arm {
 //        handOffSwitch = new DigitalInput(1
 //                , Parameters.handOffLimitSwitchGPIOChannel);
         try {
-            motor = new CANJaguar(Parameters.ArmMovementSomething);
+            motor = new CANJaguar(Parameters.ArmMovementCANID);
             motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
             motor.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
         } catch (CANTimeoutException ex) {
@@ -74,7 +74,7 @@ public class Arm {
      * this inner class is used as a parameter to specify the direction the arm
      * should move in.
      */
-    public class Direction {
+    public static class Direction {
 
         private final int value;
         private static final int kForwardValue = 1;

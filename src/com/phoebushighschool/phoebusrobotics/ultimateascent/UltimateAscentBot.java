@@ -3,6 +3,7 @@ package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.can.*;
 
 /*
  */
@@ -27,7 +28,10 @@ public class UltimateAscentBot extends SimpleRobot
                 Parameters.kRobotIntegral, Parameters.kRobotDifferential,
                 visionSystem, drive);
         aimController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
+        try {
         drive = new TankDrive();
+        } catch (CANTimeoutException e) {
+        }
     }
 
     public void autonomous() {
