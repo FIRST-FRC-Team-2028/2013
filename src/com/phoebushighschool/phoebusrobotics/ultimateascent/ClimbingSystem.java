@@ -1,46 +1,39 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import java.util.Vector;
+import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 /*
  */
 public class ClimbingSystem {
 
     protected TankDrive drive;
-    protected DigitalInput outLimitSwitch;
-    protected DigitalInput inLimitSwitch;
     public Arm arm;
     /**
-   * 
-   * @element-type climbWheel
-   */
-  public Vector  wheel;
+     *
+     * @element-type climbWheel
+     */
+    public climbWheel wheel;
 
-  /** 
-   *  This method will check the limit switch to see if the arm is extended.
-   */
-  public boolean isExtended() {
-  return false;
-  }
+    public ClimbingSystem() {
+        arm = new Arm();
+    }
 
-  /** 
-   *  This method will check to see if the arms are fully retracted.
-   */
-  public boolean isRetracted() {
-  return false;
-  }
+    /**
+     * This method will extend the arms far enough to reach the next level
+     */
+    public boolean extendToLatch() throws CANTimeoutException {
+        if (arm.extend()) {
+            return true;
+        }
+        return false;
+    }
 
-  /** 
-   *  This method will extend the arms far enough to reach the first level
-   */
-  public void extend() {
-  }
-
-  /** 
-   *  This method will retract the arms to within the frame perimeter
-   */
-  public void retract() {
-  }
-
+    /**
+     * This method will retract the arms to within the frame perimeter
+     */
+    public void retract() throws CANTimeoutException {
+        if (extendToLatch()) {
+            arm.retract();
+        }
+    }
 }

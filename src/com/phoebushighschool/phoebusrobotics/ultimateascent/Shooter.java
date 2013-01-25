@@ -12,10 +12,10 @@ public class Shooter {
 
   protected Timer speedTimer;
 
-    public GameMech gameMech;
-    public CANJaguar secondDrive;
-    public CANJaguar firstDrive;
-    public DigitalInput discSensor;
+    protected GameMech gameMech;
+    protected CANJaguar secondDrive;
+    protected CANJaguar firstDrive;
+    protected DigitalInput discSensor;
 
   /** 
    *  This method will push the disc into the spinning wheels.
