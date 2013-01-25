@@ -74,7 +74,7 @@ public class Arm {
      * this inner class is used as a parameter to specify the direction the arm
      * should move in.
      */
-    public class Direction {
+    public static class Direction {
 
         private final int value;
         private static final int kForwardValue = 1;
