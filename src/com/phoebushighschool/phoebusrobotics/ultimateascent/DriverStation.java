@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  *
  * @author jmiller015
  */
-public class DriverStation 
+public class DriverStation
 {
     GameMech game;
     TankDrive drive;
