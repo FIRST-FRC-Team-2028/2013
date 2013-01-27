@@ -15,7 +15,7 @@ public class Shooter {
     protected GameMech gameMech;
     protected CANJaguar secondDrive;
     protected CANJaguar firstDrive;
-    protected DigitalInput discSensor;
+    protected DigitalInput shooterPosition;
 
   /** 
    *  This method will push the disc into the spinning wheels.
@@ -41,5 +41,10 @@ public class Shooter {
   {
     return false;
   }
+
+    public boolean isShooterCocked() 
+    {
+        return shooterPosition.get();
+    }
 
 }

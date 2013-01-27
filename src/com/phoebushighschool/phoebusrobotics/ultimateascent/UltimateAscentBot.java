@@ -20,6 +20,7 @@ public class UltimateAscentBot extends SimpleRobot
     public Parameters param;
     public FRCMath math;
     public PIDController aimController;
+    private DriverStation driverO;
     boolean turning = false;
 
     public UltimateAscentBot() {
@@ -30,6 +31,7 @@ public class UltimateAscentBot extends SimpleRobot
         aimController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
         try {
             drive = new TankDrive();
+            gameMech = new GameMech();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -37,6 +39,7 @@ public class UltimateAscentBot extends SimpleRobot
 
     public void autonomous() {
         while (isAutonomous() && isEnabled()) {
+            driverO.initDashboard();
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
@@ -44,6 +47,7 @@ public class UltimateAscentBot extends SimpleRobot
 
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
+            driverO.initDashboard();
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
