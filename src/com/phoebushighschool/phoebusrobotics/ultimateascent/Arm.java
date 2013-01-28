@@ -10,13 +10,13 @@ public class Arm {
 //    protected DigitalInput latchSwitch;
 //    protected DigitalInput handOffSwitch;
 
-    public Arm() {
+    public Arm(int armCANID) {
 //        latchSwitch = new DigitalInput(1,
 //                Parameters.latchLimitSwitchGPIOChannel);
 //        handOffSwitch = new DigitalInput(1
 //                , Parameters.handOffLimitSwitchGPIOChannel);
         try {
-            motor = new CANJaguar(Parameters.ArmMovementCANID);
+            motor = new CANJaguar(armCANID);
             motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
             motor.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             motor.configNeutralMode(CANJaguar.NeutralMode.kBrake);

@@ -9,7 +9,8 @@ public class Parameters {
   public static final int rightTreadCanID = 7;
   public static final int WheelOneCANJaguarCANID = 8;
   public static final int WheelTwoCANJaguarCANID = 9;
-  public static final int ArmMovementCANID = 10;
+  public static final int forwardArmMovementCANID = 10;
+  public static final int backArmMovementCANID = 11;
   
   //Digital Sidecar GPIO Channels
   public static final int DiscIsLoadedInputGPIOChannel = 1;

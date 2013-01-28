@@ -11,8 +11,8 @@ public class ClimbingSystem {
     public Arm backArm;
 
     public ClimbingSystem() {
-        forwardArm = new Arm();
-        backArm = new Arm();
+        forwardArm = new Arm(Parameters.forwardArmMovementCANID);
+        backArm = new Arm(Parameters.backArmMovementCANID);
     }
 
     /**
