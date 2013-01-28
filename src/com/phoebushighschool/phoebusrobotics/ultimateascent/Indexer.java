@@ -55,4 +55,9 @@ public class Indexer {
   public boolean isDiscLoaded() {  
     return discPreIndex.get();
   }
+  
+  public int getDiscCountCurrent()
+  {
+      return discCountCurrent;
+  }
 }

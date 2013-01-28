@@ -97,4 +97,20 @@ public class UltimateAscentBot extends SimpleRobot
         }
         turning = true;
     }
+    public double getDistanceToTarget()
+    {
+        return visionSystem.getDistanceToTarget();
+    }
+    public int getDiscCount()
+    {
+        return gameMech.getDiscCount();
+    }
+    public boolean isShooterCocked()
+    {
+        return gameMech.isShooterCocked();
+    }
+    public double getDegreesToTarget()
+    {
+        return visionSystem.getDegreesToTarget();
+    }
 }

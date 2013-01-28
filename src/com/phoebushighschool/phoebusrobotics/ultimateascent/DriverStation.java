@@ -14,21 +14,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  */
 public class DriverStation
 {
-    GameMech game;
-    TankDrive drive;
-    Indexer indexer;
-    Shooter shooter;
+    UltimateAscentBot robot;
     SmartDashboard dash;
-    AimingSystem camera;
-    private int DiscsRemaing = indexer.discCountCurrent;
+    private int DiscsRemaing = robot.getDiscCount();
     private NamedSendable DiscsRemaining;
-    private double distance = camera.getDistanceToTarget();
+    private double distance = robot.getDistanceToTarget();
+    private double degrees = robot.getDegreesToTarget();
+    private boolean shooterReady = robot.isShooterCocked();
     
 public void initDashboard()
     {
         dash.putData("Discs Remaining", DiscsRemaining);
-        dash.putBoolean("Shooter Ready", shooter.isShooterCocked());
+        dash.putBoolean("Shooter Ready", shooterReady);
         dash.putNumber("Distance to target", distance);
+        dash.putNumber("Degrees to target", degrees);
     }
            
     
