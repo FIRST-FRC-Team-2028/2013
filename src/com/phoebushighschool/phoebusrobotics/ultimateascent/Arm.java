@@ -35,12 +35,15 @@ public class Arm {
         return false;
     }
 
-    public void retract() throws CANTimeoutException {
+    public boolean retract() throws CANTimeoutException {
         if (isFullyRetracted()) {
-            motor.setX(-1.0);
-        } else {
             motor.setX(0.0);
+            return true;
+            }   
+        else {
+            motor.setX(-1.0);
         }
+        return false;
     }
 //       too narrow
 //    public boolean isLatched() {
@@ -50,9 +53,6 @@ public class Arm {
 //        return catchState;
 //    }
 
-    public boolean isLatched() {
-        return false;
-    }
 
     public boolean isFullyExtended() throws CANTimeoutException {
         return !motor.getForwardLimitOK();
@@ -67,24 +67,6 @@ public class Arm {
             motor.setX(0.0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
-        }
-    }
-
-    /**
-     * this inner class is used as a parameter to specify the direction the arm
-     * should move in.
-     */
-    public static class Direction {
-
-        private final int value;
-        private static final int kForwardValue = 1;
-        private static final int kReverseValue = 2;
-        public static final Direction kForward = new Direction(kForwardValue);
-        public static final Direction kReverse = new Direction(kReverseValue);
-
-        public Direction(int direction) {
-            this.value = direction;
-
         }
     }
 }
