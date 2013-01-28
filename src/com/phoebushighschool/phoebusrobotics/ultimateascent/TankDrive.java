@@ -30,7 +30,9 @@ public class TankDrive implements PIDOutput
    * when robot is stationary: one tread moves forward while other tread moves 
    *                           in reverse
    * 
-   * when robot is moving: 
+   * when robot is moving: ability to turn is greatly limited by speed of robot; 
+   *                       the faster the robot is traveling, the ability to turn
+   *                       is reduced
    * 
    * @param speedToTurn - number in the range of -1.0 .. 0.0 .. 1.0 where
    *                      0.0 is not turning and 1.0 is turning full speed 
@@ -46,7 +48,7 @@ public class TankDrive implements PIDOutput
       }
       else
       {
-          
+          //FIX ME!
       }
   }
 
