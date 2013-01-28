@@ -110,7 +110,7 @@ public class UltimateAscentBot extends SimpleRobot {
         return gameMech.isShooterCocked();
     }
 
-    public double getDegreesToTarget() {
+    public double getDegreesToTarget()  {
         return visionSystem.getDegreesToTarget();
     }
 }
