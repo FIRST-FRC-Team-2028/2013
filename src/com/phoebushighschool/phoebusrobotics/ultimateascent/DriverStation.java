@@ -15,19 +15,36 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class DriverStation
 {
     UltimateAscentBot robot;
-    SmartDashboard dash;
-    private int DiscsRemaing = robot.getDiscCount();
-    private NamedSendable DiscsRemaining;
-    private double distance = robot.getDistanceToTarget();
-    private double degrees = robot.getDegreesToTarget();
-    private boolean shooterReady = robot.isShooterCocked();
+    SmartDashboard dash; 
     
-public void initDashboard()
+    /**
+     * DriverStation
+     * 
+     * This constructor initializes the DriverStation and gives it an
+     * UltimateAscentBot
+     * 
+     * @param bot 
+     */
+    public DriverStation(UltimateAscentBot bot)
     {
-        dash.putData("Discs Remaining", DiscsRemaining);
-        dash.putBoolean("Shooter Ready", shooterReady);
-        dash.putNumber("Distance to target", distance);
-        dash.putNumber("Degrees to target", degrees);
+        robot = bot;
+        dash = new SmartDashboard();
+    }
+    
+    
+    /**
+     * updateDashboard()
+     * 
+     * This method will update the Driver Station to the current values for 
+     * the # of discs, true/false shooter ready, distance to target, 
+     * degrees to target.
+     */
+    public void updateDashboard()
+    {
+        dash.putNumber("Discs Remaining", robot.getDiscCount());
+        dash.putBoolean("Shooter Ready", robot.isShooterCocked());
+        dash.putNumber("Distance to target", robot.getDistanceToTarget());
+        dash.putNumber("Degrees to target", robot.getDegreesToTarget());
     }
            
     

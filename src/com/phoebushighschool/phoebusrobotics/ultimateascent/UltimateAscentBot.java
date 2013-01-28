@@ -11,8 +11,7 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
  *
  * @author jmiller015
  */
-public class UltimateAscentBot extends SimpleRobot 
-{
+public class UltimateAscentBot extends SimpleRobot {
 
     protected AimingSystem visionSystem;
     protected TankDrive drive;
@@ -28,6 +27,7 @@ public class UltimateAscentBot extends SimpleRobot
         aimController = new PIDController(Parameters.kRobotProportional,
                 Parameters.kRobotIntegral, Parameters.kRobotDifferential,
                 visionSystem, drive);
+        driverO = new DriverStation(this);
         aimController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
         try {
             drive = new TankDrive();
@@ -39,7 +39,7 @@ public class UltimateAscentBot extends SimpleRobot
 
     public void autonomous() {
         while (isAutonomous() && isEnabled()) {
-            driverO.initDashboard();
+            driverO.updateDashboard();
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
@@ -47,7 +47,7 @@ public class UltimateAscentBot extends SimpleRobot
 
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
-            driverO.initDashboard();
+            driverO.updateDashboard();
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
@@ -97,20 +97,20 @@ public class UltimateAscentBot extends SimpleRobot
         }
         turning = true;
     }
-    public double getDistanceToTarget()
-    {
+
+    public double getDistanceToTarget() {
         return visionSystem.getDistanceToTarget();
     }
-    public int getDiscCount()
-    {
+
+    public int getDiscCount() {
         return gameMech.getDiscCount();
     }
-    public boolean isShooterCocked()
-    {
+
+    public boolean isShooterCocked() {
         return gameMech.isShooterCocked();
     }
-    public double getDegreesToTarget()
-    {
+
+    public double getDegreesToTarget() {
         return visionSystem.getDegreesToTarget();
     }
 }
