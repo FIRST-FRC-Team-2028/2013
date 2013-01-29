@@ -2,20 +2,21 @@ package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Solenoid;
 
 /*
  */
 public class Indexer {
 
     protected GameMech gameMech;
-    protected Relay indexer;
+    protected Solenoid indexer;
     public DigitalInput discPreIndex;
     public int discCountCurrent;
     
   public Indexer()
   {
       gameMech = new GameMech();
-      indexer = new Relay(Parameters.DiscIndexerRelayChannel);
+      indexer = new Solenoid(Parameters.DiscIndexerRelayChannel);
       discPreIndex = new DigitalInput(Parameters.DiscIsLoadedInput);
       discCountCurrent = Parameters.discCountInit;
       
@@ -42,10 +43,10 @@ public class Indexer {
 //          }
 //      }
       if (discPreIndex.get() && discCountCurrent >= 1){
-        indexer.set(Relay.Value.kForward);
+        indexer.set();
             if (discPreIndex.get() == false){                
                 if (discPreIndex.get()){
-                    indexer.set(Relay.Value.kOff);
+                    indexer.set();
                     discCountCurrent = discCountCurrent - 1;
                 }
             }
