@@ -25,5 +25,13 @@ public class GameMech {
 
   public void stopShooter() {
   }
+  public int getDiscCount()
+  {
+      return loader.getDiscCountCurrent();
+  }
+  public boolean isShooterCocked()
+  {
+      return shooter.isShooterCocked();
+  }
 
 }

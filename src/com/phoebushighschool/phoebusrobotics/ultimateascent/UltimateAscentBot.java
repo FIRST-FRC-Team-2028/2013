@@ -3,7 +3,7 @@ package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.can.*;
+import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 /*
  */
@@ -11,8 +11,7 @@ import edu.wpi.first.wpilibj.can.*;
  *
  * @author jmiller015
  */
-public class UltimateAscentBot extends SimpleRobot 
-{
+public class UltimateAscentBot extends SimpleRobot {
 
     protected AimingSystem visionSystem;
     protected TankDrive drive;
@@ -20,6 +19,7 @@ public class UltimateAscentBot extends SimpleRobot
     public Parameters param;
     public FRCMath math;
     public PIDController aimController;
+    private DriverStation driverO;
     boolean turning = false;
 
     public UltimateAscentBot() {
@@ -27,15 +27,19 @@ public class UltimateAscentBot extends SimpleRobot
         aimController = new PIDController(Parameters.kRobotProportional,
                 Parameters.kRobotIntegral, Parameters.kRobotDifferential,
                 visionSystem, drive);
+        driverO = new DriverStation(this);
         aimController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
         try {
-        drive = new TankDrive();
-        } catch (CANTimeoutException e) {
+            drive = new TankDrive();
+            gameMech = new GameMech();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
         }
     }
 
     public void autonomous() {
         while (isAutonomous() && isEnabled()) {
+            driverO.updateDashboard();
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
@@ -43,6 +47,7 @@ public class UltimateAscentBot extends SimpleRobot
 
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
+            driverO.updateDashboard();
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
@@ -91,5 +96,21 @@ public class UltimateAscentBot extends SimpleRobot
             aimController.enable();
         }
         turning = true;
+    }
+
+    public double getDistanceToTarget() {
+        return visionSystem.getDistanceToTarget();
+    }
+
+    public int getDiscCount() {
+        return gameMech.getDiscCount();
+    }
+
+    public boolean isShooterCocked() {
+        return gameMech.isShooterCocked();
+    }
+
+    public double getDegreesToTarget()  {
+        return visionSystem.getDegreesToTarget();
     }
 }

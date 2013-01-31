@@ -7,22 +7,19 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 public class ClimbingSystem {
 
     protected TankDrive drive;
-    public Arm arm;
-    /**
-     *
-     * @element-type climbWheel
-     */
-    public climbWheel wheel;
+    public Arm forwardArm;
+    public Arm backArm;
 
     public ClimbingSystem() {
-        arm = new Arm();
+        forwardArm = new Arm(Parameters.forwardArmMovementCANID);
+        backArm = new Arm(Parameters.backArmMovementCANID);
     }
 
     /**
      * This method will extend the arms far enough to reach the next level
      */
     public boolean extendToLatch() throws CANTimeoutException {
-        if (arm.extend()) {
+        if (forwardArm.extend() && backArm.extend()) {
             return true;
         }
         return false;
@@ -32,8 +29,8 @@ public class ClimbingSystem {
      * This method will retract the arms to within the frame perimeter
      */
     public void retract() throws CANTimeoutException {
-        if (extendToLatch()) {
-            arm.retract();
-        }
+            forwardArm.retract();
+            backArm.retract();
+        
     }
 }
