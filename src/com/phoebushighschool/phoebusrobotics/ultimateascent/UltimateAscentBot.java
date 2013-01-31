@@ -19,7 +19,7 @@ public class UltimateAscentBot extends SimpleRobot {
     public Parameters param;
     public FRCMath math;
     public PIDController aimController;
-    private DriverStation driverO;
+    private DriverStation dash;
     boolean turning = false;
 
     public UltimateAscentBot() {
@@ -27,7 +27,7 @@ public class UltimateAscentBot extends SimpleRobot {
         aimController = new PIDController(Parameters.kRobotProportional,
                 Parameters.kRobotIntegral, Parameters.kRobotDifferential,
                 visionSystem, drive);
-        driverO = new DriverStation(this);
+        dash = new DriverStation(this);
         aimController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
         try {
             drive = new TankDrive();
@@ -39,7 +39,7 @@ public class UltimateAscentBot extends SimpleRobot {
 
     public void autonomous() {
         while (isAutonomous() && isEnabled()) {
-            driverO.updateDashboard();
+            dash.updateDashboard();
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
@@ -47,7 +47,7 @@ public class UltimateAscentBot extends SimpleRobot {
 
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
-            driverO.updateDashboard();
+            dash.updateDashboard();
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
