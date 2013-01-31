@@ -122,7 +122,7 @@ public class Tread {
      *
      * @author Dunn
      */
-    public class Gear 
+    public static class Gear 
     {
 
         private static final int kLowValue = 1;
