@@ -45,4 +45,7 @@ public class FRCMath {
         //return String.format("%10.4f", num);
     }
 
+  public static double pow(double number, double power) {
+    return MathUtils.pow(number, power);
+  }
 }
