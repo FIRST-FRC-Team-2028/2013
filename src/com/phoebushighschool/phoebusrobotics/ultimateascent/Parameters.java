@@ -24,6 +24,9 @@ public class Parameters {
   public static final int DiscIndexerRelayChannel = 2;
   public static final int CompressorRelayChannel = 3;
   
+  //Digital Sidecar PWM channels
+  public static final int cameraServoPWMChannel = 1;
+  
   // cRIO 9201 Analog Module Channels
   public static final int AnalogModule = 1;  
   public static final int UltrasonicAnalogChannel = 1;

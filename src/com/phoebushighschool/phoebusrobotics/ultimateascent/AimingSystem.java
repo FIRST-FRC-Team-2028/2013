@@ -2,6 +2,7 @@ package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.camera.*;
 import edu.wpi.first.wpilibj.image.*;
 
@@ -25,9 +26,12 @@ public class AimingSystem implements PIDSource {
     final int Y_EDGE_LIMIT = 60;
     final double IMAGE_WIDTH = 640.0;
     final double TARGET_WIDTH = 60.0;
+    final double climbPosition = 150.0;
+    final double shootPosition = 99.0;
     int imageState = 0;
     AxisCamera camera;
     Ultrasonic ultrasonicSensor;
+    Servo servo;
     CriteriaCollection cc;
     ColorImage image;
     BinaryImage thresholdImage;
@@ -49,6 +53,8 @@ public class AimingSystem implements PIDSource {
         cc = new CriteriaCollection();
         cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_AREA, 500, 65535, false);
         ultrasonicSensor = new Ultrasonic(Parameters.UltrasonicAnalogChannel);
+        servo = new Servo(Parameters.cameraServoPWMChannel);
+        servo.setAngle(shootPosition);
     }
 
     public class Scores {
@@ -462,5 +468,23 @@ public class AimingSystem implements PIDSource {
         } else {
             return (cameraD + ultrasonicD) / 2.0;
         }
+    }
+    
+    /**
+     * setShootPosition()
+     * 
+     * This method sets the camera to the shooting position.
+     */
+    public void setShootPosition() {
+        servo.setAngle(shootPosition);
+    }
+    
+    /**
+     * setClimbPosition()
+     * 
+     * This method sets the camera to the climbing position.
+     */
+    public void setClimbPosition() {
+        servo.setAngle(climbPosition);
     }
 }

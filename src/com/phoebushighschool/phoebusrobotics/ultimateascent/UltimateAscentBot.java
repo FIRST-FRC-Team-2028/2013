@@ -23,6 +23,7 @@ public class UltimateAscentBot extends SimpleRobot {
     public PIDController turnController;
     private DriverStation driverO;
     boolean turning = false;
+    int state = 0;
 
     public UltimateAscentBot() {
         visionSystem = new AimingSystem();
@@ -54,10 +55,33 @@ public class UltimateAscentBot extends SimpleRobot {
     }
 
     public void autonomous() {
+        try {
         while (isAutonomous() && isEnabled()) {
             driverO.updateDashboard();
+            double time = Timer.getFPGATimestamp();
+            switch (state) {
+                case 0:
+                    drive.drive(1.0, 0.0);
+                    if (Timer.getFPGATimestamp() - time < 0.5) {
+                        state++;
+                    }
+                    break;
+                case 1:
+                    state++; //TODO: Fix me!!!!
+                    break;
+                case 2:
+                    aim();
+                    if(isAimedAtTarget()) {
+                        state++;
+                    }
+                    break;
+                
+            }
+            
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
+        }
+        } catch (CANTimeoutException e) {
         }
     }
 
@@ -77,6 +101,8 @@ public class UltimateAscentBot extends SimpleRobot {
     }
 
     /**
+     * aim()
+     * 
      * This method will align the robot with the target +/- one degree
      */
     public boolean aim() {
@@ -111,6 +137,8 @@ public class UltimateAscentBot extends SimpleRobot {
     }
     
     /**
+     * isAimedAtTarget()
+     * 
      * This method will check to see if the target is within +/- one degree of
      * the center.
      */
