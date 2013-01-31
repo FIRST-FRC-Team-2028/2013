@@ -27,6 +27,7 @@ public class Parameters {
   // cRIO 9201 Analog Module Channels
   public static final int AnalogModule = 1;  
   public static final int UltrasonicAnalogChannel = 1;
+  public static final int gyroAnalogChannel = 2;
 
   // cRIO 9472 24V Solenoid Module
   public static final int crioRelayModule = 1;
@@ -41,9 +42,19 @@ public class Parameters {
   
   public static final double TIMER_DELAY = 0.1;
   
+  public static final double MAX_CAMERA_INPUT = 25.0;
+  
+  public static final double MIN_CAMERA_INPUT = -25.0;
+  
+  public static final double MAX_GYRO_INPUT = 360.0;
+  
+  public static final double MIN_GYRO_INPUT = -360.0;
+  
   public static final double MAX_OUTPUT = 1.0;
   
   public static final double MIN_OUTPUT = -1.0;
+  
+  public static final double PIDController_TOLERANCE = 1.0;
   
   public static final int discCountInit = 3;
   
