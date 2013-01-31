@@ -73,80 +73,63 @@ public class AimingSystem implements PIDSource {
      * mass in the x axis.
      */
     public void processImage() {
+        r = null;
         try {
-            getParticleAnalysis();
+            if (reports == null) {
+                image = camera.getImage();
+                thresholdImage = image.thresholdRGB(0, 55, 200, 255, 165, 255);  // green values
+//              thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
+                convexHullImage = thresholdImage.convexHull(true);
+                filteredImage = convexHullImage.particleFilter(cc);
+                reports = filteredImage.getOrderedParticleAnalysisReports();
+            } else if (reports != null) {
+                switch (imageState) {
+                    case 0:
+                        image = camera.getImage();
+                        imageState++;
+                        break;
+                    case 1:
+                        thresholdImage = image.thresholdRGB(0, 25, 230, 255, 195, 225);  // green values
+//                      thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
+                        imageState++;
+                        break;
+                    case 2:
+                        convexHullImage = thresholdImage.convexHull(true);
+                        imageState++;
+                        break;
+                    case 3:
+                        filteredImage = convexHullImage.particleFilter(cc);
+                        imageState++;
+                        break;
+                    case 4:
+                        reports = filteredImage.getOrderedParticleAnalysisReports();
+                        scoreParticles();
+                        imageState = 0;
+                        break;
+                }
+            }
 
-            scoreParticles();
-
+            if (reports == null) {
+                filteredImage.free();
+                convexHullImage.free();
+                thresholdImage.free();
+                image.free();
+            } else if (reports != null) {
+                switch (imageState) {
+                    case 2:
+                        image.free();
+                        break;
+                    case 4:
+                        convexHullImage.free();
+                        break;
+                    case 0:
+                        thresholdImage.free();
+                        filteredImage.free();
+                        break;
+                }
+            }
         } catch (NIVisionException e) {
         } catch (AxisCameraException e) {
-        }
-    }
-
-    /**
-     * getParticleAnalysis()
-     *
-     * This method takes an image from the camera and finds particles that may
-     * be targets. This is done by selecting the pixels with the desired color,
-     * fills the particles originating from the thresholding in,filters the
-     * small particles out and finally produces particles that might be targets
-     * by selecting for a minimum and maximum area.
-     *
-     * @throws AxisCameraException
-     * @throws NIVisionException
-     */
-    public void getParticleAnalysis() throws AxisCameraException, NIVisionException {
-        if (reports == null) {
-            image = camera.getImage();
-            thresholdImage = image.thresholdRGB(0, 55, 200, 255, 165, 255);  // green values
-//              thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
-            convexHullImage = thresholdImage.convexHull(true);
-            filteredImage = convexHullImage.particleFilter(cc);
-            reports = filteredImage.getOrderedParticleAnalysisReports();
-        } else if (reports != null) {
-            switch (imageState) {
-                case 0:
-                    image = camera.getImage();
-                    imageState++;
-                    break;
-                case 1:
-                    thresholdImage = image.thresholdRGB(0, 25, 230, 255, 195, 225);  // green values
-//                      thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
-                    imageState++;
-                    break;
-                case 2:
-                    convexHullImage = thresholdImage.convexHull(true);
-                    imageState++;
-                    break;
-                case 3:
-                    filteredImage = convexHullImage.particleFilter(cc);
-                    imageState++;
-                    break;
-                case 4:
-                    reports = filteredImage.getOrderedParticleAnalysisReports();
-                    imageState = 0;
-                    break;
-            }
-        }
-
-        if (reports == null) {
-            filteredImage.free();
-            convexHullImage.free();
-            thresholdImage.free();
-            image.free();
-        } else if (reports != null) {
-            switch (imageState) {
-                case 2:
-                    image.free();
-                    break;
-                case 4:
-                    convexHullImage.free();
-                    break;
-                case 0:
-                    thresholdImage.free();
-                    filteredImage.free();
-                    break;
-            }
         }
     }
 
@@ -158,43 +141,41 @@ public class AimingSystem implements PIDSource {
      * which target is the one we are aiming for. The targets are selected for
      * by scoring the particles based on rectangularity, aspect ratio,
      * hollowness, and straightness of lines. After determining particles that
-     * have characteristics of targets the particles are compared based on 
+     * have characteristics of targets the particles are compared based on
      * aspect ratio, and the target with the best aspect ratio is selected.
      *
      * @throws NIVisionException
      */
     public void scoreParticles() throws NIVisionException {
-        if (imageState == 0) {
-            boolean middle = Parameters.GO_FOR_MIDDLE_TARGET;
-            int nHigh = 0;
-            int nMiddle = 0;
+        boolean middle = Parameters.GO_FOR_MIDDLE_TARGET;
+                int nHigh = 0;
+                int nMiddle = 0;
 
-            for (int i = 0; i < reports.length; i++) {
-                r = reports[i];
+                for (int i = 0; i < reports.length; i++) {
+                    r = reports[i];
 
-                score.rectangularity = scoreRectangularity(r);
-                score.aspectRatioHigh = scoreAspectRatio(filteredImage, r, i, false);
-                score.aspectRatioMiddle = scoreAspectRatio(filteredImage, r, i, true);
-                score.xEdge = scoreXEdge(thresholdImage, r);
-                score.yEdge = scoreYEdge(thresholdImage, r);
+                    score.rectangularity = scoreRectangularity(r);
+                    score.aspectRatioHigh = scoreAspectRatio(filteredImage, r, i, false);
+                    score.aspectRatioMiddle = scoreAspectRatio(filteredImage, r, i, true);
+                    score.xEdge = scoreXEdge(thresholdImage, r);
+                    score.yEdge = scoreYEdge(thresholdImage, r);
 
-                if (scoreCompare(score, false)) {
-                    highTargets[nHigh].aspectRatio = score.aspectRatioHigh;
-                    highTargets[nHigh].center_mass_x = r.center_mass_x;
-                    highTargets[nHigh].target_width = r.boundingRectWidth;
-                    highTargets[nHigh].middle = false;
-                    nHigh++;
-                } else if (scoreCompare(score, true)) {
-                    middleTargets[nMiddle].aspectRatio = score.aspectRatioMiddle;
-                    middleTargets[nMiddle].center_mass_x = r.center_mass_x;
-                    middleTargets[nMiddle].target_width = r.boundingRectWidth;
-                    highTargets[nHigh].middle = true;
-                    nMiddle++;
+                    if (scoreCompare(score, false)) {
+                        highTargets[nHigh].aspectRatio = score.aspectRatioHigh;
+                        highTargets[nHigh].center_mass_x = r.center_mass_x;
+                        highTargets[nHigh].target_width = r.boundingRectWidth;
+                        highTargets[nHigh].middle = false;
+                        nHigh++;
+                    } else if (scoreCompare(score, true)) {
+                        middleTargets[nMiddle].aspectRatio = score.aspectRatioMiddle;
+                        middleTargets[nMiddle].center_mass_x = r.center_mass_x;
+                        middleTargets[nMiddle].target_width = r.boundingRectWidth;
+                        highTargets[nHigh].middle = true;
+                        nMiddle++;
+                    }
                 }
-            }
 
-            target = TargetCompare(highTargets, middleTargets, middle);
-        }
+                target = TargetCompare(highTargets, middleTargets, middle);
     }
 
     /**
@@ -402,6 +383,7 @@ public class AimingSystem implements PIDSource {
     }
 
     public double pidGet() {
+        processImage();
         return getDegreesToTarget();
     }
 
