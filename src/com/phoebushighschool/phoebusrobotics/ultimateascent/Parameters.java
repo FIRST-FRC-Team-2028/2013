@@ -24,7 +24,6 @@ public class Parameters {
 
   // Digital Sidecar 12V Relay channels
   public static final int RelayModule = 1;  
-  public static final int DiscIndexerRelayChannel = 2;
   public static final int CompressorRelayChannel = 3;
   
   // cRIO 9201 Analog Module Channels
@@ -36,6 +35,7 @@ public class Parameters {
   public static final int PushDiscIntoShooterSolenoid = 1;
   public static final int leftGearShifterSolenoidChannel = 2;
   public static final int rightGearShifterSolenoidChannel = 3;
+  public static final int DiscIndexerSolenoidChannel = 4;
 
   // Aiming PID Constants
   public static final double kRobotProportional = 0.0;
