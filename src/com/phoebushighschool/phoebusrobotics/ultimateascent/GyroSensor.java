@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.PIDSource;
  *
  * @author djennings001
  */
-public class GyroSensor extends Gyro implements PIDSource {
+public class GyroSensor extends Gyro {
     
     public GyroSensor(int channel) {
         super(channel);

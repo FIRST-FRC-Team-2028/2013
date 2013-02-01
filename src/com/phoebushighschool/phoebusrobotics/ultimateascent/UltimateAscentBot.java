@@ -15,7 +15,6 @@ public class UltimateAscentBot extends SimpleRobot {
 
     protected AimingSystem visionSystem;
     protected TankDrive drive;
-    protected GyroSensor gyro;
     public GameMech gameMech;
     public Parameters param;
     public FRCMath math;
@@ -23,11 +22,9 @@ public class UltimateAscentBot extends SimpleRobot {
     public PIDController turnController;
     private DriverStation driverO;
     boolean turning = false;
-    int state = 0;
 
     public UltimateAscentBot() {
         visionSystem = new AimingSystem();
-        gyro = new GyroSensor(Parameters.gyroAnalogChannel);
         aimController = new PIDController(Parameters.kRobotProportional,
                 Parameters.kRobotIntegral,
                 Parameters.kRobotDifferential,
@@ -36,7 +33,7 @@ public class UltimateAscentBot extends SimpleRobot {
         turnController = new PIDController(Parameters.kRobotProportional,
                 Parameters.kRobotIntegral,
                 Parameters.kRobotDifferential,
-                gyro,
+                drive,
                 drive);
         driverO = new DriverStation(this);
         aimController.setInputRange(Parameters.MAX_CAMERA_INPUT, Parameters.MIN_CAMERA_INPUT);
@@ -56,28 +53,42 @@ public class UltimateAscentBot extends SimpleRobot {
 
     public void autonomous() {
         try {
+            RobotState state = new RobotState();
         while (isAutonomous() && isEnabled()) {
             driverO.updateDashboard();
             double time = Timer.getFPGATimestamp();
-            switch (state) {
-                case 0:
+            switch (state.getState()) {
+                case RobotState.drive:
                     drive.drive(1.0, 0.0);
                     if (Timer.getFPGATimestamp() - time < 0.5) {
-                        state++;
+                        state.nextState();
                     }
                     break;
-                case 1:
-                    state++; //TODO: Fix me!!!!
+                case RobotState.turnTowardsTarget:
+                    state.nextState(); //TODO: Fix me!!!!
                     break;
-                case 2:
-                    aim();
-                    if(isAimedAtTarget()) {
-                        state++;
+                case RobotState.turnToTarget:
+                    if(aim()) {
+                        state.nextState();
                     }
                     break;
-                
+                case RobotState.cockShooter:
+                    if(gameMech.cockShooter()) {
+                        state.nextState();
+                        break;
+                    }
+                    break;
+                case RobotState.loadShooter:
+                    if(gameMech.reload()) {
+                        state.nextState();
+                    }
+                    break;
+                case RobotState.shootShooter:
+                    if(gameMech.shoot()) {
+                        state.nextState();
+                    }
+                    break;
             }
-            
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
