@@ -4,12 +4,11 @@
     This is a sample netbeans project file for a Sun Spot Application project.
     You may edit it freely, it doesn't affect the ant-powered build.
 
- -->
-<project xmlns="http://www.netbeans.org/ns/project/1">
+--><project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.ant.freeform</type>
     <configuration>
         <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
-            <name>UltimateAscent</name>
+            <name>UltimateAscentBot</name>
             <properties>
                 <property-file>${user.home}/.sunspotfrc.properties</property-file>
                 <property-file>build.properties</property-file>
@@ -91,3 +90,4 @@
         </java-data>
     </configuration>
 </project>
+

@@ -1,7 +1,6 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 
 /*
@@ -12,44 +11,33 @@ public class Indexer {
     protected Solenoid indexer;
     public DigitalInput discPreIndex;
     public int discCountCurrent;
+    public boolean indexerHasRun;
     
   public Indexer()
   {
       gameMech = new GameMech();
-      indexer = new Solenoid(Parameters.DiscIndexerRelayChannel);
+      indexer = new Solenoid(Parameters.DiscIndexerSolenoidChannel);
       discPreIndex = new DigitalInput(Parameters.DiscIsLoadedInput);
       discCountCurrent = Parameters.discCountInit;
-      
+      indexerHasRun = false;
   }
 
   /** 
    *  This method will index one disc into the shooter.
    */
   public void indexOneDisc() {
-//      if (discPostIndex.get()) {
-//          /**
-//           *  DO NOTHING
-//           */
-//      }
-//      else {
-//          /**
-//           * Check the disc's position Turn on/off motor etc
-//           */
-//          if (discPreIndex.get()){
-//              indexer.set(Relay.Value.kOn);
-//              if (discPostIndex.get()) {
-//                  indexer.set(Relay.Value.kOff);
-//              }
-//          }
-//      }
-      if (discPreIndex.get() && discCountCurrent >= 1){
-        indexer.set();
-            if (discPreIndex.get() == false){                
+      if (discPreIndex.get() && discCountCurrent >= 1 && !indexerHasRun){
+        indexer.set(true);
+            if (!discPreIndex.get()){                
                 if (discPreIndex.get()){
-                    indexer.set();
-                    discCountCurrent = discCountCurrent - 1;
+                    indexer.set(false);
                 }
             }
+            indexerHasRun = true;
+      }
+      if (discCountCurrent >= 1 && indexerHasRun) {
+          discCountCurrent = discCountCurrent - 1;
+          indexerHasRun = false;
       }
   }
 
