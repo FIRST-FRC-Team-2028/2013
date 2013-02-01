@@ -47,15 +47,16 @@ public class Shooter {
      *                                  CAN bus was lost
      */
     public boolean shoot() throws CANTimeoutException {
-        if (isShooterCocked()) {
-            motor.setX(1.0);
-        }
-        //If the shooter is cocked, then the motor will shoot the disc. ^
+       
+        //If the shooter is not cocked, then the shooter will not shoot the disc (Herp derp)
         if (isShooterRetracted()) {
             motor.setX(0.0);
             return true;
+            
+        } else {
+            motor.setX(1.0); 
+            return false; 
         }
-        return false;
     }
 
     /**
@@ -92,16 +93,24 @@ public class Shooter {
     }
 
     /**
+     * isShooterRetracted() 
      * 
-     * @return 
+     * Method to return the state of the shooter being retracted.
+     * 
+     * @return true - the cam is in the "retracted" position
+     *         false - the cam is not in the "retracted" position 
      */
     public boolean isShooterRetracted() {
         return isShooterRetracted.get();
     }
 
     /**
+     * isDiscLoaded() 
      * 
-     * @return 
+     * Method to return the state of the disc being loaded.
+     * 
+     * @return true - the disc is in the "loaded" position
+     *         false - the disc is not in the "loaded" position
      */
     public boolean isDiscLoaded() {
         return discSensor.get();
