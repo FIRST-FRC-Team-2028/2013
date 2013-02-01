@@ -19,16 +19,30 @@ public class UltimateAscentBot extends SimpleRobot {
     public Parameters param;
     public FRCMath math;
     public PIDController aimController;
+    public PIDController turnController;
     private DriverStation driverO;
     boolean turning = false;
 
     public UltimateAscentBot() {
         visionSystem = new AimingSystem();
         aimController = new PIDController(Parameters.kRobotProportional,
-                Parameters.kRobotIntegral, Parameters.kRobotDifferential,
-                visionSystem, drive);
+                Parameters.kRobotIntegral,
+                Parameters.kRobotDifferential,
+                visionSystem,
+                drive);
+        turnController = new PIDController(Parameters.kRobotProportional,
+                Parameters.kRobotIntegral,
+                Parameters.kRobotDifferential,
+                drive,
+                drive);
         driverO = new DriverStation(this);
+        aimController.setInputRange(Parameters.MAX_CAMERA_INPUT, Parameters.MIN_CAMERA_INPUT);
         aimController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
+        aimController.setAbsoluteTolerance(Parameters.PIDController_TOLERANCE);
+        turnController.setInputRange(Parameters.MAX_GYRO_INPUT, Parameters.MIN_GYRO_INPUT);
+        turnController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
+        turnController.setAbsoluteTolerance(Parameters.PIDController_TOLERANCE);
+        turnController.setContinuous();
         try {
             drive = new TankDrive();
             gameMech = new GameMech();
@@ -38,10 +52,47 @@ public class UltimateAscentBot extends SimpleRobot {
     }
 
     public void autonomous() {
+        try {
+            RobotState state = new RobotState();
         while (isAutonomous() && isEnabled()) {
             driverO.updateDashboard();
+            double time = Timer.getFPGATimestamp();
+            switch (state.getState()) {
+                case RobotState.drive:
+                    drive.drive(1.0, 0.0);
+                    if (Timer.getFPGATimestamp() - time < 0.5) {
+                        state.nextState();
+                    }
+                    break;
+                case RobotState.turnTowardsTarget:
+                    state.nextState(); //TODO: Fix me!!!!
+                    break;
+                case RobotState.turnToTarget:
+                    if(aim()) {
+                        state.nextState();
+                    }
+                    break;
+                case RobotState.cockShooter:
+                    if(gameMech.cockShooter()) {
+                        state.nextState();
+                        break;
+                    }
+                    break;
+                case RobotState.loadShooter:
+                    if(gameMech.reload()) {
+                        state.nextState();
+                    }
+                    break;
+                case RobotState.shootShooter:
+                    if(gameMech.shoot()) {
+                        state.nextState();
+                    }
+                    break;
+            }
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
+        }
+        } catch (CANTimeoutException e) {
         }
     }
 
@@ -61,22 +112,44 @@ public class UltimateAscentBot extends SimpleRobot {
     }
 
     /**
+     * aim()
+     * 
      * This method will align the robot with the target +/- one degree
      */
     public boolean aim() {
         if (turning && isAimedAtTarget()) {
+            DisableAimController();
+            return true;
+        }
+        if (!turning) {
+            EnableAimController();
+            aimController.setSetpoint(0.0);
+        }
+        return false;
+    }
+/**
+ * setAngle()
+ * 
+ * This method takes a setpoint and turns the robot until we are at that setpoint.
+ * @param setpoint an angle in degrees, from -360.0 - 0.0 - 360.0
+ * @return true - we are at the setpoint
+ *         false - we are not at the setpoint
+ */
+    public boolean setAngle(double setpoint) {
+        if (turning && turnController.onTarget()) {
             DisableTurnController();
             return true;
         }
         if (!turning) {
-            double setPoint = visionSystem.getDegreesToTarget();
             EnableTurnController();
-            aimController.setSetpoint(setPoint);
+            turnController.setSetpoint(setpoint);
         }
         return false;
     }
-
+    
     /**
+     * isAimedAtTarget()
+     * 
      * This method will check to see if the target is within +/- one degree of
      * the center.
      */
@@ -84,16 +157,30 @@ public class UltimateAscentBot extends SimpleRobot {
         return visionSystem.isAimedAtTarget();
     }
 
-    public void DisableTurnController() {
+    public void DisableAimController() {
         if (turning) {
             aimController.disable();
         }
         turning = false;
     }
 
-    public void EnableTurnController() {
+    public void EnableAimController() {
         if (!turning) {
             aimController.enable();
+        }
+        turning = true;
+    }
+    
+    public void DisableTurnController() {
+        if (turning) {
+            turnController.disable();
+        }
+        turning = false;
+    }
+
+    public void EnableTurnController() {
+        if (!turning) {
+            turnController.enable();
         }
         turning = true;
     }

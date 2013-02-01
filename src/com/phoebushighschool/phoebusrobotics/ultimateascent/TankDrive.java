@@ -1,6 +1,7 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import com.sun.squawk.util.MathUtils; 
 
@@ -11,13 +12,14 @@ import com.sun.squawk.util.MathUtils;
  * 
  * @author Anna
  */
-public class TankDrive implements PIDOutput 
+public class TankDrive implements PIDOutput, PIDSource
 {
 
     protected UltimateAscentBot robot;
     protected ClimbingSystem leftArm;
     protected Tread rightTread;
     protected Tread leftTread;
+    public GyroSensor gyro;
     double speed;
     
   /**
@@ -33,6 +35,7 @@ public class TankDrive implements PIDOutput
         leftTread = new Tread(this, Parameters.leftTreadCanID, Parameters.leftGearShifterSolenoidChannel);
         rightTread.setGear(Tread.Gear.kLow);
         leftTread.setGear(Tread.Gear.kLow);
+        gyro = new GyroSensor(Parameters.gyroAnalogChannel);
         
     }
 
@@ -150,6 +153,10 @@ public class TankDrive implements PIDOutput
       {
           throw new RuntimeException(e.getMessage());
       }
+  }
+  
+  public double pidGet() {
+      return gyro.pidGet();
   }
 
 }
