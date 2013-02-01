@@ -20,10 +20,4 @@ public class GameMech {
   public void reload() {
   }
 
-  public void startShooter() {
-  }
-
-  public void stopShooter() {
-  }
-
 }

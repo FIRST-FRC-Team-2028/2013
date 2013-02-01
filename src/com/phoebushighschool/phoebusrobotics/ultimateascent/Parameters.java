@@ -16,8 +16,11 @@ public class Parameters {
   public static final int latchLimitSwitchGPIOChannel = 3;
   public static final int handOffLimitSwitchGPIOChannel = 4;
   public static final int CompressorPressureSwitchGPIOChannel = 2;  
+  public static final int DiscInShooterGPIOChannel = 5;
+  public static final int ShooterIsCockedGPIOChannel = 6;
+  public static final int ShooterIsRetractedGPIOChannel = 7; 
 
-  public static final int MaxMotorOutputVoltage = 12;
+  public static final double MaxMotorOutputVoltage = 12.0;
 
   // Digital Sidecar 12V Relay channels
   public static final int RelayModule = 1;  
