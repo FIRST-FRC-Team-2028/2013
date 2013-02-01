@@ -1,52 +1,73 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
 import edu.wpi.first.wpilibj.CANJaguar;
+import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
-/*
- */
 public class Arm {
 
-  protected boolean catchState;
-
+    protected boolean catchState = false;
     protected CANJaguar motor;
-  public static class Direction {
+//    protected DigitalInput latchSwitch;
+//    protected DigitalInput handOffSwitch;
 
-  private static final int kForwardValue = 1;
+    public Arm(int armCANID) {
+//        latchSwitch = new DigitalInput(1,
+//                Parameters.latchLimitSwitchGPIOChannel);
+//        handOffSwitch = new DigitalInput(1
+//                , Parameters.handOffLimitSwitchGPIOChannel);
+        try {
+            motor = new CANJaguar(armCANID);
+            motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
+            motor.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            motor.configNeutralMode(CANJaguar.NeutralMode.kBrake);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+    }
 
-  private static final int kReverseValue = 2;
+    public boolean extend() throws CANTimeoutException {
+        motor.setX(1.0);
+        if (isFullyExtended()) {
+            motor.setX(0.0);
+            System.out.println("All the way out!");
+            return true;
+        }
+        return false;
+    }
 
-  private final int value;
+    public boolean retract() throws CANTimeoutException {
+        if (isFullyRetracted()) {
+            motor.setX(0.0);
+            return true;
+            }   
+        else {
+            motor.setX(-1.0);
+        }
+        return false;
+    }
+//       too narrow
+//    public boolean isLatched() {
+//        if (latchSwitch.get()) {
+//            catchState = true;
+//        }
+//        return catchState;
+//    }
 
-  public static final Direction kForward = new Direction(kForwardValue);
 
-  public static final Direction kReverse = new Direction(kReverseValue);
+    public boolean isFullyExtended() throws CANTimeoutException {
+        return !motor.getForwardLimitOK();
+    }
 
-  public Direction(int direction) {
-      this.value = direction;
-  }
+    public boolean isFullyRetracted() throws CANTimeoutException {
+        return !motor.getReverseLimitOK();
+    }
 
-}
-  public boolean extend() {
-  return false;
-  }
+    public void stop() {
+        try {
+            motor.setX(0.0);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
 
-  public boolean retract() {
-  return false;
-  }
-
-  public boolean isLatched() {
-  return false;
-  }
-
-  public boolean isFullyExtended() {
-  return false;
-  }
-
-  public boolean isFullyRetracted() {
-  return false;
-  }
-
-  public void stop() {
-  }
-
+        }
+    }
 }

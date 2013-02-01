@@ -22,5 +22,13 @@ public class GameMech {
 
   public void cock() {
   }
+  public int getDiscCount()
+  {
+      return loader.getDiscCountCurrent();
+  }
+  public boolean isShooterCocked()
+  {
+      return shooter.isShooterCocked();
+  }
 
 }

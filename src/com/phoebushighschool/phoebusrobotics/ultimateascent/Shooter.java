@@ -14,17 +14,14 @@ public class Shooter {
   protected Timer speedTimer;
 
     protected GameMech gameMech;
-    protected DigitalInput discSensor;
-    protected CANJaguar motor;
+    protected CANJaguar secondDrive;
+    protected CANJaguar firstDrive;
+    protected DigitalInput shooterPosition;
 
   /** 
-   *  This method will turn the cam the small amount necesary for the arm to release from the cam and shoot the frisbee.
+   *  This method will turn the cam the small amount necessary for the arm to release from the cam and shoot the frisbee.
    */
   public void shoot() {
-  }
-
-  public boolean isShooterCocked() {
-  return false;
   }
 
   public boolean isDiscLoaded() {
@@ -36,5 +33,10 @@ public class Shooter {
    */
   public void cock() {
   }
+
+    public boolean isShooterCocked() 
+    {
+        return shooterPosition.get();
+    }
 
 }
