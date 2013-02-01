@@ -1,34 +1,41 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
+import edu.wpi.first.wpilibj.can.*;
 /*
  */
+
 public class GameMech {
 
     public UltimateAscentBot robot;
     protected Indexer loader;
     public Shooter shooter;
 
-  /** 
-   *  This method will launch the disc.
-   */
-  public void shoot() {
-  }
+    /**
+     * This method will launch the disc.
+     */
+    public boolean shoot() throws CANTimeoutException {
 
-  /** 
-   *  This method will allow one disc into the shooter
-   */
-  public void reload() {
-  }
+        return shooter.shoot();
+    }
 
-  public void cock() {
-  }
-  public int getDiscCount()
-  {
-      return loader.getDiscCountCurrent();
-  }
-  public boolean isShooterCocked()
-  {
-      return shooter.isShooterCocked();
-  }
+    /**
+     * This method will allow one disc into the shooter
+     */
+    public boolean reload() {
+        loader.indexOneDisc();
+        return shooter.isDiscLoaded();
 
+    }
+
+    public boolean cockShooter() throws CANTimeoutException {
+        return shooter.cock(); 
+    }
+
+    public int getDiscCount() {
+        return loader.getDiscCountCurrent();
+    }
+
+    public boolean isShooterCocked() {
+        return shooter.isShooterCocked();
+    }
 }
