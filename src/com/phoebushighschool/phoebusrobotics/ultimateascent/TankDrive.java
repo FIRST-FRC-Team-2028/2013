@@ -31,8 +31,8 @@ public class TankDrive implements PIDOutput, PIDSource
    */
     public TankDrive() throws CANTimeoutException
     {
-        rightTread = new Tread(this, Parameters.rightTreadCanID, Parameters.rightGearShifterSolenoidChannel);
-        leftTread = new Tread(this, Parameters.leftTreadCanID, Parameters.leftGearShifterSolenoidChannel);
+        rightTread = new Tread(this, Parameters.rightTreadCanID, Parameters.rightGearLowSolenoidChannel, Parameters.rightGearHighSolenoidChannel);
+        leftTread = new Tread(this, Parameters.leftTreadCanID, Parameters.leftGearLowSolenoidChannel, Parameters.leftGearHighSolenoidChannel);
         rightTread.setGear(Tread.Gear.kLow);
         leftTread.setGear(Tread.Gear.kLow);
         gyro = new GyroSensor(Parameters.gyroAnalogChannel);
@@ -155,6 +155,10 @@ public class TankDrive implements PIDOutput, PIDSource
       }
   }
   
+  /**
+   * 
+   * @return 
+   */
   public double pidGet() {
       return gyro.pidGet();
   }

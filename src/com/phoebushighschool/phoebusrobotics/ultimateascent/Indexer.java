@@ -49,4 +49,9 @@ public class Indexer {
   {
       return discCountCurrent;
   }
+  
+  public void setIndexerPiston(boolean value)
+  {
+      indexer.set(value);
+  }
 }

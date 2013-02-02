@@ -45,7 +45,5 @@ public class DriverStation
         dash.putBoolean("Shooter Ready", robot.isShooterCocked());
         dash.putNumber("Distance to target", robot.getDistanceToTarget());
         dash.putNumber("Degrees to target", robot.getDegreesToTarget());
-    }
-           
-    
+    }    
 }

@@ -37,9 +37,12 @@ public class Parameters {
   // cRIO 9472 24V Solenoid Module
   public static final int crioRelayModule = 1;
   public static final int PushDiscIntoShooterSolenoid = 1;
-  public static final int leftGearShifterSolenoidChannel = 2;
-  public static final int rightGearShifterSolenoidChannel = 3;
+  public static final int leftGearLowSolenoidChannel = 2;
+  public static final int rightGearLowSolenoidChannel = 3;
   public static final int DiscIndexerSolenoidChannel = 4;
+  public static final int leftGearHighSolenoidChannel = 5;
+  public static final int rightGearHighSolenoidChannel = 6;
+  
 
   // Aiming PID Constants
   public static final double kRobotProportional = 0.0;
@@ -68,10 +71,18 @@ public class Parameters {
   
   public static double kJoystickDeadband = 0.05; 
   
+  //driver controller buttons
   public static int kLowGearButton = 5;
   public static int kHighGearButton = 3;
   public static int kCameraClimbingButton = 6;
   public static int kCameraShootingButton = 4;
+  
+  //shooter controller buttons
+  public static int kShoot = 1;
+  public static int kCameraAim = 5;
+  public static int kReload = 6;
+  public static int kIndexerPiston = 7;
+  public static int kCockShooter = 9; 
   
   public static double kCameraShooterPosition = 85.0; 
   public static double kCameraClimbPosition = 160.0;

@@ -140,7 +140,7 @@ public class UltimateAscentBot extends SimpleRobot
         {
             driverO.updateDashboard();
             //
-            // Add code to match slide here
+            // Driver Controls
             //
             try
             {
@@ -185,6 +185,18 @@ public class UltimateAscentBot extends SimpleRobot
             if (shootPosition)
             {
                 currentPosition = Parameters.kCameraShooterPosition; 
+            }
+            //
+            // Shooter Controls
+            //
+            if (gameMech != null)
+            {
+                boolean isReloading = false;
+                if (!isReloading)
+                {
+                    boolean indexerPiston = shooterStick.getRawButton(Parameters.kIndexerPiston);
+                    gameMech.setIndexerPiston(indexerPiston); 
+                }
             }
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();

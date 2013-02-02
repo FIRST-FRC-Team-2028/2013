@@ -4,7 +4,8 @@ import edu.wpi.first.wpilibj.can.*;
 /*
  */
 
-public class GameMech {
+public class GameMech
+{
 
     public UltimateAscentBot robot;
     protected Indexer loader;
@@ -13,7 +14,8 @@ public class GameMech {
     /**
      * This method will launch the disc.
      */
-    public boolean shoot() throws CANTimeoutException {
+    public boolean shoot() throws CANTimeoutException
+    {
 
         return shooter.shoot();
     }
@@ -21,21 +23,33 @@ public class GameMech {
     /**
      * This method will allow one disc into the shooter
      */
-    public boolean reload() {
+    public boolean reload()
+    {
         loader.indexOneDisc();
         return shooter.isDiscLoaded();
 
     }
 
-    public boolean cockShooter() throws CANTimeoutException {
-        return shooter.cock(); 
+    public boolean cockShooter() throws CANTimeoutException
+    {
+        return shooter.cock();
     }
 
-    public int getDiscCount() {
+    public int getDiscCount()
+    {
         return loader.getDiscCountCurrent();
     }
 
-    public boolean isShooterCocked() {
+    public boolean isShooterCocked()
+    {
         return shooter.isShooterCocked();
+    }
+
+    /**
+     *
+     */
+    public void setIndexerPiston(boolean value)
+    {
+        loader.setIndexerPiston(value);
     }
 }
