@@ -1,5 +1,6 @@
 package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -23,6 +24,8 @@ public class UltimateAscentBot extends SimpleRobot
     public PIDController turnController;
     private DriverStation driverO;
     boolean turning = false;
+    protected Joystick driveStick; 
+    protected Joystick shooterStick;
 
     public UltimateAscentBot()
     {
@@ -45,6 +48,8 @@ public class UltimateAscentBot extends SimpleRobot
         turnController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
         turnController.setAbsoluteTolerance(Parameters.PIDController_TOLERANCE);
         turnController.setContinuous();
+        driveStick = new Joystick(1);
+        shooterStick = new Joystick(2);
         try
         {
             drive = new TankDrive();
@@ -53,6 +58,7 @@ public class UltimateAscentBot extends SimpleRobot
         {
             ex.printStackTrace();
         }
+       
     }
 
     public void autonomous()
@@ -133,6 +139,53 @@ public class UltimateAscentBot extends SimpleRobot
         while (isOperatorControl() && isEnabled())
         {
             driverO.updateDashboard();
+            //
+            // Add code to match slide here
+            //
+            try
+            {
+                double drivePercent = driveStick.getY();
+                if (drivePercent < Parameters.kJoystickDeadband && 
+                        drivePercent > (-1.0 * Parameters.kJoystickDeadband))
+                {
+                    drivePercent = 0.0;
+                }
+                double turnPercent = driveStick.getX();
+                if (turnPercent < Parameters.kJoystickDeadband && 
+                        turnPercent > (-1.0 * Parameters.kJoystickDeadband))
+                {
+                    turnPercent = 0.0;
+                }
+                drive.drive(drivePercent, turnPercent);
+            } catch (CANTimeoutException e)
+            {
+                System.out.println(e);
+            }
+
+            boolean lowGear = driveStick.getRawButton(Parameters.kLowGearButton);
+            boolean highGear = driveStick.getRawButton(Parameters.kHighGearButton);
+            Tread.Gear newGear = drive.getGear();
+            if (highGear)
+            {
+                newGear = Tread.Gear.kHigh;
+            }
+            if (lowGear)
+            {
+                newGear = Tread.Gear.kLow;
+            }
+            drive.setGear(newGear);
+            
+            boolean climbPosition = driveStick.getRawButton(Parameters.kCameraClimbingButton);
+            boolean shootPosition = driveStick.getRawButton(Parameters.kCameraShootingButton);
+            double currentPosition = visionSystem.getServoPosition();  
+            if (climbPosition)
+            {
+                currentPosition = Parameters.kCameraClimbPosition;
+            }
+            if (shootPosition)
+            {
+                currentPosition = Parameters.kCameraShooterPosition; 
+            }
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }

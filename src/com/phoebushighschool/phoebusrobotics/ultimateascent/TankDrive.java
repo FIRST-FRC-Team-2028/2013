@@ -158,5 +158,20 @@ public class TankDrive implements PIDOutput, PIDSource
   public double pidGet() {
       return gyro.pidGet();
   }
+  
+  /**
+   * 
+   * @param gear 
+   */
+  public void setGear(Tread.Gear gear)
+  {
+      leftTread.setGear( gear);
+      rightTread.setGear(gear);
+  }
+  
+  public Tread.Gear getGear()
+  {
+      return leftTread.getGear(); 
+  }
 
 }

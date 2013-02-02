@@ -65,5 +65,15 @@ public class Parameters {
   public static final int discCountInit = 3;
   
   public static boolean GO_FOR_MIDDLE_TARGET = true;
+  
+  public static double kJoystickDeadband = 0.05; 
+  
+  public static int kLowGearButton = 5;
+  public static int kHighGearButton = 3;
+  public static int kCameraClimbingButton = 6;
+  public static int kCameraShootingButton = 4;
+  
+  public static double kCameraShooterPosition = 85.0; 
+  public static double kCameraClimbPosition = 160.0;
 
 }

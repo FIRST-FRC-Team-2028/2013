@@ -470,6 +470,11 @@ public class AimingSystem implements PIDSource {
         }
     }
     
+    public double getServoPosition()
+    {
+        return servo.getPosition();  
+    }
+    
     /**
      * setShootPosition()
      * 

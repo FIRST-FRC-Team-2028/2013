@@ -120,6 +120,19 @@ public class Tread {
     }
     
     /**
+     * 
+     * @return 
+     */
+    public Gear getGear()
+    {
+        if (isHighGear())
+        {
+            return Gear.kHigh;
+        }
+        return Gear.kLow;
+    }
+    
+    /**
      *
      * @author Dunn
      */
