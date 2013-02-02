@@ -11,11 +11,12 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
  *
  * @author jmiller015
  */
-public class UltimateAscentBot extends SimpleRobot {
+public class UltimateAscentBot extends SimpleRobot
+{
 
     protected AimingSystem visionSystem;
     protected TankDrive drive;
-    public GameMech gameMech;
+    public GameMech gameMech = null;
     public Parameters param;
     public FRCMath math;
     public PIDController aimController;
@@ -23,7 +24,8 @@ public class UltimateAscentBot extends SimpleRobot {
     private DriverStation driverO;
     boolean turning = false;
 
-    public UltimateAscentBot() {
+    public UltimateAscentBot()
+    {
         visionSystem = new AimingSystem();
         aimController = new PIDController(Parameters.kRobotProportional,
                 Parameters.kRobotIntegral,
@@ -43,69 +45,103 @@ public class UltimateAscentBot extends SimpleRobot {
         turnController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
         turnController.setAbsoluteTolerance(Parameters.PIDController_TOLERANCE);
         turnController.setContinuous();
-        try {
+        try
+        {
             drive = new TankDrive();
-            gameMech = new GameMech();
-        } catch (CANTimeoutException ex) {
+            //gameMech = new GameMech();
+        } catch (CANTimeoutException ex)
+        {
             ex.printStackTrace();
         }
     }
 
-    public void autonomous() {
-        try {
+    public void autonomous()
+    {
+        try
+        {
             RobotState state = new RobotState();
-        while (isAutonomous() && isEnabled()) {
-            driverO.updateDashboard();
-            double time = Timer.getFPGATimestamp();
-            switch (state.getState()) {
-                case RobotState.drive:
-                    drive.drive(1.0, 0.0);
-                    if (Timer.getFPGATimestamp() - time < 0.5) {
-                        state.nextState();
-                    }
-                    break;
-                case RobotState.turnTowardsTarget:
-                    state.nextState(); //TODO: Fix me!!!!
-                    break;
-                case RobotState.turnToTarget:
-                    if(aim()) {
-                        state.nextState();
-                    }
-                    break;
-                case RobotState.cockShooter:
-                    if(gameMech.cockShooter()) {
-                        state.nextState();
+            while (isAutonomous() && isEnabled())
+            {
+                driverO.updateDashboard();
+                double time = Timer.getFPGATimestamp();
+                switch (state.getState())
+                {
+                    case RobotState.drive:
+                        drive.drive(1.0, 0.0);
+                        if (Timer.getFPGATimestamp() - time < 0.5)
+                        {
+                            state.nextState();
+                        }
                         break;
-                    }
-                    break;
-                case RobotState.loadShooter:
-                    if(gameMech.reload()) {
-                        state.nextState();
-                    }
-                    break;
-                case RobotState.shootShooter:
-                    if(gameMech.shoot()) {
-                        state.nextState();
-                    }
-                    break;
+                    case RobotState.turnTowardsTarget:
+                        state.nextState(); //TODO: Fix me!!!!
+                        break;
+                    case RobotState.turnToTarget:
+                        if (aim())
+                        {
+                            state.nextState();
+                        }
+                        break;
+                    case RobotState.cockShooter:
+                        if (gameMech != null)
+                        {
+                            if (gameMech.cockShooter())
+                            {
+                                state.nextState();
+                                break;
+                            }
+                        } else
+                        {
+                            state.nextState();
+                        }
+                        break;
+                    case RobotState.loadShooter:
+                        if (gameMech != null)
+                        {
+                            if (gameMech.reload())
+                            {
+                                state.nextState();
+                            }
+                        } else
+                        {
+                            state.nextState();
+                        }
+                        break;
+                    case RobotState.shootShooter:
+                        if (gameMech != null)
+                        {
+                            if (gameMech.shoot())
+                            {
+                                state.nextState();
+                            }
+                        } else
+                        {
+                            state.nextState();
+                        }
+                        break;
+                }
+                Timer.delay(Parameters.TIMER_DELAY);
+                getWatchdog().feed();
             }
-            Timer.delay(Parameters.TIMER_DELAY);
-            getWatchdog().feed();
-        }
-        } catch (CANTimeoutException e) {
+        } catch (CANTimeoutException e)
+        {
         }
     }
 
-    public void operatorControl() {
-        while (isOperatorControl() && isEnabled()) {
+    public void operatorControl()
+    {
+        while (isOperatorControl() && isEnabled())
+        {
             driverO.updateDashboard();
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
     }
 
-    public void test() {
-        while (isTest() && isEnabled()) {
+    public void test()
+    {
+        while (isTest() && isEnabled())
+        {
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
@@ -113,91 +149,124 @@ public class UltimateAscentBot extends SimpleRobot {
 
     /**
      * aim()
-     * 
+     *
      * This method will align the robot with the target +/- one degree
      */
-    public boolean aim() {
-        if (turning && isAimedAtTarget()) {
+    public boolean aim()
+    {
+        if (turning && isAimedAtTarget())
+        {
             DisableAimController();
             return true;
         }
-        if (!turning) {
+        if (!turning)
+        {
             EnableAimController();
             aimController.setSetpoint(0.0);
         }
         return false;
     }
-/**
- * setAngle()
- * 
- * This method takes a setpoint and turns the robot until we are at that setpoint.
- * @param setpoint an angle in degrees, from -360.0 - 0.0 - 360.0
- * @return true - we are at the setpoint
- *         false - we are not at the setpoint
- */
-    public boolean setAngle(double setpoint) {
-        if (turning && turnController.onTarget()) {
+
+    /**
+     * setAngle()
+     *
+     * This method takes a setpoint and turns the robot until we are at that
+     * setpoint.
+     *
+     * @param setpoint an angle in degrees, from -360.0 - 0.0 - 360.0
+     * @return true - we are at the setpoint false - we are not at the setpoint
+     */
+    public boolean setAngle(double setpoint)
+    {
+        if (turning && turnController.onTarget())
+        {
             DisableTurnController();
             return true;
         }
-        if (!turning) {
+        if (!turning)
+        {
             EnableTurnController();
             turnController.setSetpoint(setpoint);
         }
         return false;
     }
-    
+
     /**
      * isAimedAtTarget()
-     * 
+     *
      * This method will check to see if the target is within +/- one degree of
      * the center.
      */
-    public boolean isAimedAtTarget() {
+    public boolean isAimedAtTarget()
+    {
         return visionSystem.isAimedAtTarget();
     }
 
-    public void DisableAimController() {
-        if (turning) {
+    public void DisableAimController()
+    {
+        if (turning)
+        {
             aimController.disable();
         }
         turning = false;
     }
 
-    public void EnableAimController() {
-        if (!turning) {
+    public void EnableAimController()
+    {
+        if (!turning)
+        {
             aimController.enable();
         }
         turning = true;
     }
-    
-    public void DisableTurnController() {
-        if (turning) {
+
+    public void DisableTurnController()
+    {
+        if (turning)
+        {
             turnController.disable();
         }
         turning = false;
     }
 
-    public void EnableTurnController() {
-        if (!turning) {
+    public void EnableTurnController()
+    {
+        if (!turning)
+        {
             turnController.enable();
         }
         turning = true;
     }
 
-    public double getDistanceToTarget() {
+    public double getDistanceToTarget()
+    {
         return visionSystem.getDistanceToTarget();
     }
 
-    public int getDiscCount() {
-        return gameMech.getDiscCount();
+    public int getDiscCount()
+    {
+        if (gameMech != null)
+        {
+            return gameMech.getDiscCount();
+        } else
+        {
+            return -1;
+        }
     }
 
-    public boolean isShooterCocked() {
-        return gameMech.isShooterCocked();
+    public boolean isShooterCocked()
+    {
+        if (gameMech != null)
+        {
+            return gameMech.isShooterCocked();
+        } else
+        {
+            return false;
+        }
     }
 
-    public double getDegreesToTarget()  {
+    public double getDegreesToTarget()
+    {
         return visionSystem.getDegreesToTarget();
     }
 }
