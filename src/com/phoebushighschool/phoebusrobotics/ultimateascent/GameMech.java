@@ -52,4 +52,13 @@ public class GameMech
     {
         loader.setIndexerPiston(value);
     }
+    
+    /**
+     * 
+     * @param value 
+     */
+    public void setShooterMotor(boolean value) throws CANTimeoutException 
+    {
+        shooter.setShooterMotor(value);
+    }
 }

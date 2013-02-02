@@ -54,7 +54,7 @@ public class Shooter {
             return true;
             
         } else {
-            motor.setX(1.0); 
+            motor.setX(Parameters.kShooterMotorSpeed); 
             return false; 
         }
     }
@@ -76,7 +76,7 @@ public class Shooter {
             motor.setX(0.0);
             return true;
         }
-        motor.setX(1.0);
+        motor.setX(Parameters.kShooterMotorSpeed);
         return false;
     }
 
@@ -114,5 +114,22 @@ public class Shooter {
      */
     public boolean isDiscLoaded() {
         return discSensor.get();
+    }
+    
+    /**
+     * 
+     * @param value
+     * @throws CANTimeoutException 
+     */
+    public void setShooterMotor(boolean value) throws CANTimeoutException 
+    {
+        if (value)
+        {
+            motor.setX(Parameters.kShooterMotorSpeed);
+        }
+        else
+        {
+            motor.setX(0.0);
+        }
     }
 }

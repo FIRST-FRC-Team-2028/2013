@@ -133,7 +133,10 @@ public class UltimateAscentBot extends SimpleRobot
         {
         }
     }
-
+    
+    /**
+     * 
+     */
     public void operatorControl()
     {
         while (isOperatorControl() && isEnabled())
@@ -145,14 +148,14 @@ public class UltimateAscentBot extends SimpleRobot
             try
             {
                 double drivePercent = driveStick.getY();
-                if (drivePercent < Parameters.kJoystickDeadband && 
-                        drivePercent > (-1.0 * Parameters.kJoystickDeadband))
+                if (drivePercent < Parameters.kJoystickDeadband
+                        && drivePercent > (-1.0 * Parameters.kJoystickDeadband))
                 {
                     drivePercent = 0.0;
                 }
                 double turnPercent = driveStick.getX();
-                if (turnPercent < Parameters.kJoystickDeadband && 
-                        turnPercent > (-1.0 * Parameters.kJoystickDeadband))
+                if (turnPercent < Parameters.kJoystickDeadband
+                        && turnPercent > (-1.0 * Parameters.kJoystickDeadband))
                 {
                     turnPercent = 0.0;
                 }
@@ -174,17 +177,17 @@ public class UltimateAscentBot extends SimpleRobot
                 newGear = Tread.Gear.kLow;
             }
             drive.setGear(newGear);
-            
+
             boolean climbPosition = driveStick.getRawButton(Parameters.kCameraClimbingButton);
             boolean shootPosition = driveStick.getRawButton(Parameters.kCameraShootingButton);
-            double currentPosition = visionSystem.getServoPosition();  
+            double currentPosition = visionSystem.getServoPosition();
             if (climbPosition)
             {
                 currentPosition = Parameters.kCameraClimbPosition;
             }
             if (shootPosition)
             {
-                currentPosition = Parameters.kCameraShooterPosition; 
+                currentPosition = Parameters.kCameraShooterPosition;
             }
             //
             // Shooter Controls
@@ -194,14 +197,28 @@ public class UltimateAscentBot extends SimpleRobot
                 boolean isReloading = false;
                 if (!isReloading)
                 {
-                    boolean indexerPiston = shooterStick.getRawButton(Parameters.kIndexerPiston);
-                    gameMech.setIndexerPiston(indexerPiston); 
+                    boolean indexerPiston = shooterStick.getRawButton(Parameters.kIndexerPistonButton);
+                    gameMech.setIndexerPiston(indexerPiston);
                 }
+                try
+                {
+                boolean isShooting = false;
+                if (!isShooting)
+                {
+                    boolean turnShooter = shooterStick.getRawButton(Parameters.kTurnShooterButton);
+                    gameMech.setShooterMotor(turnShooter);
+                }
+                }
+                catch(CANTimeoutException e)
+                {
+                    System.out.println(e);
+                }
+                Timer.delay(Parameters.TIMER_DELAY);
+                getWatchdog().feed();
+
             }
-            Timer.delay(Parameters.TIMER_DELAY);
-            getWatchdog().feed();
         }
-    }
+    }     
 
     public void test()
     {

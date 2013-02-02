@@ -78,13 +78,14 @@ public class Parameters {
   public static int kCameraShootingButton = 4;
   
   //shooter controller buttons
-  public static int kShoot = 1;
-  public static int kCameraAim = 5;
-  public static int kReload = 6;
-  public static int kIndexerPiston = 7;
-  public static int kCockShooter = 9; 
+  public static int kShootButton = 1;
+  public static int kCameraAimButton = 5;
+  public static int kReloadButton = 6;
+  public static int kIndexerPistonButton = 7;
+  public static int kTurnShooterButton = 9; 
   
   public static double kCameraShooterPosition = 85.0; 
   public static double kCameraClimbPosition = 160.0;
 
+  public static double kShooterMotorSpeed = 1.0; 
 }
