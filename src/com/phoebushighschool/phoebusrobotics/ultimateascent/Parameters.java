@@ -1,4 +1,4 @@
-package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
+package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
 public class Parameters {
 
