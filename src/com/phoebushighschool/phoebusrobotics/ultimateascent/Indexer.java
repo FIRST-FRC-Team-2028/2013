@@ -1,4 +1,4 @@
-package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
+package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
