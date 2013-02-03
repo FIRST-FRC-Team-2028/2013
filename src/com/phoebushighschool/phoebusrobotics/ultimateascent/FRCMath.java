@@ -1,4 +1,4 @@
-package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
+package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
 import com.sun.squawk.util.MathUtils;
 /*
