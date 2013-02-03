@@ -24,7 +24,7 @@ public class UltimateAscentBot extends SimpleRobot
     public PIDController turnController;
     private DriverStation driverO;
     boolean turning = false;
-    protected Joystick driveStick; 
+    protected Joystick driveStick;
     protected Joystick shooterStick;
 
     public UltimateAscentBot()
@@ -41,11 +41,11 @@ public class UltimateAscentBot extends SimpleRobot
                 drive,
                 drive);
         driverO = new DriverStation(this);
-        aimController.setInputRange(Parameters.MAX_CAMERA_INPUT, Parameters.MIN_CAMERA_INPUT);
-        aimController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
+        aimController.setInputRange(Parameters.MIN_CAMERA_INPUT, Parameters.MAX_CAMERA_INPUT);
+        aimController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
         aimController.setAbsoluteTolerance(Parameters.PIDController_TOLERANCE);
-        turnController.setInputRange(Parameters.MAX_GYRO_INPUT, Parameters.MIN_GYRO_INPUT);
-        turnController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
+        turnController.setInputRange(Parameters.MIN_GYRO_INPUT, Parameters.MAX_GYRO_INPUT);
+        turnController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
         turnController.setAbsoluteTolerance(Parameters.PIDController_TOLERANCE);
         turnController.setContinuous();
         driveStick = new Joystick(1);
@@ -58,7 +58,7 @@ public class UltimateAscentBot extends SimpleRobot
         {
             ex.printStackTrace();
         }
-       
+
     }
 
     public void autonomous()
@@ -73,7 +73,7 @@ public class UltimateAscentBot extends SimpleRobot
                 switch (state.getState())
                 {
                     case RobotState.drive:
-                        drive.drive(1.0, 0.0);
+                        drive.drive(Parameters.AUTONOMOUS_DRIVE_FORWARD_SPEED, 0.0);
                         if (Timer.getFPGATimestamp() - time < 0.5)
                         {
                             state.nextState();
@@ -127,15 +127,15 @@ public class UltimateAscentBot extends SimpleRobot
                         break;
                 }
                 Timer.delay(Parameters.TIMER_DELAY);
-                getWatchdog().feed();
-            }
-        } catch (CANTimeoutException e)
+                        getWatchdog().feed();
+                }
+            }  catch (CANTimeoutException e)
         {
         }
     }
-    
+
     /**
-     * 
+     *
      */
     public void operatorControl()
     {
@@ -202,14 +202,13 @@ public class UltimateAscentBot extends SimpleRobot
                 }
                 try
                 {
-                boolean isShooting = false;
-                if (!isShooting)
-                {
-                    boolean turnShooter = shooterStick.getRawButton(Parameters.kTurnShooterButton);
-                    gameMech.setShooterMotor(turnShooter);
-                }
-                }
-                catch(CANTimeoutException e)
+                    boolean isShooting = false;
+                    if (!isShooting)
+                    {
+                        boolean turnShooter = shooterStick.getRawButton(Parameters.kTurnShooterButton);
+                        gameMech.setShooterMotor(turnShooter);
+                    }
+                } catch (CANTimeoutException e)
                 {
                     System.out.println(e);
                 }
@@ -218,7 +217,7 @@ public class UltimateAscentBot extends SimpleRobot
 
             }
         }
-    }     
+    }
 
     public void test()
     {

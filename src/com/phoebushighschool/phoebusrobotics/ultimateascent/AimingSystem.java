@@ -54,7 +54,7 @@ public class AimingSystem implements PIDSource {
         cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_AREA, 500, 65535, false);
         ultrasonicSensor = new Ultrasonic(Parameters.UltrasonicAnalogChannel);
         servo = new Servo(Parameters.cameraServoPWMChannel);
-        servo.setAngle(shootPosition);
+        setShootPosition();
     }
 
     public class Scores {

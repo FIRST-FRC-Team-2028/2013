@@ -16,8 +16,8 @@ public class Indexer {
   public Indexer()
   {
       gameMech = new GameMech();
-      indexer = new Solenoid(Parameters.DiscIndexerSolenoidChannel);
-      discPreIndex = new DigitalInput(Parameters.DiscInShooterGPIOChannel);
+      indexer = new Solenoid(Parameters.PushDiscIntoShooterSolenoid);
+      discPreIndex = new DigitalInput(Parameters.DiscIsLoadedInputGPIOChannel);
       discCountCurrent = Parameters.discCountInit;
       indexerHasRun = false;
   }
