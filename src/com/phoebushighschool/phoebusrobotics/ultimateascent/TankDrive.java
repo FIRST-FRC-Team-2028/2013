@@ -3,7 +3,6 @@ package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
-import com.sun.squawk.util.MathUtils; 
 
 /**
  * TankDrive

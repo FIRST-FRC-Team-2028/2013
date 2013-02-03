@@ -36,11 +36,11 @@ public class UltimateAscentBot extends SimpleRobot {
                 drive,
                 drive);
         driverO = new DriverStation(this);
-        aimController.setInputRange(Parameters.MAX_CAMERA_INPUT, Parameters.MIN_CAMERA_INPUT);
-        aimController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
+        aimController.setInputRange(Parameters.MIN_CAMERA_INPUT, Parameters.MAX_CAMERA_INPUT);
+        aimController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
         aimController.setAbsoluteTolerance(Parameters.PIDController_TOLERANCE);
-        turnController.setInputRange(Parameters.MAX_GYRO_INPUT, Parameters.MIN_GYRO_INPUT);
-        turnController.setOutputRange(Parameters.MAX_OUTPUT, Parameters.MIN_OUTPUT);
+        turnController.setInputRange(Parameters.MIN_GYRO_INPUT, Parameters.MAX_GYRO_INPUT);
+        turnController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
         turnController.setAbsoluteTolerance(Parameters.PIDController_TOLERANCE);
         turnController.setContinuous();
         try {
@@ -59,7 +59,7 @@ public class UltimateAscentBot extends SimpleRobot {
             double time = Timer.getFPGATimestamp();
             switch (state.getState()) {
                 case RobotState.drive:
-                    drive.drive(1.0, 0.0);
+                    drive.drive(Parameters.AUTONOMOUS_DRIVE_FORWARD_SPEED, 0.0);
                     if (Timer.getFPGATimestamp() - time < 0.5) {
                         state.nextState();
                     }

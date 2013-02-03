@@ -64,5 +64,7 @@ public class Parameters {
   public static final int discCountInit = 3;
   
   public static boolean GO_FOR_MIDDLE_TARGET = true;
+  
+  public static final double AUTONOMOUS_DRIVE_FORWARD_SPEED = 0.5;
 
 }
