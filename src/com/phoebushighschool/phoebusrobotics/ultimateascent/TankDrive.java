@@ -18,7 +18,7 @@ public class TankDrive implements PIDOutput, PIDSource
     protected ClimbingSystem leftArm;
     protected Tread rightTread;
     protected Tread leftTread;
-    public GyroSensor gyro;
+    public GyroSensor gyro = null;
     double speed;
     
   /**
@@ -34,7 +34,7 @@ public class TankDrive implements PIDOutput, PIDSource
         leftTread = new Tread(this, Parameters.leftTreadCanID, Parameters.leftGearLowSolenoidChannel, Parameters.leftGearHighSolenoidChannel);
         rightTread.setGear(Tread.Gear.kLow);
         leftTread.setGear(Tread.Gear.kLow);
-        gyro = new GyroSensor(Parameters.gyroAnalogChannel);
+//        gyro = new GyroSensor(Parameters.gyroAnalogChannel);
         
     }
 
@@ -177,4 +177,10 @@ public class TankDrive implements PIDOutput, PIDSource
       return leftTread.getGear(); 
   }
 
+  public boolean isGyroPresent() {
+      if (gyro != null) {
+          return true;
+      }
+      return false;
+  }
 }

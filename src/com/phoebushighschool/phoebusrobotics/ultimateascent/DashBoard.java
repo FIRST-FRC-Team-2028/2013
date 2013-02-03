@@ -12,20 +12,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  *
  * @author jmiller015
  */
-public class DriverStation
+public class DashBoard
 {
     UltimateAscentBot robot;
     SmartDashboard dash; 
     
     /**
-     * DriverStation
+     * DashBoard
      * 
-     * This constructor initializes the DriverStation and gives it an
+     * This constructor initializes the DashBoard and gives it an
      * UltimateAscentBot
      * 
      * @param bot 
      */
-    public DriverStation(UltimateAscentBot bot)
+    public DashBoard(UltimateAscentBot bot)
     {
         robot = bot;
         dash = new SmartDashboard();

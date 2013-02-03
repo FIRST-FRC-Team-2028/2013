@@ -63,7 +63,9 @@ public class Parameters {
   
   public static final double MIN_OUTPUT = -1.0;
   
-  public static final double PIDController_TOLERANCE = 1.0;
+  public static final double CAMERA_TOLERANCE = 1.0;
+  
+  public static final double GYRO_TOLERANCE = 20.0;
   
   public static final int discCountInit = 3;
   
