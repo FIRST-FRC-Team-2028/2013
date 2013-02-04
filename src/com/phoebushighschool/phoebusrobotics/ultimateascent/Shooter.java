@@ -23,15 +23,6 @@ public class Shooter {
   public void shoot() {
   }
 
-  /** 
-   *  This method will start the wheels so that the disc can be launched.
-   */
-  public void startWheels() {
-  }
-
-  public void stopWheeels() {
-  }
-
   public boolean isShooterUpToSpeed() 
   {
     return false;
@@ -46,5 +37,4 @@ public class Shooter {
     {
         return shooterPosition.get();
     }
-
 }

@@ -80,5 +80,9 @@ public class TankDrive implements PIDOutput
           throw new RuntimeException(e.getMessage());
       }
   }
+  public String getArmState()
+  {
+      return leftArm.getArmState();
+  }
 
 }

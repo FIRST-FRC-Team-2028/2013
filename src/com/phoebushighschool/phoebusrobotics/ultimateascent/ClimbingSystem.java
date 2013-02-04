@@ -33,4 +33,8 @@ public class ClimbingSystem {
             backArm.retract();
         
     }
+    public String getArmState()
+    {
+        return forwardArm.armState;
+    }
 }

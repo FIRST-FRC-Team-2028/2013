@@ -113,4 +113,12 @@ public class UltimateAscentBot extends SimpleRobot {
     public double getDegreesToTarget()  {
         return visionSystem.getDegreesToTarget();
     }
+    public String getArmState()
+    {
+        return drive.getArmState();
+    }
+    public boolean isShooterLoaded()
+    {
+        return gameMech.isShooterLoaded();
+    }
 }

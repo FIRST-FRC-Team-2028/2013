@@ -33,5 +33,8 @@ public class GameMech {
   {
       return shooter.isShooterCocked();
   }
-
+  public boolean isShooterLoaded()
+  {
+      return shooter.isDiscLoaded();
+  }
 }

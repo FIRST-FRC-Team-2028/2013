@@ -43,8 +43,10 @@ public class DriverStation
     {
         dash.putNumber("Discs Remaining", robot.getDiscCount());
         dash.putBoolean("Shooter Ready", robot.isShooterCocked());
+        dash.putBoolean("Shooter Loaded", robot.isShooterLoaded());
         dash.putNumber("Distance to target", robot.getDistanceToTarget());
         dash.putNumber("Degrees to target", robot.getDegreesToTarget());
+        dash.putString("Arm:", robot.getArmState());
     }
            
     
