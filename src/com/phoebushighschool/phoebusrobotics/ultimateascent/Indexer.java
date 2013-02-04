@@ -9,9 +9,10 @@ public class Indexer {
 
     protected GameMech gameMech;
     protected Solenoid indexer;
-    public DigitalInput discPreIndex;
+    protected DigitalInput discPreIndex;
     public int discCountCurrent;
     public boolean indexerHasRun;
+    public boolean indexerDiscPass;
     
   public Indexer()
   {
@@ -20,24 +21,30 @@ public class Indexer {
       discPreIndex = new DigitalInput(Parameters.DiscInShooterGPIOChannel);
       discCountCurrent = Parameters.discCountInit;
       indexerHasRun = false;
+      indexerDiscPass = false;
   }
 
   /** 
    *  This method will index one disc into the shooter.
    */
   public void indexOneDisc() {
-      if (discPreIndex.get() && discCountCurrent >= 1 && !indexerHasRun){
-        indexer.set(true);
-            if (!discPreIndex.get()){                
-                if (discPreIndex.get()){
-                    indexer.set(false);
-                }
-            }
-            indexerHasRun = true;
+      if (discPreIndex.get() && discCountCurrent >= 1 && !indexerHasRun && !indexerDiscPass){
+          indexer.set(true);           
       }
-      if (discCountCurrent >= 1 && indexerHasRun) {
+      else if (!discPreIndex.get() && !indexerHasRun){                
+          indexerDiscPass = true;
+      }
+      else if (discPreIndex.get() && indexerDiscPass){
+          indexer.set(false);
+          indexerDiscPass = false;
+          indexerHasRun = true;
+      }
+      else if (discCountCurrent >= 1 && indexerHasRun) {
           discCountCurrent = discCountCurrent - 1;
           indexerHasRun = false;
+      }
+      else {
+          indexer.set(false);
       }
   }
 
