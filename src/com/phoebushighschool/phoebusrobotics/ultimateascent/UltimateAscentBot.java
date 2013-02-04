@@ -1,11 +1,11 @@
 package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
-import edu.wpi.first.wpilibj.DriverStation;
 
 /*
  */
@@ -37,7 +37,6 @@ public class UltimateAscentBot extends SimpleRobot
             //gameMech = new GameMech();
         } catch (CANTimeoutException ex)
         {
-            ex.printStackTrace();
         }
         visionSystem = new AimingSystem();
         aimController = new PIDController(Parameters.kRobotProportional,
@@ -109,7 +108,7 @@ public class UltimateAscentBot extends SimpleRobot
                         } else
                         {
                             state.nextState();
-                            System.out.println("Turning towards");
+                            System.out.println("No Gyro");
                             break;
                         }
                     case RobotState.turnToTarget:

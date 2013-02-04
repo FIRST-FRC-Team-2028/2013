@@ -4,9 +4,7 @@
  */
 package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
-import edu.wpi.first.wpilibj.NamedSendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
  *
