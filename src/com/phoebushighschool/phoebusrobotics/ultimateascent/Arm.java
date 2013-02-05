@@ -1,4 +1,4 @@
-package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
+package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;

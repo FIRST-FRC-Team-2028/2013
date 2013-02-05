@@ -1,6 +1,7 @@
-package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
+package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
 import java.lang.String;
+import com.sun.squawk.util.MathUtils;
 
 /*
  */
@@ -44,5 +45,8 @@ public class FRCMath {
         return str;
         //return String.format("%10.4f", num);
     }
-
+    
+    public static double pow(double number, double power) {
+        return MathUtils.pow(number, power);
+    }
 }

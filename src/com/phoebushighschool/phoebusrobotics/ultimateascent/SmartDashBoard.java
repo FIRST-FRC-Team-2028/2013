@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.PhoebusHighSchool.PhoebusRobotics.UltimateAscent;
+package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
 import edu.wpi.first.wpilibj.NamedSendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,20 +12,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  *
  * @author jmiller015
  */
-public class DriverStation
+public class SmartDashBoard
 {
     UltimateAscentBot robot;
     SmartDashboard dash; 
     
     /**
-     * DriverStation
+     * SmartDashBoard
      * 
-     * This constructor initializes the DriverStation and gives it an
+     * This constructor initializes the SmartDashBoard and gives it an
      * UltimateAscentBot
      * 
      * @param bot 
      */
-    public DriverStation(UltimateAscentBot bot)
+    public SmartDashBoard(UltimateAscentBot bot)
     {
         robot = bot;
         dash = new SmartDashboard();
