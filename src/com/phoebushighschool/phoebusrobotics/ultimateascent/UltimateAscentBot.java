@@ -27,6 +27,7 @@ public class UltimateAscentBot extends SimpleRobot {
     boolean turning = false;
     protected Joystick driveStick;
     protected Joystick shooterStick;
+    public String autonState;
 
     public UltimateAscentBot()
     {
@@ -94,6 +95,7 @@ public void autonomous()
                             state.nextState();
                         }
                         System.out.println("Driving forward");
+                        autonState = "Driving";
                         break;
                     case RobotState.turnTowardsTarget:
                         if (drive.isGyroPresent())
@@ -103,6 +105,7 @@ public void autonomous()
                                 state.nextState();
                             }
                             System.out.println("Turning towards");
+                            autonState = "Turning to face target";
                             break;
                         } else
                         {
@@ -116,6 +119,7 @@ public void autonomous()
                             state.nextState();
                         }
                         System.out.println("Turning to. Angle: " + visionSystem.getDegreesToTarget());
+                        autonState = "Lining up with target";
                         break;
                     case RobotState.cockShooter:
                         if (gameMech != null)
@@ -123,6 +127,7 @@ public void autonomous()
                             if (gameMech.cockShooter())
                             {
                                 state.nextState();
+                                autonState = "preparing to shoot";
                                 break;
                             }
                         } else
@@ -148,6 +153,7 @@ public void autonomous()
                             if (gameMech.shoot())
                             {
                                 state.nextState();
+                              autonState = "shooting. Faint Wheeeeeee is heard";
                             }
                         } else
                         {
