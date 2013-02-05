@@ -18,7 +18,7 @@ public class Tread {
     {
         motor = new CANJaguar(canID, CANJaguar.ControlMode.kPercentVbus);
         drive = parent;
-        gearShifter = new Solenoid(Parameters.crioRelayModule, gearChannel);
+        gearShifter = new Solenoid(Parameters.crioSolenoidModule, gearChannel);
     }
 
     /**
