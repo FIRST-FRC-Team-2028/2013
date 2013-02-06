@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
  */
 public class UltimateAscentBot extends SimpleRobot
 {
-
     protected AimingSystem visionSystem;
     protected TankDrive drive;
     public GameMech gameMech = null;
@@ -72,15 +71,15 @@ public class UltimateAscentBot extends SimpleRobot
     {
         try
         {
-            double _P = (ds.getAnalogIn(1) / 3.3) * 500.0;
-            double _I = (ds.getAnalogIn(2) / 3.3);
-            double _D = (ds.getAnalogIn(3) / 3.3);
-            System.out.println("P: " + _P + ", I: " + _I + ", D: " + _D);
-            aimController.setPID(_P, _I, _D);
-            if (turnController != null)
-            {
-                turnController.setPID(_P, _I, _D);
-            }
+//            double _P = (ds.getAnalogIn(1) / 3.3) * 100.0;
+//            double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
+//            double _D = (ds.getAnalogIn(3) / 3.3) * 0.01;
+//            System.out.println("P: " + _P + ", I: " + _I + ", D: " + _D);
+//            aimController.setPID(_P, _I, _D);
+//            if (turnController != null)
+//            {
+//                turnController.setPID(_P, _I, _D);
+//            }
             RobotState state = new RobotState();
             while (isAutonomous() && isEnabled())
             {
@@ -90,6 +89,7 @@ public class UltimateAscentBot extends SimpleRobot
                 {
                     case RobotState.drive:
                         drive.drive(Parameters.AUTONOMOUS_DRIVE_FORWARD_SPEED, 0.0);
+                        visionSystem.setShootPosition();
                         if (Timer.getFPGATimestamp() - time < 0.5)
                         {
                             state.nextState();
@@ -115,8 +115,8 @@ public class UltimateAscentBot extends SimpleRobot
                         if (aim())
                         {
                             state.nextState();
+                            DisableAimController();
                         }
-                        System.out.println("Turning to. Angle: " + visionSystem.getDegreesToTarget());
                         break;
                     case RobotState.cockShooter:
                         if (gameMech != null)
@@ -170,23 +170,23 @@ public class UltimateAscentBot extends SimpleRobot
      */
     public void operatorControl()
     {
+        double _P = (ds.getAnalogIn(1) / 3.3) * 100.0;
+        double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
+        double _D = (ds.getAnalogIn(3) / 3.3) * 0.01;
+        aimController.setPID(_P, _I, _D);
+        if (turnController != null)
+        {
+            turnController.setPID(_P, _I, _D);
+        }
         while (isOperatorControl() && isEnabled())
         {
-            double _P = (ds.getAnalogIn(1) / 3.3) * 500.0;
-            double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
-            double _D = (ds.getAnalogIn(3) / 3.3) * 0.01;
-            aimController.setPID(_P, _I, _D);
-            if (turnController != null)
-            {
-                turnController.setPID(_P, _I, _D);
-            }
             driverO.updateDashboard();
             //
             // Driver Controls
             //
             try
             {
-                double drivePercent = driveStick.getY();
+                double drivePercent = driveStick.getY() * -1.0;
                 if (drivePercent < Parameters.kJoystickDeadband
                         && drivePercent > (-1.0 * Parameters.kJoystickDeadband))
                 {
@@ -222,10 +222,12 @@ public class UltimateAscentBot extends SimpleRobot
             double currentPosition = visionSystem.getServoPosition();
             if (climbPosition)
             {
+                visionSystem.setClimbPosition();
                 currentPosition = Parameters.kCameraClimbPosition;
             }
             if (shootPosition)
             {
+                visionSystem.setShootPosition();
                 currentPosition = Parameters.kCameraShooterPosition;
             }
             //
@@ -274,15 +276,17 @@ public class UltimateAscentBot extends SimpleRobot
      */
     public boolean aim()
     {
-        if (turning && isAimedAtTarget())
+        if (turning && aimController.onTarget())
         {
             DisableAimController();
+            System.out.println("Done turning");
             return true;
         }
         if (!turning)
         {
             EnableAimController();
             aimController.setSetpoint(0.0);
+            System.out.println("Turning");
         }
         return false;
     }

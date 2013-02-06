@@ -45,7 +45,7 @@ public class Parameters {
   
 
   // Aiming PID Constants
-  public static final double kRobotProportional = 0.0;
+  public static final double kRobotProportional = 0.03;
   public static final double kRobotDifferential = 0.0;
   public static final double kRobotIntegral = 0.0;
   
@@ -89,7 +89,7 @@ public class Parameters {
   public static double kCameraShooterPosition = 85.0; 
   public static double kCameraClimbPosition = 160.0;
   
-  public static final double AUTONOMOUS_DRIVE_FORWARD_SPEED = 0.1;
+  public static final double AUTONOMOUS_DRIVE_FORWARD_SPEED = 0.5;
 
   public static double kShooterMotorSpeed = 1.0; 
 }
