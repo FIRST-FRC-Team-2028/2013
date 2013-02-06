@@ -171,11 +171,96 @@ public void autonomous()
     }
 
 
-    public void operatorControl() {
-        while (isOperatorControl() && isEnabled()) {
+    /**
+     *
+     */
+    public void operatorControl()
+    {
+        while (isOperatorControl() && isEnabled())
+        {
+            double _P = (ds.getAnalogIn(1) / 3.3) * 500.0;
+            double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
+            double _D = (ds.getAnalogIn(3) / 3.3) * 0.01;
+            aimController.setPID(_P, _I, _D);
+            if (turnController != null)
+            {
+                turnController.setPID(_P, _I, _D);
+            }
             dash.updateDashboard();
-            Timer.delay(Parameters.TIMER_DELAY);
-            getWatchdog().feed();
+            //
+            // Driver Controls
+            //
+            try
+            {
+                double drivePercent = driveStick.getY();
+                if (drivePercent < Parameters.kJoystickDeadband
+                        && drivePercent > (-1.0 * Parameters.kJoystickDeadband))
+                {
+                    drivePercent = 0.0;
+                }
+                double turnPercent = driveStick.getX();
+                if (turnPercent < Parameters.kJoystickDeadband
+                        && turnPercent > (-1.0 * Parameters.kJoystickDeadband))
+                {
+                    turnPercent = 0.0;
+                }
+                drive.drive(drivePercent, turnPercent);
+            } catch (CANTimeoutException e)
+            {
+                System.out.println(e);
+            }
+
+            boolean lowGear = driveStick.getRawButton(Parameters.kLowGearButton);
+            boolean highGear = driveStick.getRawButton(Parameters.kHighGearButton);
+            Tread.Gear newGear = drive.getGear();
+            if (highGear)
+            {
+                newGear = Tread.Gear.kHigh;
+            }
+            if (lowGear)
+            {
+                newGear = Tread.Gear.kLow;
+            }
+            drive.setGear(newGear);
+
+            boolean climbPosition = driveStick.getRawButton(Parameters.kCameraClimbingButton);
+            boolean shootPosition = driveStick.getRawButton(Parameters.kCameraShootingButton);
+            double currentPosition = visionSystem.getServoPosition();
+            if (climbPosition)
+            {
+                currentPosition = Parameters.kCameraClimbPosition;
+            }
+            if (shootPosition)
+            {
+                currentPosition = Parameters.kCameraShooterPosition;
+            }
+            //
+            // Shooter Controls
+            //
+            if (gameMech != null)
+            {
+                boolean isReloading = false;
+                if (!isReloading)
+                {
+                    boolean indexerPiston = shooterStick.getRawButton(Parameters.kIndexerPistonButton);
+                    gameMech.setIndexerPiston(indexerPiston);
+                }
+                try
+                {
+                    boolean isShooting = false;
+                    if (!isShooting)
+                    {
+                        boolean turnShooter = shooterStick.getRawButton(Parameters.kTurnShooterButton);
+                        gameMech.setShooterMotor(turnShooter);
+                    }
+                } catch (CANTimeoutException e)
+                {
+                    System.out.println(e);
+                }
+                Timer.delay(Parameters.TIMER_DELAY);
+                getWatchdog().feed();
+
+            }
         }
     }
 
