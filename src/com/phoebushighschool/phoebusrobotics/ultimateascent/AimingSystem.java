@@ -74,20 +74,20 @@ public class AimingSystem implements PIDSource
     public class Scores
     {
 
-        double rectangularity;
-        double aspectRatioHigh;
-        double aspectRatioMiddle;
-        double xEdge;
-        double yEdge;
+        double rectangularity = 0.0;
+        double aspectRatioHigh = 0.0;
+        double aspectRatioMiddle = 0.0;
+        double xEdge = 0.0;
+        double yEdge = 0.0;
     }
 
     public class Target
     {
 
-        double aspectRatio;
-        boolean middle;
-        double center_mass_x;
-        double target_width;
+        double aspectRatio = 0.0;
+        boolean middle = true;
+        double center_mass_x = 0.0;
+        double target_width = 0.0;
     }
 
     /**
@@ -122,15 +122,15 @@ public class AimingSystem implements PIDSource
                 case 0:
                     busy = true;
                     image = camera.getImage();
-                    image.write("/start.jpg");
+//                    image.write("/start.jpg");
                     imageState++;
                     busy = false;
                     break;
                 case 1:
                     busy = true;
                     thresholdImage = image.thresholdRGB(0, 70, 185, 255, 145, 255);  // green values
-//                      thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
-//                        thresholdImage.write("/threshold.bmp");
+//                    thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
+//                    thresholdImage.write("/threshold.bmp");
                     imageState++;
                     busy = false;
                     break;
@@ -199,33 +199,34 @@ public class AimingSystem implements PIDSource
      *
      * @throws NIVisionException
      */
-    public Target scoreParticles(ParticleAnalysisReport[] reports) throws NIVisionException
+    public Target scoreParticles(ParticleAnalysisReport[] report) throws NIVisionException
     {
         boolean middle = Parameters.GO_FOR_MIDDLE_TARGET;
         int nHigh = 0;
         int nMiddle = 0;
 
-        for (int i = 0; i < reports.length; i++)
+        for (int i = 0; i < report.length; i++)
         {
             Scores score = null;
-            score.rectangularity = scoreRectangularity(reports[i]);
-            score.aspectRatioHigh = scoreAspectRatio(filteredImage, reports[i], i, false);
-            score.aspectRatioMiddle = scoreAspectRatio(filteredImage, reports[i], i, true);
-            score.xEdge = scoreXEdge(thresholdImage, reports[i]);
-            score.yEdge = scoreYEdge(thresholdImage, reports[i]);
+            System.out.println("Target " + i + ": " + report[i]);
+            score.rectangularity = scoreRectangularity(report[i]);
+            score.aspectRatioHigh = scoreAspectRatio(filteredImage, report[i], i, false);
+            score.aspectRatioMiddle = scoreAspectRatio(filteredImage, report[i], i, true);
+            score.xEdge = scoreXEdge(thresholdImage, report[i]);
+            score.yEdge = scoreYEdge(thresholdImage, report[i]);
 
             if (scoreCompare(score, false))
             {
                 highTargets[nHigh].aspectRatio = score.aspectRatioHigh;
-                highTargets[nHigh].center_mass_x = reports[i].center_mass_x;
-                highTargets[nHigh].target_width = reports[i].boundingRectWidth;
+                highTargets[nHigh].center_mass_x = report[i].center_mass_x;
+                highTargets[nHigh].target_width = report[i].boundingRectWidth;
                 highTargets[nHigh].middle = false;
                 nHigh++;
             } else if (scoreCompare(score, true))
             {
                 middleTargets[nMiddle].aspectRatio = score.aspectRatioMiddle;
-                middleTargets[nMiddle].center_mass_x = reports[i].center_mass_x;
-                middleTargets[nMiddle].target_width = reports[i].boundingRectWidth;
+                middleTargets[nMiddle].center_mass_x = report[i].center_mass_x;
+                middleTargets[nMiddle].target_width = report[i].boundingRectWidth;
                 highTargets[nHigh].middle = true;
                 nMiddle++;
             }
