@@ -61,7 +61,7 @@ public class TankDrive implements PIDOutput, PIDSource
    *                      {left/right} and -1.0 is turning full speed {right/
    *                      left}
    */
-  public void drive(double drivePercentPower, double turnPercentPower) throws CANTimeoutException
+  public void drive(double drivePercentPower, double turnPercentPower, double kDamp) throws CANTimeoutException
   {
       double leftSpeed;
       double rightSpeed;
@@ -73,7 +73,7 @@ public class TankDrive implements PIDOutput, PIDSource
       {
           adjustedDrivePercentPower = drivePercentPower * 2.27; 
       }
-      turnPercentPower = decayTurnPower(adjustedDrivePercentPower, turnPercentPower);
+      turnPercentPower = decayTurnPower(adjustedDrivePercentPower, turnPercentPower, kDamp);
       
       if (Math.abs(turnPercentPower) + Math.abs(drivePercentPower) > 1.0 )
       {
@@ -106,11 +106,11 @@ public class TankDrive implements PIDOutput, PIDSource
    *                      left}
    * @return 
    */
-  public double decayTurnPower(double forwardPercentPower, double turnPercentPower)
+  public double decayTurnPower(double forwardPercentPower, double turnPercentPower, double kDamp)
   {
       double decayValue; 
       
-      decayValue = (-1.0/(20.0 * FRCMath.pow(forwardPercentPower, 2) + 1.0)) + 1.0; 
+      decayValue = (-1.0/(kDamp * FRCMath.pow(forwardPercentPower, 2) + 1.0)) + 1.0; 
       
       if (turnPercentPower > 0.0)
       {
@@ -146,7 +146,7 @@ public class TankDrive implements PIDOutput, PIDSource
   {
       try
       {
-        drive (0.0, speedToTurn);  
+        drive (0.0, speedToTurn, 0.0);  
       }
       catch (CANTimeoutException e)
       {

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
  */
 public class UltimateAscentBot extends SimpleRobot
 {
+
     protected AimingSystem visionSystem;
     protected TankDrive drive;
     public GameMech gameMech = null;
@@ -36,6 +37,7 @@ public class UltimateAscentBot extends SimpleRobot
             //gameMech = new GameMech();
         } catch (CANTimeoutException ex)
         {
+            System.out.println(ex);
         }
         visionSystem = new AimingSystem();
         aimController = new PIDController(Parameters.kRobotProportional,
@@ -71,29 +73,29 @@ public class UltimateAscentBot extends SimpleRobot
     {
         try
         {
-//            double _P = (ds.getAnalogIn(1) / 3.3) * 100.0;
-//            double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
-//            double _D = (ds.getAnalogIn(3) / 3.3) * 0.01;
+            double _P = (ds.getAnalogIn(1) / 3.3) * 100.0;
+            double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
+            double _D = (ds.getAnalogIn(3) / 3.3) * 0.01;
 //            System.out.println("P: " + _P + ", I: " + _I + ", D: " + _D);
-//            aimController.setPID(_P, _I, _D);
+            aimController.setPID(_P, _I, _D);
 //            if (turnController != null)
 //            {
 //                turnController.setPID(_P, _I, _D);
 //            }
             RobotState state = new RobotState();
+            double time = Timer.getFPGATimestamp();
             while (isAutonomous() && isEnabled())
             {
-                driverO.updateDashboard();
-                double time = Timer.getFPGATimestamp();
+//                driverO.updateDashboard();
                 switch (state.getState())
                 {
                     case RobotState.drive:
-                        drive.drive(Parameters.AUTONOMOUS_DRIVE_FORWARD_SPEED, 0.0);
-                        visionSystem.setShootPosition();
-                        if (Timer.getFPGATimestamp() - time < 0.5)
-                        {
-                            state.nextState();
-                        }
+//                        drive.drive(Parameters.AUTONOMOUS_DRIVE_FORWARD_SPEED, 0.0, 0.0);
+//                        visionSystem.setShootPosition();
+//                        if (Timer.getFPGATimestamp() - time < 0.5)
+//                        {
+                        state.nextState();
+//                        }
                         System.out.println("Driving forward");
                         break;
                     case RobotState.turnTowardsTarget:
@@ -170,17 +172,19 @@ public class UltimateAscentBot extends SimpleRobot
      */
     public void operatorControl()
     {
-        double _P = (ds.getAnalogIn(1) / 3.3) * 100.0;
-        double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
-        double _D = (ds.getAnalogIn(3) / 3.3) * 0.01;
-        aimController.setPID(_P, _I, _D);
-        if (turnController != null)
-        {
-            turnController.setPID(_P, _I, _D);
-        }
+        double kDamp = (ds.getAnalogIn(1) / 3.3) * 50;
+//        double _P = (ds.getAnalogIn(1) / 3.3) * 100.0;
+//        double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
+//        double _D = (ds.getAnalogIn(3) / 3.3) * 0.01;
+//        aimController.setPID(_P, _I, _D);
+//        if (turnController != null)
+//        {
+//            turnController.setPID(_P, _I, _D);
+//        }
+        int i = 0;
         while (isOperatorControl() && isEnabled())
         {
-            driverO.updateDashboard();
+//            driverO.updateDashboard();
             //
             // Driver Controls
             //
@@ -198,7 +202,17 @@ public class UltimateAscentBot extends SimpleRobot
                 {
                     turnPercent = 0.0;
                 }
-                drive.drive(drivePercent, turnPercent);
+                switch (i)
+                {
+                    default:
+                        i++;
+                        break;
+                    case 3:
+                        System.out.println("Drive value: " + drivePercent + ", Turn value: " + turnPercent);
+                        i = 0;
+                        break;
+                }
+                drive.drive(drivePercent, turnPercent, kDamp);
             } catch (CANTimeoutException e)
             {
                 System.out.println(e);
@@ -284,9 +298,9 @@ public class UltimateAscentBot extends SimpleRobot
         }
         if (!turning)
         {
-            EnableAimController();
-            aimController.setSetpoint(0.0);
-            System.out.println("Turning");
+//            EnableAimController();
+//            aimController.setSetpoint(0.0);
+            System.out.println("Angle to Target: " + getDegreesToTarget());
         }
         return false;
     }

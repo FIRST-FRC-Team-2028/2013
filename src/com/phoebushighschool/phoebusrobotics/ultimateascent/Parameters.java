@@ -20,7 +20,7 @@ public class Parameters {
   public static final int ShooterIsCockedGPIOChannel = 6;
   public static final int ShooterIsRetractedGPIOChannel = 7; 
 
-  public static final double MaxMotorOutputVoltage = 12.0;
+  public static final double MaxMotorOutputVoltage = 10.0;
 
   // Digital Sidecar 12V Relay channels
   public static final int RelayModule = 1;  
@@ -49,7 +49,7 @@ public class Parameters {
   public static final double kRobotDifferential = 0.0;
   public static final double kRobotIntegral = 0.0;
   
-  public static final double TIMER_DELAY = 0.1;
+  public static final double TIMER_DELAY = 0.25;
     
   public static final double MAX_CAMERA_INPUT = 25.0;
   
