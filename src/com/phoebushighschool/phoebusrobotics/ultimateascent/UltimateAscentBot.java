@@ -23,10 +23,12 @@ public class UltimateAscentBot extends SimpleRobot {
     public PIDController aimController;
     public PIDController turnController;
     private SmartDashBoard dash;
+    public ClimbingSystem climber;
     DriverStation ds;
     boolean turning = false;
     protected Joystick driveStick;
     protected Joystick shooterStick;
+    protected Joystick armsStick;
     public String autonState;
 
     public UltimateAscentBot()
@@ -44,6 +46,8 @@ public class UltimateAscentBot extends SimpleRobot {
                 Parameters.kRobotDifferential,
                 visionSystem,
                 drive);
+        if (climber != null)
+            climber = new ClimbingSystem();
         if (drive.isGyroPresent())
         {
             turnController = new PIDController(Parameters.kRobotProportional,
@@ -66,6 +70,7 @@ public class UltimateAscentBot extends SimpleRobot {
         }
         driveStick = new Joystick(1);
         shooterStick = new Joystick(2);
+        armsStick = new Joystick(3);
     }
 
 public void autonomous()
@@ -261,6 +266,29 @@ public void autonomous()
                 getWatchdog().feed();
 
             }
+            if (climber != null)
+            {
+                double leftArmValue = shooterStick.getY();
+                double rightArmValue = armsStick.getY();
+                if (leftArmValue > Parameters.kJoystickDeadband 
+                        && leftArmValue < (-1.0 * Parameters.kJoystickDeadband))
+                {
+                    try {
+                        climber.moveForwardArmByJoystick(leftArmValue);
+                    } catch (CANTimeoutException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                if (rightArmValue > Parameters.kJoystickDeadband 
+                        && rightArmValue < (-1.0 * Parameters.kJoystickDeadband))
+                {
+                    try {
+                        climber.moveBackArmByJoystick(rightArmValue);
+                    } catch (CANTimeoutException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
         }
     }
 
@@ -311,7 +339,7 @@ public void autonomous()
     }
     public String getArmState()
     {
-        return drive.getArmState();
+        return climber.getArmState();
     }
     public boolean isShooterLoaded()
     {

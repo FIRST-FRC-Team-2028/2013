@@ -47,6 +47,10 @@ public class Arm {
         }
         return false;
     }
+    public void moveByValue(double JoystickValue) throws CANTimeoutException
+    {
+        motor.setX(JoystickValue);
+    }
 //       too narrow
 //    public boolean isLatched() {
 //        if (latchSwitch.get()) {

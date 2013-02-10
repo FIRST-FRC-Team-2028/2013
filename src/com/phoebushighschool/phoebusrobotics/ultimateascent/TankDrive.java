@@ -183,9 +183,4 @@ public class TankDrive implements PIDOutput, PIDSource
       }
       return false;
   }
-  public String getArmState()
-  {
-      return leftArm.getArmState();
-  }
-
 }
