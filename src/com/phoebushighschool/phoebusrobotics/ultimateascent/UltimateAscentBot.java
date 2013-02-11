@@ -114,10 +114,18 @@ public class UltimateAscentBot extends SimpleRobot
                             break;
                         }
                     case RobotState.turnToTarget:
-                        if (aim())
+                        boolean aimed;
+                        try
+                        {
+                            aimed = aim();
+                        } catch (NoTargetFoundException e)
+                        {
+                            System.out.println(e);
+                            break;
+                        }
+                        if (aimed)
                         {
                             state.nextState();
-                            DisableAimController();
                         }
                         break;
                     case RobotState.cockShooter:
@@ -288,9 +296,9 @@ public class UltimateAscentBot extends SimpleRobot
      *
      * This method will align the robot with the target +/- one degree
      */
-    public boolean aim()
+    public boolean aim() throws NoTargetFoundException
     {
-        if (turning && aimController.onTarget())
+        if (turning && isAimedAtTarget())
         {
             DisableAimController();
             System.out.println("Done turning");
@@ -338,7 +346,7 @@ public class UltimateAscentBot extends SimpleRobot
      * This method will check to see if the target is within +/- one degree of
      * the center.
      */
-    public boolean isAimedAtTarget()
+    public boolean isAimedAtTarget() throws NoTargetFoundException
     {
         return visionSystem.isAimedAtTarget();
     }

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.camera.*;
 import edu.wpi.first.wpilibj.image.*;
+import java.util.Vector;
 
 /*
  */
@@ -52,9 +53,7 @@ public class AimingSystem implements PIDSource
     BinaryImage filteredImage;
     ParticleAnalysisReport[] reports = null;
     ParticleAnalysisReport t = null;
-    AimingSystem.Target[] highTargets;
-    AimingSystem.Target[] middleTargets;
-    AimingSystem.Target target = null;
+    AimingSystem.Target target = new Target();
     private boolean busy = false;
 
     public AimingSystem()
@@ -74,20 +73,37 @@ public class AimingSystem implements PIDSource
     public class Scores
     {
 
-        double rectangularity = 0.0;
-        double aspectRatioHigh = 0.0;
-        double aspectRatioMiddle = 0.0;
-        double xEdge = 0.0;
-        double yEdge = 0.0;
+        double rectangularity;
+        double aspectRatioHigh;
+        double aspectRatioMiddle;
+        double xEdge;
+        double yEdge;
+
+        public Scores()
+        {
+            rectangularity = 0.0;
+            aspectRatioHigh = 0.0;
+            aspectRatioMiddle = 0.0;
+            xEdge = 0.0;
+            yEdge = 0.0;
+        }
     }
 
     public class Target
     {
 
-        double aspectRatio = 0.0;
-        boolean middle = true;
-        double center_mass_x = 0.0;
-        double target_width = 0.0;
+        double aspectRatio;
+        boolean middle;
+        double center_mass_x;
+        double target_width;
+
+        public Target()
+        {
+            aspectRatio = 0.0;
+            middle = true;
+            center_mass_x = 0.0;
+            target_width = 0.0;
+        }
     }
 
     /**
@@ -202,13 +218,13 @@ public class AimingSystem implements PIDSource
     public Target scoreParticles(ParticleAnalysisReport[] report) throws NIVisionException
     {
         boolean middle = Parameters.GO_FOR_MIDDLE_TARGET;
-        int nHigh = 0;
-        int nMiddle = 0;
+        Vector highTargets = new Vector();
+        Vector middleTargets = new Vector();
 
         for (int i = 0; i < report.length; i++)
         {
-            Scores score = null;
-            System.out.println("Target " + i + ": " + report[i]);
+            Scores score = new Scores();
+            Target t = new Target();
             score.rectangularity = scoreRectangularity(report[i]);
             score.aspectRatioHigh = scoreAspectRatio(filteredImage, report[i], i, false);
             score.aspectRatioMiddle = scoreAspectRatio(filteredImage, report[i], i, true);
@@ -217,18 +233,18 @@ public class AimingSystem implements PIDSource
 
             if (scoreCompare(score, false))
             {
-                highTargets[nHigh].aspectRatio = score.aspectRatioHigh;
-                highTargets[nHigh].center_mass_x = report[i].center_mass_x;
-                highTargets[nHigh].target_width = report[i].boundingRectWidth;
-                highTargets[nHigh].middle = false;
-                nHigh++;
+                t.aspectRatio = score.aspectRatioHigh;
+                t.center_mass_x = report[i].center_mass_x;
+                t.target_width = report[i].boundingRectWidth;
+                t.middle = false;
+                highTargets.addElement(t);
             } else if (scoreCompare(score, true))
             {
-                middleTargets[nMiddle].aspectRatio = score.aspectRatioMiddle;
-                middleTargets[nMiddle].center_mass_x = report[i].center_mass_x;
-                middleTargets[nMiddle].target_width = report[i].boundingRectWidth;
-                highTargets[nHigh].middle = true;
-                nMiddle++;
+                t.aspectRatio = score.aspectRatioMiddle;
+                t.center_mass_x = report[i].center_mass_x;
+                t.target_width = report[i].boundingRectWidth;
+                t.middle = true;
+                middleTargets.addElement(t);
             }
         }
 
@@ -409,41 +425,43 @@ public class AimingSystem implements PIDSource
      * target, false if the target we are shooting at is the high target.
      * @return the target we are shooting at.
      */
-    AimingSystem.Target TargetCompare(AimingSystem.Target[] highT, AimingSystem.Target[] middleT, boolean middle)
+    AimingSystem.Target TargetCompare(Vector highT, Vector middleT, boolean middle)
     {
-        AimingSystem.Target t = null;
+        AimingSystem.Target t = new Target();
         if (middle)
         {
             t.middle = true;
-            for (int i = 0; i < middleT.length; i++)
+            for (int i = 0; i < middleT.size(); i++)
             {
-                if (t == null)
+                Target temp = (Target) middleT.elementAt(i);
+                if (i == 0)
                 {
-                    t.aspectRatio = middleT[i].aspectRatio;
-                    t.center_mass_x = middleT[i].center_mass_x;
-                    t.target_width = middleT[i].target_width;
-                } else if (t.aspectRatio < middleT[i].aspectRatio)
+                    t.aspectRatio = temp.aspectRatio;
+                    t.center_mass_x = temp.center_mass_x;
+                    t.target_width = temp.target_width;
+                } else if (t.aspectRatio < temp.aspectRatio)
                 {
-                    t.aspectRatio = middleT[i].aspectRatio;
-                    t.center_mass_x = middleT[i].center_mass_x;
-                    t.target_width = middleT[i].target_width;
+                    t.aspectRatio = temp.aspectRatio;
+                    t.center_mass_x = temp.center_mass_x;
+                    t.target_width = temp.target_width;
                 }
             }
         } else
         {
             t.middle = false;
-            for (int i = 0; i < highT.length; i++)
+            for (int i = 0; i < highT.size(); i++)
             {
-                if (t == null)
+                Target temp = (Target) highT.elementAt(i);
+                if (i == 0)
                 {
-                    t.aspectRatio = highT[i].aspectRatio;
-                    t.center_mass_x = highT[i].center_mass_x;
-                    t.target_width = highT[i].target_width;
-                } else if (t.aspectRatio < highT[i].aspectRatio)
+                    t.aspectRatio = temp.aspectRatio;
+                    t.center_mass_x = temp.center_mass_x;
+                    t.target_width = temp.target_width;
+                } else if (t.aspectRatio < temp.aspectRatio)
                 {
-                    t.aspectRatio = highT[i].aspectRatio;
-                    t.center_mass_x = highT[i].center_mass_x;
-                    t.target_width = highT[i].target_width;
+                    t.aspectRatio = temp.aspectRatio;
+                    t.center_mass_x = temp.center_mass_x;
+                    t.target_width = temp.target_width;
                 }
             }
         }
@@ -458,11 +476,16 @@ public class AimingSystem implements PIDSource
      * @return true if the target is within +/- 1 degree, false if outside of
      * that range
      */
-    public boolean isAimedAtTarget()
+    public boolean isAimedAtTarget() throws NoTargetFoundException
     {
-        if (getDegreesToTarget() < 1.0 && getDegreesToTarget() > -1.0)
+        double temp = getDegreesToTarget();
+        if (temp < 1.0 && temp > -1.0)
         {
             return true;
+        }
+        if (temp == 9999.0)
+        {
+            throw new NoTargetFoundException("No target found.");
         }
         return false;
     }
@@ -476,11 +499,9 @@ public class AimingSystem implements PIDSource
         double temp = getDegreesToTarget();
         if (temp == 9999.0)
         {
-            return temp;
-        } else
-        {
             return 0.0;
         }
+        return temp;
     }
 
     /**
