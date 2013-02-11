@@ -270,7 +270,7 @@ public class UltimateAscentBot extends SimpleRobot
                     if (!isShooting)
                     {
                         boolean turnShooter = shooterStick.getRawButton(Parameters.kTurnShooterButton);
-                        gameMech.setShooterMotor(turnShooter);
+                        gameMech.cockShooter();
                     }
                 } catch (CANTimeoutException e)
                 {

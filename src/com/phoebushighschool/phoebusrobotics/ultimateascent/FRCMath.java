@@ -1,6 +1,8 @@
 package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
+import java.lang.String;
 import com.sun.squawk.util.MathUtils;
+
 /*
  */
 public class FRCMath {
@@ -18,7 +20,7 @@ public class FRCMath {
   }
 
   /** 
-   *  This method takes a radian and returns degrees
+   *  This methhod takes a radian and returns degrees
    */
     public double ConvertRadiansToDegrees(double radians)
     {

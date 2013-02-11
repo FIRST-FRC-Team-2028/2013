@@ -44,11 +44,6 @@ public class GameMech
     {
         return shooter.isShooterCocked();
     }
-    
-    public boolean isShooterLoaded()
-    {
-        return shooter.isDiscLoaded();
-    }
 
     /**
      *
@@ -57,13 +52,9 @@ public class GameMech
     {
         loader.setIndexerPiston(value);
     }
-    
-    /**
-     * 
-     * @param value 
-     */
-    public void setShooterMotor(boolean value) throws CANTimeoutException 
-    {
-        shooter.setShooterMotor(value);
-    }
+
+  public boolean isShooterLoaded()
+  {
+      return shooter.isDiscLoaded();
+  }
 }
