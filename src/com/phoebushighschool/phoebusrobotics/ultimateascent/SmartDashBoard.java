@@ -47,6 +47,6 @@ public class SmartDashBoard
         dash.putNumber("Distance to target", robot.getDistanceToTarget());
         dash.putNumber("Degrees to target", robot.getDegreesToTarget());
         dash.putString("Arm:", robot.getArmState());
-        dash.putString("We are doing this:", robot.autonState);
+        dash.putString("We are doing this:", robot.getAutonState());
     }    
 }

@@ -29,6 +29,7 @@ public class UltimateAscentBot extends SimpleRobot
     boolean turning = false;
     protected Joystick driveStick;
     protected Joystick shooterStick;
+    protected Joystick armStick;
     protected String autonState;
 
     public UltimateAscentBot()
@@ -69,6 +70,7 @@ public class UltimateAscentBot extends SimpleRobot
         }
         driveStick = new Joystick(1);
         shooterStick = new Joystick(2);
+        armStick = new Joystick(3);
     }
 
    public void autonomous()
@@ -278,6 +280,29 @@ public class UltimateAscentBot extends SimpleRobot
                 getWatchdog().feed();
 
             }
+             if (climber != null)
+            {
+                double leftArmValue = shooterStick.getY();
+                double rightArmValue = armStick.getY();
+                if (leftArmValue > Parameters.kJoystickDeadband 
+                        && leftArmValue < (-1.0 * Parameters.kJoystickDeadband))
+                {
+                    try {
+                        climber.moveForwardArmByJoystick(leftArmValue);
+                    } catch (CANTimeoutException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                if (rightArmValue > Parameters.kJoystickDeadband 
+                        && rightArmValue < (-1.0 * Parameters.kJoystickDeadband))
+                {
+                    try {
+                        climber.moveBackArmByJoystick(rightArmValue);
+                    } catch (CANTimeoutException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
         }
     }
 
@@ -392,11 +417,27 @@ public class UltimateAscentBot extends SimpleRobot
         }
     }
 
+    /**
+     * getDistanceToTarget()
+     * 
+     * This method will return the distance to the target according to the 
+     * AimingSystem for display on the dashboard.
+     * 
+     * @return 
+     */
     public double getDistanceToTarget()
     {
         return visionSystem.getDistanceToTarget();
     }
 
+    /**
+     * getDiscCount()
+     * 
+     * This method will return the remaining number of discs for display
+     * on the dashboard
+     * 
+     * @return 
+     */
     public int getDiscCount()
     {
         if (gameMech != null)
@@ -408,6 +449,14 @@ public class UltimateAscentBot extends SimpleRobot
         }
     }
 
+    /**
+     * isShooterCocked()
+     * 
+     * This method will return if the shooter is ready to be loaded and shot for
+     * display on the dashboard.
+     * 
+     * @return 
+     */
     public boolean isShooterCocked()
     {
         if (gameMech != null)
@@ -419,16 +468,54 @@ public class UltimateAscentBot extends SimpleRobot
         }
     }
 
+    /**
+     * getDegreesToTarget()
+     * 
+     * This method will return the offset in degrees to the target for display
+     * on the dashboard.
+     * 
+     * @return 
+     */
     public double getDegreesToTarget()
     {
         return visionSystem.getDegreesToTarget();
     }
+    
+    /**
+     * getArmState()
+     * 
+     * This method will tell us whether the forward arm is extended or retracted 
+     * for display on the dashboard.
+     * 
+     * @return 
+     */
     public String getArmState()
     {
         return climber.getArmState();
     }
+    
+    /**
+     * isShooterLoaded()
+     * 
+     * This method will return a boolean to tell whether or not a disc is in 
+     * the shooter for display on the dashboard.
+     * 
+     * @return 
+     */
     public boolean isShooterLoaded()
     {
         return gameMech.isShooterLoaded();
+    }
+    
+    /**
+     * getAutonState()
+     * 
+     * This method returns autonState for display on the dashboard.
+     * 
+     * @return String to indicate where we are in the autonomous loop/
+     */
+    public String getAutonState()
+    {
+        return autonState;
     }
 }
