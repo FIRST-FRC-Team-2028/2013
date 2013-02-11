@@ -15,7 +15,6 @@ public class TankDrive implements PIDOutput, PIDSource
 {
 
     protected UltimateAscentBot robot;
-    protected ClimbingSystem leftArm;
     protected Tread rightTread;
     protected Tread leftTread;
     public GyroSensor gyro = null;
