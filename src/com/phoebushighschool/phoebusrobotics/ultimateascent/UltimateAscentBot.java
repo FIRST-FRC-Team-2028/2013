@@ -23,11 +23,13 @@ public class UltimateAscentBot extends SimpleRobot
     public FRCMath math;
     public PIDController aimController;
     public PIDController turnController;
-    private DashBoard driverO;
+    private SmartDashBoard dash;
+    public ClimbingSystem climber;
     DriverStation ds;
     boolean turning = false;
     protected Joystick driveStick;
     protected Joystick shooterStick;
+    protected String autonState;
 
     public UltimateAscentBot()
     {
@@ -53,7 +55,7 @@ public class UltimateAscentBot extends SimpleRobot
                     drive,
                     drive);
         }
-        driverO = new DashBoard(this);
+        dash = new SmartDashBoard(this);
         ds = DriverStation.getInstance();
         aimController.setInputRange(Parameters.MIN_CAMERA_INPUT, Parameters.MAX_CAMERA_INPUT);
         aimController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
@@ -69,34 +71,35 @@ public class UltimateAscentBot extends SimpleRobot
         shooterStick = new Joystick(2);
     }
 
-    public void autonomous()
+   public void autonomous()
     {
         try
         {
-            double _P = (ds.getAnalogIn(1) / 3.3) * 100.0;
-            double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
-            double _D = (ds.getAnalogIn(3) / 3.3) * 0.01;
-//            System.out.println("P: " + _P + ", I: " + _I + ", D: " + _D);
+            double _P = (ds.getAnalogIn(1) / 3.3) * 500.0;
+            double _I = (ds.getAnalogIn(2) / 3.3);
+            double _D = (ds.getAnalogIn(3) / 3.3);
+            double kDamp = (ds.getAnalogIn(1) / 3.3) * 50;
+            System.out.println("P: " + _P + ", I: " + _I + ", D: " + _D);
             aimController.setPID(_P, _I, _D);
-//            if (turnController != null)
-//            {
-//                turnController.setPID(_P, _I, _D);
-//            }
+            if (turnController != null)
+            {
+                turnController.setPID(_P, _I, _D);
+            }
             RobotState state = new RobotState();
-            double time = Timer.getFPGATimestamp();
             while (isAutonomous() && isEnabled())
             {
-//                driverO.updateDashboard();
+                dash.updateDashboard();
+                double time = Timer.getFPGATimestamp();
                 switch (state.getState())
                 {
                     case RobotState.drive:
-//                        drive.drive(Parameters.AUTONOMOUS_DRIVE_FORWARD_SPEED, 0.0, 0.0);
-//                        visionSystem.setShootPosition();
-//                        if (Timer.getFPGATimestamp() - time < 0.5)
-//                        {
-                        state.nextState();
-//                        }
+                        drive.drive(Parameters.AUTONOMOUS_DRIVE_FORWARD_SPEED, 0.0, kDamp);
+                        if (Timer.getFPGATimestamp() - time < 0.5)
+                        {
+                            state.nextState();
+                        }
                         System.out.println("Driving forward");
+                        autonState = "Driving";
                         break;
                     case RobotState.turnTowardsTarget:
                         if (drive.isGyroPresent())
@@ -106,6 +109,7 @@ public class UltimateAscentBot extends SimpleRobot
                                 state.nextState();
                             }
                             System.out.println("Turning towards");
+                            autonState = "Turning to face target";
                             break;
                         } else
                         {
@@ -117,8 +121,9 @@ public class UltimateAscentBot extends SimpleRobot
                         if (aim())
                         {
                             state.nextState();
-                            DisableAimController();
                         }
+                        System.out.println("Turning to. Angle: " + visionSystem.getDegreesToTarget());
+                        autonState = "Lining up with target";
                         break;
                     case RobotState.cockShooter:
                         if (gameMech != null)
@@ -126,6 +131,7 @@ public class UltimateAscentBot extends SimpleRobot
                             if (gameMech.cockShooter())
                             {
                                 state.nextState();
+                                autonState = "preparing to shoot";
                                 break;
                             }
                         } else
@@ -151,6 +157,7 @@ public class UltimateAscentBot extends SimpleRobot
                             if (gameMech.shoot())
                             {
                                 state.nextState();
+                              autonState = "shooting. Faint Wheeeeeee is heard";
                             }
                         } else
                         {
@@ -184,7 +191,7 @@ public class UltimateAscentBot extends SimpleRobot
         int i = 0;
         while (isOperatorControl() && isEnabled())
         {
-//            driverO.updateDashboard();
+//            dash.updateDashboard();
             //
             // Driver Controls
             //
@@ -415,5 +422,13 @@ public class UltimateAscentBot extends SimpleRobot
     public double getDegreesToTarget()
     {
         return visionSystem.getDegreesToTarget();
+    }
+    public String getArmState()
+    {
+        return climber.getArmState();
+    }
+    public boolean isShooterLoaded()
+    {
+        return gameMech.isShooterLoaded();
     }
 }

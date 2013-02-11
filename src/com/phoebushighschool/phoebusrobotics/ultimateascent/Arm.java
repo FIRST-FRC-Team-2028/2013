@@ -7,6 +7,7 @@ public class Arm {
 
     protected boolean catchState = false;
     protected CANJaguar motor;
+    public String armState = "Retracted";
 //    protected DigitalInput latchSwitch;
 //    protected DigitalInput handOffSwitch;
 
@@ -29,7 +30,7 @@ public class Arm {
         motor.setX(1.0);
         if (isFullyExtended()) {
             motor.setX(0.0);
-            System.out.println("All the way out!");
+            armState = "Extended";
             return true;
         }
         return false;
@@ -38,12 +39,17 @@ public class Arm {
     public boolean retract() throws CANTimeoutException {
         if (isFullyRetracted()) {
             motor.setX(0.0);
+            armState = "Retracted";
             return true;
             }   
         else {
             motor.setX(-1.0);
         }
         return false;
+    }
+    public void moveByValue(double JoystickValue) throws CANTimeoutException
+    {
+        motor.setX(JoystickValue);
     }
 //       too narrow
 //    public boolean isLatched() {
@@ -67,7 +73,6 @@ public class Arm {
             motor.setX(0.0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
-
         }
     }
 }
