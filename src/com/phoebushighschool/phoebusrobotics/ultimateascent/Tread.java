@@ -15,8 +15,7 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 public class Tread {
 
     protected TankDrive drive;
-    protected Solenoid gearShifterHigh;
-    protected Solenoid gearShifterLow;
+    protected Solenoid gearShifter;
     CANJaguar motor;
 
     /**
@@ -35,8 +34,7 @@ public class Tread {
         motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
         motor.configNeutralMode(CANJaguar.NeutralMode.kBrake);
         drive = parent;
-        gearShifterHigh = new Solenoid(Parameters.crioRelayModule, highGearChannel);
-        gearShifterLow = new Solenoid(Parameters.crioRelayModule, lowGearChannel);
+        gearShifter = new Solenoid(Parameters.crioRelayModule); 
         setGear(Gear.kLow); 
     }
 
@@ -66,13 +64,11 @@ public class Tread {
     {
         if (gear == Gear.kLow)
         {
-            gearShifterHigh.set(false);
-            gearShifterLow.set(true);     // FIX ME!!! Verify false is really low gear
+            gearShifter.set(false);
         }
         else
         {
-            gearShifterLow.set(false); 
-            gearShifterHigh.set(true);      //FIX ME!!! Verify true is really high gear
+            gearShifter.set(true); 
         }
     }
     
@@ -92,9 +88,9 @@ public class Tread {
      * 
      * @return 
      */
-    public boolean isLowGear() 
+    public boolean isLowGear() //FIX ME!!! 
     {
-        if (gearShifterHigh.get() == false)     //FIX ME!!! Verify true is really high gear
+        if (gearShifter.get() == false)     //FIX ME!!! Verify true is really high gear
         {
             return true;
         }
@@ -111,15 +107,15 @@ public class Tread {
      * 
      * @return
      */
-    public boolean isHighGear() 
+    public boolean isHighGear()
     {
-        if (gearShifterLow.get())     //FIX ME!!! Verify false is really low gear
+        if (gearShifter.get() == true)     //FIX ME!!! Verify true is really high gear
         {
-            return false;
+            return true;
         }
         else
         {
-            return true;
+            return false;
         }
     }
     
@@ -127,7 +123,7 @@ public class Tread {
      * 
      * @return 
      */
-    public Gear getGear()
+    public Gear getGear() 
     {
         if (isHighGear())
         {
