@@ -132,7 +132,15 @@ public class Shooter {
             motor.setX(0.0);
         }
     }
-    
+    /**
+     *moveShooterManual()
+     * 
+     * This method will move the cam for the shooter at the speed designated by 
+     * Parameters.
+     * 
+     * @param canMove
+     * @throws CANTimeoutException 
+     */
     public void moveShooterManual(boolean canMove) throws CANTimeoutException
     {
         if (canMove)

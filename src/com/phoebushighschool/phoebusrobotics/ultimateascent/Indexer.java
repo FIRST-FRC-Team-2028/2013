@@ -6,50 +6,30 @@ import edu.wpi.first.wpilibj.Solenoid;
 /*
  */
 public class Indexer {
-
     protected Solenoid indexer;
-    public DigitalInput discPreIndex;
+    protected DigitalInput discPreIndex;
     public int discCountCurrent;
     public boolean indexerHasRun;
+    public boolean indexerDiscPass;
     
   public Indexer()
   {
-      indexer = new Solenoid(Parameters.PushDiscIntoShooterSolenoid);
-      discPreIndex = new DigitalInput(Parameters.DiscIsLoadedInputGPIOChannel);
-      discCountCurrent = Parameters.discCountInit;
-      indexerHasRun = false;
+      indexer = new Solenoid(Parameters.DiscIndexerSolenoidChannel);
+      
   }
-
   /** 
    *  This method will index one disc into the shooter.
    */
-  public void indexOneDisc() {
-      if (discPreIndex.get() && discCountCurrent >= 1 && !indexerHasRun){
-        indexer.set(true);
-            if (!discPreIndex.get()){                
-                if (discPreIndex.get()){
-                    indexer.set(false);
-                }
-            }
-            indexerHasRun = true;
-      }
-      if (discCountCurrent >= 1 && indexerHasRun) {
-          discCountCurrent = discCountCurrent - 1;
-          indexerHasRun = false;
-      }
+      
+  public void setIndexerPiston(boolean value){
+      indexer.set(value);
   }
 
   public boolean isDiscLoaded() {  
     return discPreIndex.get();
   }
   
-  public int getDiscCountCurrent()
-  {
+  public int getDiscCountCurrent() {
       return discCountCurrent;
-  }
-  
-  public void setIndexerPiston(boolean value)
-  {
-      indexer.set(value);
   }
 }
