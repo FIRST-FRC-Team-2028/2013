@@ -13,26 +13,26 @@ public class GameMech {
     private GameMechState desiredState;
 
     /**
-     * 
+     *
      * @param bot
-     * @throws CANTimeoutException 
+     * @throws CANTimeoutException
      */
-    public GameMech(UltimateAscentBot bot) throws CANTimeoutException
-    {
+    public GameMech(UltimateAscentBot bot) throws CANTimeoutException {
         robot = bot;
         loader = new Indexer();
         shooter = new Shooter();
-        currentState =  GameMechState.kManualControl;
+        currentState = GameMechState.kManualControl;
         desiredState = GameMechState.kManualControl;
     }
-    
+
     /**
      * This method will set the desired state to "Unloaded"
      */
     public boolean shoot() throws CANTimeoutException {
         desiredState = GameMech.GameMechState.kUnloaded;
-        if (currentState == GameMech.GameMechState.kUnloaded)
+        if (currentState == GameMech.GameMechState.kUnloaded) {
             return true;
+        }
         return false;
     }
 
@@ -41,35 +41,43 @@ public class GameMech {
      */
     public boolean reload() {
         desiredState = GameMech.GameMechState.kArmed;
-        if (currentState == GameMech.GameMechState.kArmed)
+        if (currentState == GameMech.GameMechState.kArmed) {
             return true;
+        }
         return false;
     }
 
     /**
-     * 
+     * cockShooter
+     *
      * @return
-     * @throws CANTimeoutException 
+     * @throws CANTimeoutException
      */
-    public boolean cockShooter() throws CANTimeoutException {
-        //return shooter.cockShooter();
+    public boolean cockShooter() throws CANTimeoutException 
+    {
+        if(shooter.isShooterCocked())
+        {
+            return true;
+        }
+        return false;
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public int getDiscCount() {
         return loader.getDiscCountCurrent();
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public boolean isShooterCocked() {
-        if (currentState == GameMech.GameMechState.kArmed)
+        if (currentState == GameMech.GameMechState.kArmed) {
             return true;
+        }
         return false;
     }
 
@@ -83,8 +91,8 @@ public class GameMech {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public boolean isShooterLoaded() {
         return shooter.isDiscLoaded();
@@ -92,106 +100,92 @@ public class GameMech {
 
     /**
      * moveShooterManual()
-     * 
+     *
      * This method moves the shooter cam at a constant speed.
-     * 
-     * @throws CANTimeoutException 
+     *
+     * @throws CANTimeoutException
      */
     public void moveShooterManual(boolean move) throws CANTimeoutException {
         currentState = GameMechState.kManualControl;
         desiredState = currentState;
         shooter.moveShooterManual(move);
     }
-    
+
     /**
      * getCurrentState()
-     * 
+     *
      * Returns the current currentState of the Game Mechanism.
-     * 
+     *
      * @return GameMechState
      */
-    public GameMechState getCurrentState()
-    {
+    public GameMechState getCurrentState() {
         return currentState;
     }
-    
+
     /**
      * getDesiredState()
-     * 
+     *
      * Returns the state that the Game Mechanism is striving to be in.
-     * 
+     *
      * @return GameMechState - Desired state
      */
-    public GameMechState getDesiredState()
-    {
+    public GameMechState getDesiredState() {
         return desiredState;
     }
 
     /**
      * processGameMech()
-     * 
-     * This method is going to compare the current GameMech state to the 
-     * desired GameMech state and perform the appropriate actions to achieve
-     * the desired state.  It will be called every time in the SimpleRobot's
-     * control while loop (in either autonomous or operator control).
-     * 
+     *
+     * This method is going to compare the current GameMech state to the desired
+     * GameMech state and perform the appropriate actions to achieve the desired
+     * state. It will be called every time in the SimpleRobot's control while
+     * loop (in either autonomous or operator control).
+     *
      * This method should NEVER be called when the shooter is in Manual Control
      * mode!
-     * 
+     *
      * @return - the GameMech's current state
      */
-    public GameMechState processGameMech() throws CANTimeoutException
-    {
-        if(desiredState == GameMechState.kManualControl)
-        {
+    public GameMechState processGameMech() throws CANTimeoutException {
+        if (desiredState == GameMechState.kManualControl) {
             currentState = GameMechState.kManualControl;
             shooter.setShooterMotor(false);
             loader.setIndexerPiston(false);
             return currentState;
         }
-        
-        if(currentState == desiredState)
-        {
+
+        if (currentState == desiredState) {
             return currentState;
         }
-        
+
         // We are not at our desired state yet
-        if(currentState == GameMechState.kRecocking)
-        {
-            if(shooter.cockShooter())
-            {
+        if (currentState == GameMechState.kRecocking) {
+            if (shooter.cockShooter()) {
                 currentState = GameMechState.kReloading;
                 return currentState;
             }
         }
-        if(currentState == GameMechState.kReloading)
-        {
-            if(shooter.isDiscLoaded())
-            {
+        if (currentState == GameMechState.kReloading) {
+            if (shooter.isDiscLoaded()) {
                 loader.setIndexerPiston(false);
                 currentState = GameMechState.kArmed;
                 return currentState;
-            }
-            else 
-            {
+            } else {
                 loader.setIndexerPiston(true);
             }
         }
-        if(currentState == GameMechState.kArmed)
-        {
-            if (shooter.shoot())
-            {
+        if (currentState == GameMechState.kArmed) {
+            if (shooter.shoot()) {
                 currentState = GameMechState.kUnloaded;
                 return currentState;
             }
         }
-        if (currentState == GameMechState.kUnloaded)
-        {
+        if (currentState == GameMechState.kUnloaded) {
             currentState = GameMechState.kRecocking;
         }
         return currentState;
     }
-    
+
     /**
      *
      */
