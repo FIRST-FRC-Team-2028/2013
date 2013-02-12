@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Solenoid;
  */
 public class Indexer {
 
-    protected GameMech gameMech;
     protected Solenoid indexer;
     public DigitalInput discPreIndex;
     public int discCountCurrent;
@@ -15,7 +14,6 @@ public class Indexer {
     
   public Indexer()
   {
-      gameMech = new GameMech();
       indexer = new Solenoid(Parameters.PushDiscIntoShooterSolenoid);
       discPreIndex = new DigitalInput(Parameters.DiscIsLoadedInputGPIOChannel);
       discCountCurrent = Parameters.discCountInit;

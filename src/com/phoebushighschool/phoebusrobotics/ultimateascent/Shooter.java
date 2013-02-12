@@ -60,7 +60,7 @@ public class Shooter {
     }
 
     /**
-     * cock()
+     * cockShooter()
      * 
      * This method will move the cam until the arm reaches the "cocked"
      * position.
@@ -71,7 +71,7 @@ public class Shooter {
      * @exception CANTimeoutException - communication with Jaguar over the
      *                                  CAN bus was lost
      */
-    public boolean cock() throws CANTimeoutException {
+    public boolean cockShooter() throws CANTimeoutException {
         if (isShooterCocked()) {
             motor.setX(0.0);
             return true;
@@ -131,5 +131,13 @@ public class Shooter {
         {
             motor.setX(0.0);
         }
+    }
+    
+    public void moveShooterManual(boolean canMove) throws CANTimeoutException
+    {
+        if (canMove)
+            motor.setX(Parameters.kShooterMotorSpeed);
+        else
+            motor.setX(0.0);
     }
 }
