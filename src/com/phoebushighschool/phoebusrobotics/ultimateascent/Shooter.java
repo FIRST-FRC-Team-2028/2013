@@ -132,4 +132,22 @@ public class Shooter {
             motor.setX(0.0);
         }
     }
-}
+    /**
+     * moveShooterManual()
+     * 
+     * Method that will move the shooter in response to a button. 
+     * 
+     * @param value
+     * @throws CANTimeoutException 
+     */
+    public void moveShooterManual(boolean value) throws CANTimeoutException {
+      if (value) 
+      {
+          motor.setX(Parameters.kShooterMotorSpeed);
+      }
+      else
+      {
+          motor.setX(0.0);
+      }
+      }  
+    }
