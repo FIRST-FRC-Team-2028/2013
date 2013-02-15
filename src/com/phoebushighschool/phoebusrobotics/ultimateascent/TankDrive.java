@@ -27,10 +27,10 @@ public class TankDrive implements PIDOutput, PIDSource
    * 
    * @throws CANTimeoutException 
    */
-    public TankDrive() throws CANTimeoutException
+     public TankDrive() throws CANTimeoutException
     {
-        rightTread = new Tread(this, Parameters.rightTreadCanID, Parameters.rightGearLowSolenoidChannel, Parameters.rightGearHighSolenoidChannel);
-        leftTread = new Tread(this, Parameters.leftTreadCanID, Parameters.leftGearLowSolenoidChannel, Parameters.leftGearHighSolenoidChannel);
+        rightTread = new Tread(this, Parameters.rightTreadCanID, Parameters.rightGearLowSolenoidChannel);
+        leftTread = new Tread(this, Parameters.leftTreadCanID, Parameters.leftGearLowSolenoidChannel);
         rightTread.setGear(Tread.Gear.kLow);
         leftTread.setGear(Tread.Gear.kLow);
 //        gyro = new GyroSensor(Parameters.gyroAnalogChannel);
@@ -42,7 +42,8 @@ public class TankDrive implements PIDOutput, PIDSource
    * 
    *  This method takes a percent value, and turns the robot according to 
    *  the value where positive values are to the right and negative values
-   *  are to the left.
+   *  are to the left.There is a negative 1 due to a swapped wire on both robots, 
+   * so this corrects for it.
    * 
    * when robot is stationary: one tread moves forward while other tread moves 
    *                           in reverse
@@ -62,6 +63,8 @@ public class TankDrive implements PIDOutput, PIDSource
    */
   public void drive(double drivePercentPower, double turnPercentPower, double kDamp) throws CANTimeoutException
   {
+      drivePercentPower = (drivePercentPower * -1.0);
+      turnPercentPower = (turnPercentPower * -1.0);
       double leftSpeed;
       double rightSpeed;
       
@@ -85,7 +88,7 @@ public class TankDrive implements PIDOutput, PIDSource
       leftSpeed = drivePercentPower + turnPercentPower;
       rightSpeed = drivePercentPower - turnPercentPower;
       
-      leftTread.drive (leftSpeed); 
+      leftTread.drive (leftSpeed * -1.0); 
       rightTread.drive(rightSpeed);
   }
 

@@ -35,6 +35,7 @@ public class UltimateAscentBot extends SimpleRobot {
     public UltimateAscentBot() {
         try {
             drive = new TankDrive();
+            climber = new ClimbingSystem();
             //gameMech = new GameMech();
         } catch (CANTimeoutException ex) {
             System.out.println(ex);
@@ -261,7 +262,7 @@ public class UltimateAscentBot extends SimpleRobot {
                 double leftArmValue = shooterStick.getY();
                 double rightArmValue = armStick.getY();
                 if (leftArmValue > Parameters.kJoystickDeadband
-                        && leftArmValue < (-1.0 * Parameters.kJoystickDeadband)) {
+                        || leftArmValue < (-1.0 * Parameters.kJoystickDeadband)) {
                     try {
                         climber.moveForwardArmByJoystick(leftArmValue);
                     } catch (CANTimeoutException ex) {
@@ -269,7 +270,7 @@ public class UltimateAscentBot extends SimpleRobot {
                     }
                 }
                 if (rightArmValue > Parameters.kJoystickDeadband
-                        && rightArmValue < (-1.0 * Parameters.kJoystickDeadband)) {
+                        || rightArmValue < (-1.0 * Parameters.kJoystickDeadband)) {
                     try {
                         climber.moveBackArmByJoystick(rightArmValue);
                     } catch (CANTimeoutException ex) {

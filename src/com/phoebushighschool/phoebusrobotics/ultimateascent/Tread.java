@@ -15,8 +15,7 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 public class Tread {
 
     protected TankDrive drive;
-    protected Solenoid gearShifterHigh;
-    protected Solenoid gearShifterLow;
+    protected Solenoid gearShifter;
     CANJaguar motor;
 
     /**
@@ -29,14 +28,13 @@ public class Tread {
      * @param gearChannel - The solenoid channel for the gear selector 
      * @throws CANTimeoutException - when communication with the jaguar fails over the CAN bus
      */ 
-    public Tread(TankDrive parent, int canID, int lowGearChannel, int highGearChannel) throws CANTimeoutException 
+    public Tread(TankDrive parent, int canID, int gearChannel) throws CANTimeoutException 
     {
         motor = new CANJaguar(canID, CANJaguar.ControlMode.kPercentVbus);
         motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
         motor.configNeutralMode(CANJaguar.NeutralMode.kBrake);
         drive = parent;
-        gearShifterHigh = new Solenoid(Parameters.crioRelayModule, highGearChannel);
-        gearShifterLow = new Solenoid(Parameters.crioRelayModule, lowGearChannel);
+        gearShifter = new Solenoid(Parameters.crioRelayModule, gearChannel);
         setGear(Gear.kLow); 
     }
 
@@ -66,13 +64,11 @@ public class Tread {
     {
         if (gear == Gear.kLow)
         {
-            gearShifterHigh.set(false);
-            gearShifterLow.set(true);     // FIX ME!!! Verify false is really low gear
+            gearShifter.set(true);
         }
         else
         {
-            gearShifterLow.set(false); 
-            gearShifterHigh.set(true);      //FIX ME!!! Verify true is really high gear
+            gearShifter.set(false); 
         }
     }
     
@@ -94,7 +90,7 @@ public class Tread {
      */
     public boolean isLowGear() 
     {
-        if (gearShifterHigh.get() == false)     //FIX ME!!! Verify true is really high gear
+        if (gearShifter.get() == false)     //FIX ME!!! Verify true is really high gear
         {
             return true;
         }
@@ -113,7 +109,7 @@ public class Tread {
      */
     public boolean isHighGear() 
     {
-        if (gearShifterLow.get())     //FIX ME!!! Verify false is really low gear
+        if (!gearShifter.get())     //FIX ME!!! Verify false is really low gear
         {
             return false;
         }
