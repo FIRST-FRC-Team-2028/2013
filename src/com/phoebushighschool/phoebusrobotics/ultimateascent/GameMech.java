@@ -152,20 +152,28 @@ public class GameMech {
             if (shooter.isShooterCocked() && shooter.isDiscLoaded())
             {
                 currentState = GameMechState.kArmed;
+                return currentState;
             }
-            if (shooter.isShooterCocked())
+            else if (shooter.isShooterCocked())
             {
                 currentState = GameMechState.kReloading;
+                return currentState;
             }
-            if (!shooter.isShooterCocked())
+            else if (!shooter.isShooterCocked())
             {
                 currentState = GameMechState.kRecocking;
+                return currentState;
             }
-            if (!shooter.isShooterCocked() && ! shooter.isDiscLoaded())
+            else if (!shooter.isShooterCocked() && ! shooter.isDiscLoaded())
             {
                 currentState = GameMechState.kUnloaded;
+                return currentState;
             }
-        }
+            else
+            {
+                return currentState = GameMechState.kManualControl;
+            }
+            }
         if (desiredState == GameMechState.kManualControl) {
             currentState = GameMechState.kManualControl;
             shooter.setShooterMotor(false);
