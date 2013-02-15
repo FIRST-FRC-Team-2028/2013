@@ -239,15 +239,14 @@ public class UltimateAscentBot extends SimpleRobot {
 
                     } else {
                         // Game Mech is controlled autonomously
-                        if (armStick.getRawButton(Parameters.kShootButton))
-                        {
+                        if (armStick.getRawButton(Parameters.kShootButton)) {
                             gameMech.shoot();
                             currentRobotActivity = "Shooting";
                         }
-                        if (armStick.getRawButton(Parameters.kReloadButton))
-                        {
-                            if (gameMech.getDesiredState() != GameMech.GameMechState.kUnloaded)
+                        if (armStick.getRawButton(Parameters.kReloadButton)) {
+                            if (gameMech.getDesiredState() != GameMech.GameMechState.kUnloaded) {
                                 gameMech.reload();
+                            }
                             currentRobotActivity = "Reloading Shooter";
                         }
                         gameMech.processGameMech();
@@ -261,21 +260,21 @@ public class UltimateAscentBot extends SimpleRobot {
             if (climber != null) {
                 double leftArmValue = shooterStick.getY();
                 double rightArmValue = armStick.getY();
-                if (leftArmValue > Parameters.kJoystickDeadband
-                        || leftArmValue < (-1.0 * Parameters.kJoystickDeadband)) {
-                    try {
-                        climber.moveForwardArmByJoystick(leftArmValue);
-                    } catch (CANTimeoutException ex) {
-                        ex.printStackTrace();
+                try {
+                    if (leftArmValue < Parameters.kJoystickDeadband
+                            && leftArmValue > (-1.0 * Parameters.kJoystickDeadband)) {
+                        climber.moveForwardArmByJoystick(0.0);
+                    } else {
+                        climber.moveForwardArmByJoystick(rightArmValue);
                     }
-                }
-                if (rightArmValue > Parameters.kJoystickDeadband
-                        || rightArmValue < (-1.0 * Parameters.kJoystickDeadband)) {
-                    try {
-                        climber.moveBackArmByJoystick(rightArmValue);
-                    } catch (CANTimeoutException ex) {
-                        ex.printStackTrace();
+                    if (rightArmValue < Parameters.kJoystickDeadband
+                            && rightArmValue > (-1.0 * Parameters.kJoystickDeadband)) {
+                        climber.moveBackArmByJoystick(0.0);
+                    } else {
+                        climber.moveBackArmByJoystick(leftArmValue);
                     }
+                } catch (CANTimeoutException ex) {
+                    ex.printStackTrace();
                 }
             }
             Timer.delay(Parameters.TIMER_DELAY);
