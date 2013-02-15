@@ -147,6 +147,25 @@ public class GameMech {
      * @return - the GameMech's current state
      */
     public GameMechState processGameMech() throws CANTimeoutException {
+        if(currentState == GameMechState.kManualControl)        // $$$ ToDo: Check to see if this is the right condition.
+        {
+            if (shooter.isShooterCocked() && shooter.isDiscLoaded())
+            {
+                currentState = GameMechState.kArmed;
+            }
+            if (shooter.isShooterCocked())
+            {
+                currentState = GameMechState.kReloading;
+            }
+            if (!shooter.isShooterCocked())
+            {
+                currentState = GameMechState.kRecocking;
+            }
+            if (!shooter.isShooterCocked() && ! shooter.isDiscLoaded())
+            {
+                currentState = GameMechState.kUnloaded;
+            }
+        }
         if (desiredState == GameMechState.kManualControl) {
             currentState = GameMechState.kManualControl;
             shooter.setShooterMotor(false);

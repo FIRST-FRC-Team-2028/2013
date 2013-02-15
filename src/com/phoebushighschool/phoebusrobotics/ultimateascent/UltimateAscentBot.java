@@ -265,13 +265,13 @@ public class UltimateAscentBot extends SimpleRobot {
                             && leftArmValue > (-1.0 * Parameters.kJoystickDeadband)) {
                         climber.moveForwardArmByJoystick(0.0);
                     } else {
-                        climber.moveForwardArmByJoystick(rightArmValue);
+                        climber.moveForwardArmByJoystick(leftArmValue);
                     }
                     if (rightArmValue < Parameters.kJoystickDeadband
                             && rightArmValue > (-1.0 * Parameters.kJoystickDeadband)) {
                         climber.moveBackArmByJoystick(0.0);
                     } else {
-                        climber.moveBackArmByJoystick(leftArmValue);
+                        climber.moveBackArmByJoystick(rightArmValue);
                     }
                 } catch (CANTimeoutException ex) {
                     ex.printStackTrace();
