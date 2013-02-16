@@ -105,10 +105,10 @@ public class GameMech {
      *
      * @throws CANTimeoutException
      */
-    public void moveShooterManual(boolean move) throws CANTimeoutException {
+    public void moveShooterManual(boolean move, boolean forward) throws CANTimeoutException {
         currentState = GameMechState.kManualControl;
         desiredState = currentState;
-        shooter.moveShooterManual(move);
+        shooter.moveShooterManual(move, forward);
     }
 
     /**

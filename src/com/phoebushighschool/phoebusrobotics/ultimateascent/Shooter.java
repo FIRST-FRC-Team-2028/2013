@@ -141,10 +141,14 @@ public class Shooter {
      * @param canMove
      * @throws CANTimeoutException 
      */
-    public void moveShooterManual(boolean canMove) throws CANTimeoutException
+    public void moveShooterManual(boolean canMove, boolean forward) throws CANTimeoutException
     {
-        if (canMove)
+        if (canMove && forward)
             motor.setX(Parameters.kShooterMotorSpeed);
+        else if (canMove)
+        {
+            motor.setX(Parameters.kShooterMotorSpeed * -1.0);
+        }
         else
             motor.setX(0.0);
     }

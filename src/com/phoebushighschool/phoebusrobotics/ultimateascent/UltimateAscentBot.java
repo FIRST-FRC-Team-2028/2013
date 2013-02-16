@@ -232,11 +232,12 @@ public class UltimateAscentBot extends SimpleRobot {
                         boolean indexerButton = shooterStick.getRawButton(Parameters.kIndexerPistonButton);
                         gameMech.setIndexerPiston(indexerButton);
                         // Manually exercise shooter cam
-                        boolean turnShooterButton = shooterStick.getRawButton(Parameters.kTurnShooterButton);
-                        gameMech.moveShooterManual(turnShooterButton);
+                        boolean turnShooterButton = shooterStick.getRawButton(Parameters.kTurnShooterForwardButton);
+                        gameMech.moveShooterManual(turnShooterButton, true);
                         currentRobotActivity = "You have control over"
                                 + " the Game Mechanism";
-
+                        boolean turnShooterReverseButton = shooterStick.getRawButton(Parameters.kTurnShooterReverseButton);
+                        gameMech.moveShooterManual(turnShooterReverseButton, false);
                     }
                     // Game Mech is controlled autonomously
                     if (armStick.getRawButton(Parameters.kShootButton)) {
