@@ -13,8 +13,7 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
  *
  * @author jmiller015
  */
-public class UltimateAscentBot extends SimpleRobot
-{
+public class UltimateAscentBot extends SimpleRobot {
 
     protected AimingSystem visionSystem;
     protected TankDrive drive;
@@ -33,15 +32,12 @@ public class UltimateAscentBot extends SimpleRobot
     protected String currentRobotActivity;
     protected String currentGear;
 
-    public UltimateAscentBot()
-    {
-        try
-        {
+    public UltimateAscentBot() {
+        try {
             drive = new TankDrive();
             climber = new ClimbingSystem();
             //gameMech = new GameMech();
-        } catch (CANTimeoutException ex)
-        {
+        } catch (CANTimeoutException ex) {
             System.out.println(ex);
         }
         visionSystem = new AimingSystem();
@@ -50,8 +46,7 @@ public class UltimateAscentBot extends SimpleRobot
                 Parameters.kRobotDifferential,
                 visionSystem,
                 drive);
-        if (drive.isGyroPresent())
-        {
+        if (drive.isGyroPresent()) {
             turnController = new PIDController(Parameters.kRobotProportional,
                     Parameters.kRobotIntegral,
                     Parameters.kRobotDifferential,
@@ -63,8 +58,7 @@ public class UltimateAscentBot extends SimpleRobot
         aimController.setInputRange(Parameters.MIN_CAMERA_INPUT, Parameters.MAX_CAMERA_INPUT);
         aimController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
         aimController.setAbsoluteTolerance(Parameters.CAMERA_TOLERANCE);
-        if (turnController != null)
-        {
+        if (turnController != null) {
             turnController.setInputRange(Parameters.MIN_GYRO_INPUT, Parameters.MAX_GYRO_INPUT);
             turnController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
             turnController.setAbsoluteTolerance(Parameters.GYRO_TOLERANCE);
@@ -75,104 +69,83 @@ public class UltimateAscentBot extends SimpleRobot
         armStick = new Joystick(3);
     }
 
-    public void autonomous()
-    {
-        try
-        {
+    public void autonomous() {
+        try {
             double _P = (ds.getAnalogIn(1) / 3.3) * 500.0;
             double _I = (ds.getAnalogIn(2) / 3.3);
             double _D = (ds.getAnalogIn(3) / 3.3);
             double kDamp = (ds.getAnalogIn(1) / 3.3) * 50;
             System.out.println("P: " + _P + ", I: " + _I + ", D: " + _D);
             aimController.setPID(_P, _I, _D);
-            if (turnController != null)
-            {
+            if (turnController != null) {
                 turnController.setPID(_P, _I, _D);
             }
             RobotState state = new RobotState();
-            while (isAutonomous() && isEnabled())
-            {
+            while (isAutonomous() && isEnabled()) {
                 dash.updateDashboard();
                 double time = Timer.getFPGATimestamp();
-                switch (state.getState())
-                {
+                switch (state.getState()) {
                     case RobotState.drive:
                         drive.drive(Parameters.AUTONOMOUS_DRIVE_FORWARD_SPEED, 0.0, kDamp);
-                        if (Timer.getFPGATimestamp() - time < 0.5)
-                        {
+                        if (Timer.getFPGATimestamp() - time < 0.5) {
                             state.nextState();
                         }
                         System.out.println("Driving forward");
                         currentRobotActivity = "Driving";
                         break;
                     case RobotState.turnTowardsTarget:
-                        if (drive.isGyroPresent())
-                        {
-                            if (setAngle(-20.0))
-                            {
+                        if (drive.isGyroPresent()) {
+                            if (setAngle(-20.0)) {
                                 state.nextState();
                             }
                             System.out.println("Turning towards");
                             currentRobotActivity = "Turning to face target";
                             break;
-                        } else
-                        {
+                        } else {
                             state.nextState();
                             System.out.println("No Gyro");
                             break;
                         }
                     case RobotState.turnToTarget:
                         boolean aimed;
-                        try
-                        {
+                        try {
                             aimed = aim();
-                        } catch (NoTargetFoundException e)
-                        {
+                        } catch (NoTargetFoundException e) {
                             break;
                         }
-                        if (aimed)
-                        {
+                        if (aimed) {
                             state.nextState();
                         }
 //                        System.out.println("Turning to. Angle: " + visionSystem.getDegreesToTarget());
                         currentRobotActivity = "Lining up with target";
                         break;
                     case RobotState.cockShooter:
-                        if (gameMech != null)
-                        {
-                            if (gameMech.cockShooter())
-                            {
+                        if (gameMech != null) {
+                            if (gameMech.cockShooter()) {
                                 state.nextState();
                                 currentRobotActivity = "preparing to shoot";
                                 break;
                             }
-                        } else
-                        {
+                        } else {
                             state.nextState();
                         }
                         break;
                     case RobotState.loadShooter:
-                        if (gameMech != null)
-                        {
-                            if (gameMech.reload())
-                            {
+                        if (gameMech != null) {
+                            if (gameMech.reload()) {
                                 state.nextState();
                             }
-                        } else
-                        {
+                        } else {
                             state.nextState();
                         }
                         break;
                     case RobotState.shootShooter:
-                        if (gameMech != null)
-                        {
-                            if (gameMech.shoot())
-                            {
+                        if (gameMech != null) {
+                            if (gameMech.shoot()) {
                                 state.nextState();
                                 currentRobotActivity = "shooting. Faint Wheeeeeee is heard";
                             }
-                        } else
-                        {
+                        } else {
                             state.nextState();
                         }
                         break;
@@ -181,16 +154,14 @@ public class UltimateAscentBot extends SimpleRobot
                 getWatchdog().feed();
             }
             DisableAimController();
-        } catch (CANTimeoutException e)
-        {
+        } catch (CANTimeoutException e) {
         }
     }
 
     /**
      *
      */
-    public void operatorControl()
-    {
+    public void operatorControl() {
         double kDamp = (ds.getAnalogIn(1) / 3.3) * 50;
 //        double _P = (ds.getAnalogIn(1) / 3.3) * 100.0;
 //        double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
@@ -201,28 +172,23 @@ public class UltimateAscentBot extends SimpleRobot
 //            turnController.setPID(_P, _I, _D);
 //        }
         int i = 0;
-        while (isOperatorControl() && isEnabled())
-        {
+        while (isOperatorControl() && isEnabled()) {
 //            dash.updateDashboard();
             //
             // Driver Controls
             //
-            try
-            {
+            try {
                 double drivePercent = driveStick.getY() * -1.0;
                 if (drivePercent < Parameters.kJoystickDeadband
-                        && drivePercent > (-1.0 * Parameters.kJoystickDeadband))
-                {
+                        && drivePercent > (-1.0 * Parameters.kJoystickDeadband)) {
                     drivePercent = 0.0;
                 }
                 double turnPercent = driveStick.getX();
                 if (turnPercent < Parameters.kJoystickDeadband
-                        && turnPercent > (-1.0 * Parameters.kJoystickDeadband))
-                {
+                        && turnPercent > (-1.0 * Parameters.kJoystickDeadband)) {
                     turnPercent = 0.0;
                 }
-                switch (i)
-                {
+                switch (i) {
                     default:
                         i++;
                         break;
@@ -232,49 +198,44 @@ public class UltimateAscentBot extends SimpleRobot
                         break;
                 }
                 drive.drive(drivePercent, turnPercent, kDamp);
-            } catch (CANTimeoutException e)
-            {
+            } catch (CANTimeoutException e) {
                 System.out.println(e);
             }
 
             boolean lowGear = driveStick.getRawButton(Parameters.kLowGearButton);
             boolean highGear = driveStick.getRawButton(Parameters.kHighGearButton);
-            Tread.Gear newGear = drive.getGear();
-            if (highGear)
-            {
+            Tread.Gear presentGear = drive.getGear();
+            Tread.Gear newGear = presentGear;
+            if (highGear) {
                 newGear = Tread.Gear.kHigh;
                 currentGear = "High Gear";
             }
-            if (lowGear)
-            {
+            if (lowGear) {
                 newGear = Tread.Gear.kLow;
                 currentGear = "Low Gear";
             }
-            drive.setGear(newGear);
+            if (presentGear != newGear) {
+                drive.setGear(newGear);
+            }
 
             boolean climbPosition = driveStick.getRawButton(Parameters.kCameraClimbingButton);
             boolean shootPosition = driveStick.getRawButton(Parameters.kCameraShootingButton);
             double currentPosition = visionSystem.getServoPosition();
-            if (climbPosition)
-            {
+            if (climbPosition) {
                 visionSystem.setClimbPosition();
                 currentPosition = Parameters.kCameraClimbPosition;
             }
-            if (shootPosition)
-            {
+            if (shootPosition) {
                 visionSystem.setShootPosition();
                 currentPosition = Parameters.kCameraShooterPosition;
             }
             //
             // Shooter Controls
             //
-            if (gameMech != null)
-            {
+            if (gameMech != null) {
                 GameMech.GameMechState state = gameMech.getDesiredState();
-                try
-                {
-                    if (state == GameMech.GameMechState.kManualControl)
-                    {
+                try {
+                    if (state == GameMech.GameMechState.kManualControl) {
 
                         // Manually exercise indexer          
                         boolean indexerButton = shooterStick.getRawButton(Parameters.kIndexerPistonButton);
@@ -288,54 +249,42 @@ public class UltimateAscentBot extends SimpleRobot
                         gameMech.moveShooterManual(turnShooterReverseButton, false);
                     }
                     // Game Mech is controlled autonomously
-                    if (armStick.getRawButton(Parameters.kShootButton))
-                    {
+                    if (armStick.getRawButton(Parameters.kShootButton)) {
                         gameMech.shoot();
                         currentRobotActivity = "Shooting";
                     }
-                    if (armStick.getRawButton(Parameters.kReloadButton))
-                    {
-                        if (gameMech.getDesiredState() != GameMech.GameMechState.kUnloaded)
-                        {
+                    if (armStick.getRawButton(Parameters.kReloadButton)) {
+                        if (gameMech.getDesiredState() != GameMech.GameMechState.kUnloaded) {
                             gameMech.reload();
                         }
                         currentRobotActivity = "Reloading Shooter";
                     }
-                    if (state != GameMech.GameMechState.kManualControl)
-                    {
+                    if (state != GameMech.GameMechState.kManualControl) {
                         gameMech.processGameMech();
 
                     }
-                } catch (CANTimeoutException e)
-                {
+                } catch (CANTimeoutException e) {
                     System.out.println(e);
                 }
 
             }
-            if (climber != null)
-            {
+            if (climber != null) {
                 double leftArmValue = shooterStick.getY();
                 double rightArmValue = armStick.getY();
-                try
-                {
+                try {
                     if (leftArmValue < Parameters.kJoystickDeadband
-                            && leftArmValue > (-1.0 * Parameters.kJoystickDeadband))
-                    {
+                            && leftArmValue > (-1.0 * Parameters.kJoystickDeadband)) {
                         climber.moveForwardArmByJoystick(0.0);
-                    } else
-                    {
+                    } else {
                         climber.moveForwardArmByJoystick(leftArmValue);
                     }
                     if (rightArmValue < Parameters.kJoystickDeadband
-                            && rightArmValue > (-1.0 * Parameters.kJoystickDeadband))
-                    {
+                            && rightArmValue > (-1.0 * Parameters.kJoystickDeadband)) {
                         climber.moveBackArmByJoystick(0.0);
-                    } else
-                    {
+                    } else {
                         climber.moveBackArmByJoystick(rightArmValue);
                     }
-                } catch (CANTimeoutException ex)
-                {
+                } catch (CANTimeoutException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -344,10 +293,8 @@ public class UltimateAscentBot extends SimpleRobot
         }
     }
 
-    public void test()
-    {
-        while (isTest() && isEnabled())
-        {
+    public void test() {
+        while (isTest() && isEnabled()) {
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
@@ -358,16 +305,13 @@ public class UltimateAscentBot extends SimpleRobot
      *
      * This method will align the robot with the target +/- one degree
      */
-    public boolean aim() throws NoTargetFoundException
-    {
-        if (turning && isAimedAtTarget())
-        {
+    public boolean aim() throws NoTargetFoundException {
+        if (turning && isAimedAtTarget()) {
             DisableAimController();
             System.out.println("Done turning");
             return true;
         }
-        if (!turning)
-        {
+        if (!turning) {
             EnableAimController();
             aimController.setSetpoint(0.0);
 //            System.out.println("Angle to Target: " + getDegreesToTarget());
@@ -384,17 +328,13 @@ public class UltimateAscentBot extends SimpleRobot
      * @param setpoint an angle in degrees, from -360.0 - 0.0 - 360.0
      * @return true - we are at the setpoint false - we are not at the setpoint
      */
-    public boolean setAngle(double setpoint)
-    {
-        if (drive.isGyroPresent())
-        {
-            if (turning && turnController.onTarget())
-            {
+    public boolean setAngle(double setpoint) {
+        if (drive.isGyroPresent()) {
+            if (turning && turnController.onTarget()) {
                 DisableTurnController();
                 return true;
             }
-            if (!turning)
-            {
+            if (!turning) {
                 EnableTurnController();
                 turnController.setSetpoint(setpoint);
             }
@@ -408,47 +348,36 @@ public class UltimateAscentBot extends SimpleRobot
      * This method will check to see if the target is within +/- one degree of
      * the center.
      */
-    public boolean isAimedAtTarget() throws NoTargetFoundException
-    {
+    public boolean isAimedAtTarget() throws NoTargetFoundException {
         return visionSystem.isAimedAtTarget();
     }
 
-    public void DisableAimController()
-    {
-        if (turning)
-        {
+    public void DisableAimController() {
+        if (turning) {
             aimController.disable();
         }
         turning = false;
     }
 
-    public void EnableAimController()
-    {
-        if (!turning)
-        {
+    public void EnableAimController() {
+        if (!turning) {
             aimController.enable();
         }
         turning = true;
     }
 
-    public void DisableTurnController()
-    {
-        if (drive.isGyroPresent())
-        {
-            if (turning)
-            {
+    public void DisableTurnController() {
+        if (drive.isGyroPresent()) {
+            if (turning) {
                 turnController.disable();
             }
             turning = false;
         }
     }
 
-    public void EnableTurnController()
-    {
-        if (drive.isGyroPresent())
-        {
-            if (!turning)
-            {
+    public void EnableTurnController() {
+        if (drive.isGyroPresent()) {
+            if (!turning) {
                 turnController.enable();
             }
             turning = true;
@@ -463,8 +392,7 @@ public class UltimateAscentBot extends SimpleRobot
      *
      * @return
      */
-    public double getDistanceToTarget()
-    {
+    public double getDistanceToTarget() {
         return visionSystem.getDistanceToTarget();
     }
 
@@ -476,13 +404,10 @@ public class UltimateAscentBot extends SimpleRobot
      *
      * @return
      */
-    public int getDiscCount()
-    {
-        if (gameMech != null)
-        {
+    public int getDiscCount() {
+        if (gameMech != null) {
             return gameMech.getDiscCount();
-        } else
-        {
+        } else {
             return -1;
         }
     }
@@ -495,13 +420,10 @@ public class UltimateAscentBot extends SimpleRobot
      *
      * @return
      */
-    public boolean isShooterCocked()
-    {
-        if (gameMech != null)
-        {
+    public boolean isShooterCocked() {
+        if (gameMech != null) {
             return gameMech.isShooterCocked();
-        } else
-        {
+        } else {
             return false;
         }
     }
@@ -514,14 +436,11 @@ public class UltimateAscentBot extends SimpleRobot
      *
      * @return
      */
-    public double getDegreesToTarget()
-    {
+    public double getDegreesToTarget() {
         double temp = 0.0;
-        try
-        {
+        try {
             temp = visionSystem.getDegreesToTarget();
-        } catch (NoTargetFoundException e)
-        {
+        } catch (NoTargetFoundException e) {
         }
         return temp;
     }
@@ -534,8 +453,7 @@ public class UltimateAscentBot extends SimpleRobot
      *
      * @return
      */
-    public String getArmState()
-    {
+    public String getArmState() {
         return climber.getArmState();
     }
 
@@ -547,8 +465,7 @@ public class UltimateAscentBot extends SimpleRobot
      *
      * @return
      */
-    public boolean isShooterLoaded()
-    {
+    public boolean isShooterLoaded() {
         return gameMech.isShooterLoaded();
     }
 
@@ -559,8 +476,7 @@ public class UltimateAscentBot extends SimpleRobot
      *
      * @return String to indicate where we are in the autonomous loop/
      */
-    public String getCurrentRobotActivity()
-    {
+    public String getCurrentRobotActivity() {
         return currentRobotActivity;
     }
 }

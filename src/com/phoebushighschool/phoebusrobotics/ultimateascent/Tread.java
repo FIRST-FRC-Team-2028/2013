@@ -64,11 +64,11 @@ public class Tread {
     {
         if (gear == Gear.kLow)
         {
-            gearShifter.set(true);
+            gearShifter.set(false);
         }
         else
         {
-            gearShifter.set(false); 
+            gearShifter.set(true); 
         }
     }
     
