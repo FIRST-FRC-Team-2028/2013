@@ -125,31 +125,31 @@ public class AimingSystem implements PIDSource
 ////                scoreParticles();
 //            } else if (reports != null)
 //            {
-                switch (imageState)
-                {
-                    case 0:
-                        image = camera.getImage();
-                        imageState++;
-                        break;
-                    case 1:
-                        thresholdImage = image.thresholdRGB(25, 75, 185, 255, 145, 225);  // green values
+            switch (imageState)
+            {
+                case 0:
+                    image = camera.getImage();
+                    imageState++;
+                    break;
+                case 1:
+                    thresholdImage = image.thresholdRGB(25, 75, 185, 255, 145, 225);  // green values
 //                      thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
-                        imageState++;
-                        break;
-                    case 2:
-                        convexHullImage = thresholdImage.convexHull(true);
-                        imageState++;
-                        break;
-                    case 3:
-                        filteredImage = convexHullImage.particleFilter(cc);
-                        imageState++;
-                        break;
-                    case 4:
-                        reports = filteredImage.getOrderedParticleAnalysisReports();
-                        scoreParticles(reports);
-                        imageState = 0;
-                        break;
-                }
+                    imageState++;
+                    break;
+                case 2:
+                    convexHullImage = thresholdImage.convexHull(true);
+                    imageState++;
+                    break;
+                case 3:
+                    filteredImage = convexHullImage.particleFilter(cc);
+                    imageState++;
+                    break;
+                case 4:
+                    reports = filteredImage.getOrderedParticleAnalysisReports();
+                    scoreParticles(reports);
+                    imageState = 0;
+                    break;
+            }
 //            }
 
 //            for (int i = 0; i < reports.length; i++)
@@ -163,33 +163,33 @@ public class AimingSystem implements PIDSource
 //                }
 //            }
 
-            if (reports == null)
+            if (imageState == 0)
             {
-                filteredImage.free();
-                convexHullImage.free();
-                thresholdImage.free();
                 image.free();
-            } else if (reports != null)
-            {
-                switch (imageState)
-                {
-                    case 2:
-                        image.free();
-                        break;
-                    case 4:
-                        convexHullImage.free();
-                        break;
-                    case 0:
-                        thresholdImage.free();
-                        filteredImage.free();
-                        break;
-                }
+                thresholdImage.free();
+                convexHullImage.free();
+                filteredImage.free();
             }
         } catch (NIVisionException e)
         {
         } catch (AxisCameraException e)
         {
         }
+    }
+
+    public void DisableAimingSystem()
+    {
+        try
+        {
+            image.free();
+            thresholdImage.free();
+            convexHullImage.free();
+            filteredImage.free();
+        } catch (NIVisionException e)
+        {
+        }
+        imageState = 0;
+        busy = false;
     }
 
     /**
@@ -476,17 +476,16 @@ public class AimingSystem implements PIDSource
         {
             return true;
         }
-        if (temp == 9999.0)
-        {
-            throw new NoTargetFoundException("No target found.");
-        }
         return false;
     }
 
     public double pidGet()
     {
-        double temp = getDegreesToTarget();
-        if (temp == 9999.0)
+        double temp;
+        try
+        {
+            temp = getDegreesToTarget();
+        } catch (NoTargetFoundException e)
         {
             return 0.0;
         }
@@ -501,24 +500,26 @@ public class AimingSystem implements PIDSource
      * @return the angle to the target, negative th robot needs to turn left,
      * positive, right
      */
-    public double getDegreesToTarget()
+    public double getDegreesToTarget() throws NoTargetFoundException
     {
-        double offset = 9999;
-        if (target != null)
+        double offset;
+        if (target == null)
+        {
+            throw new NoTargetFoundException("No target found.");
+        } else
         {
             offset = target.center_mass_x - (IMAGE_WIDTH / 2.0);
             offset = offset * (TARGET_WIDTH / target.target_width);
             offset = MathUtils.atan(offset / getDistanceToTarget());
             return Math.toDegrees(offset);
         }
-//        if (r != null)
+//        else
 //        {
 //            offset = ((double) r.center_mass_x) - (IMAGE_WIDTH / 2.0);
 //            offset = offset * (24.0 / ((double) r.boundingRectWidth));
 //            offset = MathUtils.atan(offset / getDistanceWCamera());
-//            return offset;
+//            return Math.toDegrees(offset);
 //        }
-            return offset;
     }
 
     /**
