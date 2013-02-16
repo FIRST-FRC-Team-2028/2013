@@ -524,7 +524,7 @@ public class AimingSystem implements PIDSource
             offset = ((double) target.center_mass_x) - (camera.getResolution().width / 2.0);
             offset = offset * (TARGET_WIDTH / ((double) target.target_width));
             offset = MathUtils.atan(offset / getDistanceToTarget());
-            return Math.toDegrees(offset);
+            return offset;
         }
 //        if (t != null)
 //        {
