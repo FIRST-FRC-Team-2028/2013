@@ -1,12 +1,12 @@
 package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Relay;
 
 /*
  */
 public class Indexer {
-    protected Solenoid indexer;
+    protected Relay indexer;
     protected DigitalInput discPreIndex;
     public int discCountCurrent;
     public boolean indexerHasRun;
@@ -14,7 +14,7 @@ public class Indexer {
     
   public Indexer()
   {
-      indexer = new Solenoid(Parameters.DiscIndexerSolenoidChannel);
+      indexer = new Relay(Parameters.DiscIndexerSolenoidChannel);
       
   }
   /** 
@@ -22,7 +22,12 @@ public class Indexer {
    */
       
   public void setIndexerPiston(boolean value){
-      indexer.set(value);
+      Relay.Direction direction;
+      if (value)
+          direction = Relay.Direction.kForward;
+      else 
+          direction = Relay.Direction.kReverse;
+      indexer.setDirection(direction);
   }
 
   public boolean isDiscLoaded() {  

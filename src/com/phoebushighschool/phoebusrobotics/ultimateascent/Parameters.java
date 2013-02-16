@@ -25,6 +25,7 @@ public class Parameters {
   // Digital Sidecar 12V Relay channels
   public static final int RelayModule = 1;  
   public static final int CompressorRelayChannel = 3;
+  public static final int PushDiscIntoShooterRelayChannel = 1;
   
   //Digital Sidecar PWM channels
   public static final int cameraServoPWMChannel = 1;
@@ -36,7 +37,6 @@ public class Parameters {
 
   // cRIO 9472 24V Solenoid Module
   public static final int crioRelayModule = 1;
-  public static final int PushDiscIntoShooterSolenoid = 1;
   public static final int leftGearLowSolenoidChannel = 2;
   public static final int rightGearLowSolenoidChannel = 3;
   public static final int DiscIndexerSolenoidChannel = 4;
