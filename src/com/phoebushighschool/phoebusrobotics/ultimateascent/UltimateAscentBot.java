@@ -73,9 +73,9 @@ public class UltimateAscentBot extends SimpleRobot
     {
         try
         {
-            double _P = (ds.getAnalogIn(1) / 3.3) * 100.0;
-            double _I = (ds.getAnalogIn(2) / 3.3) * 0.01;
-            double _D = (ds.getAnalogIn(3) / 3.3) * 0.01;
+            double _P = ds.getAnalogIn(1) * 50.0;
+            double _I = ds.getAnalogIn(2) * 0.0001;
+            double _D = ds.getAnalogIn(3) * 0.0001;
 //            System.out.println("P: " + _P + ", I: " + _I + ", D: " + _D);
             aimController.setPID(_P, _I, _D);
 //            if (turnController != null)
@@ -117,7 +117,9 @@ public class UltimateAscentBot extends SimpleRobot
                         boolean aimed;
                         try
                         {
+                            System.out.println("Angle: " + visionSystem.getDegreesToTarget());
                             aimed = aim();
+                            System.out.println("Angle: " + visionSystem.getDegreesToTarget());
                         } catch (NoTargetFoundException e)
                         {
                             System.out.println(e);
@@ -169,6 +171,8 @@ public class UltimateAscentBot extends SimpleRobot
                 Timer.delay(Parameters.TIMER_DELAY);
                 getWatchdog().feed();
             }
+//            visionSystem.Disable();
+//            state.Disable();
             DisableAimController();
         } catch (CANTimeoutException e)
         {
@@ -198,6 +202,7 @@ public class UltimateAscentBot extends SimpleRobot
             //
             try
             {
+                System.out.println(visionSystem.getDistanceWUltrasonic());
                 double drivePercent = driveStick.getY() * -1.0;
                 if (drivePercent < Parameters.kJoystickDeadband
                         && drivePercent > (-1.0 * Parameters.kJoystickDeadband))
@@ -216,7 +221,7 @@ public class UltimateAscentBot extends SimpleRobot
                         i++;
                         break;
                     case 3:
-                        System.out.println("Drive value: " + drivePercent + ", Turn value: " + turnPercent);
+//                        System.out.println("Drive value: " + drivePercent + ", Turn value: " + turnPercent);
                         i = 0;
                         break;
                 }
@@ -306,9 +311,9 @@ public class UltimateAscentBot extends SimpleRobot
         }
         if (!turning)
         {
-//            EnableAimController();
-//            aimController.setSetpoint(0.0);
-            System.out.println("Angle to Target: " + getDegreesToTarget());
+            EnableAimController();
+            aimController.setSetpoint(0.0);
+//            System.out.println("Angle to Target: " + getDegreesToTarget());
         }
         return false;
     }

@@ -35,6 +35,10 @@ public class RobotState {
         }
     }
     
+    public void Disable() {
+        state = drive;
+    }
+    
     public int getState() {
         return state;
     }

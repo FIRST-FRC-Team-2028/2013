@@ -40,8 +40,8 @@ public class AimingSystem implements PIDSource
     final int Y_EDGE_LIMIT = 60;
     final double IMAGE_WIDTH = 640.0;
     final double TARGET_WIDTH = 62.0;
-    final double climbPosition = 50.0;
-    final double shootPosition = 95.0;
+    final double climbPosition = 120.0;
+    final double shootPosition = 75.0;
     int imageState = 0;
     AxisCamera camera;
     Ultrasonic ultrasonicSensor;
@@ -224,7 +224,6 @@ public class AimingSystem implements PIDSource
         for (int i = 0; i < report.length; i++)
         {
             Scores score = new Scores();
-            Target t = new Target();
             score.rectangularity = scoreRectangularity(report[i]);
             score.aspectRatioHigh = scoreAspectRatio(filteredImage, report[i], i, false);
             score.aspectRatioMiddle = scoreAspectRatio(filteredImage, report[i], i, true);
@@ -233,6 +232,7 @@ public class AimingSystem implements PIDSource
 
             if (scoreCompare(score, false))
             {
+                Target t = new Target();
                 t.aspectRatio = score.aspectRatioHigh;
                 t.center_mass_x = report[i].center_mass_x;
                 t.target_width = report[i].boundingRectWidth;
@@ -240,6 +240,7 @@ public class AimingSystem implements PIDSource
                 highTargets.addElement(t);
             } else if (scoreCompare(score, true))
             {
+                Target t = new Target();
                 t.aspectRatio = score.aspectRatioMiddle;
                 t.center_mass_x = report[i].center_mass_x;
                 t.target_width = report[i].boundingRectWidth;
@@ -427,18 +428,19 @@ public class AimingSystem implements PIDSource
      */
     AimingSystem.Target TargetCompare(Vector highT, Vector middleT, boolean middle)
     {
-        AimingSystem.Target t = new Target();
+        AimingSystem.Target t = null;
         if (middle)
         {
-            t.middle = true;
             for (int i = 0; i < middleT.size(); i++)
             {
+                t = new Target();
                 Target temp = (Target) middleT.elementAt(i);
                 if (i == 0)
                 {
                     t.aspectRatio = temp.aspectRatio;
                     t.center_mass_x = temp.center_mass_x;
                     t.target_width = temp.target_width;
+                    t.middle = true;
                 } else if (t.aspectRatio < temp.aspectRatio)
                 {
                     t.aspectRatio = temp.aspectRatio;
@@ -448,15 +450,16 @@ public class AimingSystem implements PIDSource
             }
         } else
         {
-            t.middle = false;
             for (int i = 0; i < highT.size(); i++)
             {
+                t = new Target();
                 Target temp = (Target) highT.elementAt(i);
                 if (i == 0)
                 {
                     t.aspectRatio = temp.aspectRatio;
                     t.center_mass_x = temp.center_mass_x;
                     t.target_width = temp.target_width;
+                    t.middle = false;
                 } else if (t.aspectRatio < temp.aspectRatio)
                 {
                     t.aspectRatio = temp.aspectRatio;
@@ -556,7 +559,7 @@ public class AimingSystem implements PIDSource
      */
     public double getDistanceWUltrasonic()
     {
-        return ultrasonicSensor.getDistance();
+        return ultrasonicSensor.getAveragedDistance();
     }
 
     /**
