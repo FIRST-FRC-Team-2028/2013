@@ -40,8 +40,8 @@ public class AimingSystem implements PIDSource
     final int Y_EDGE_LIMIT = 60;
     final double IMAGE_WIDTH = 640.0;
     final double TARGET_WIDTH = 62.0;
-    final double climbPosition = 120.0;
-    final double shootPosition = 75.0;
+    final double climbPosition = 50.0;
+    final double shootPosition = 100.0;
     int imageState = 0;
     AxisCamera camera;
     Ultrasonic ultrasonicSensor;
@@ -511,7 +511,7 @@ public class AimingSystem implements PIDSource
             offset = target.center_mass_x - (IMAGE_WIDTH / 2.0);
             offset = offset * (TARGET_WIDTH / target.target_width);
             offset = MathUtils.atan(offset / getDistanceToTarget());
-            return Math.toDegrees(offset);
+            return offset;
         }
 //        else
 //        {
