@@ -29,8 +29,8 @@ public class TankDrive implements PIDOutput, PIDSource
      */
     public TankDrive() throws CANTimeoutException
     {
-        rightTread = new Tread(this, Parameters.rightTreadCanID, Parameters.rightGearLowSolenoidChannel);
-        leftTread = new Tread(this, Parameters.leftTreadCanID, Parameters.leftGearLowSolenoidChannel);
+        rightTread = new Tread(this, Parameters.rightTreadCanID, Parameters.rightGearSolenoidChannel);
+        leftTread = new Tread(this, Parameters.leftTreadCanID, Parameters.leftGearSolenoidChannel);
         rightTread.setGear(Tread.Gear.kLow);
         leftTread.setGear(Tread.Gear.kLow);
         gyro = new GyroSensor(Parameters.gyroAnalogChannel);

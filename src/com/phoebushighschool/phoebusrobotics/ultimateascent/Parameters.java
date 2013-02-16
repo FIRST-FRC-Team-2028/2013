@@ -31,11 +31,8 @@ public class Parameters
     public static final int gyroAnalogChannel = 2;
     // cRIO 9472 24V Solenoid Module
     public static final int crioRelayModule = 1;
-    public static final int leftGearLowSolenoidChannel = 2;
-    public static final int rightGearLowSolenoidChannel = 3;
-    public static final int DiscIndexerSolenoidChannel = 4;
-    public static final int leftGearHighSolenoidChannel = 5;
-    public static final int rightGearHighSolenoidChannel = 6;
+    public static final int leftGearSolenoidChannel = 2;
+    public static final int rightGearSolenoidChannel = 3;
     // Aiming PID Constants
     public static final double kRobotProportional = 0.03;
     public static final double kRobotDifferential = 0.0;

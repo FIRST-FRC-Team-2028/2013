@@ -39,7 +39,7 @@ public class UltimateAscentBot extends SimpleRobot
         {
             drive = new TankDrive();
             climber = new ClimbingSystem();
-            //gameMech = new GameMech();
+            gameMech = new GameMech(this);
         } catch (CANTimeoutException ex)
         {
             System.out.println(ex);
@@ -227,7 +227,7 @@ public class UltimateAscentBot extends SimpleRobot
                         i++;
                         break;
                     case 3:
-                        System.out.println("Drive value: " + drivePercent + ", Turn value: " + turnPercent);
+//                        System.out.println("Drive value: " + drivePercent + ", Turn value: " + turnPercent);
                         i = 0;
                         break;
                 }
@@ -285,11 +285,10 @@ public class UltimateAscentBot extends SimpleRobot
                         gameMech.setIndexerPiston(indexerButton);
                         // Manually exercise shooter cam
                         boolean turnShooterButton = shooterStick.getRawButton(Parameters.kTurnShooterForwardButton);
-                        gameMech.moveShooterManual(turnShooterButton, true);
+                        boolean turnShooterReverseButton = shooterStick.getRawButton(Parameters.kTurnShooterReverseButton);
+                        gameMech.moveShooterManual(turnShooterButton || turnShooterReverseButton, turnShooterButton);
                         currentRobotActivity = "You have control over"
                                 + " the Game Mechanism";
-                        boolean turnShooterReverseButton = shooterStick.getRawButton(Parameters.kTurnShooterReverseButton);
-                        gameMech.moveShooterManual(turnShooterReverseButton, false);
                     }
                     // Game Mech is controlled autonomously
                     if (armStick.getRawButton(Parameters.kShootButton))

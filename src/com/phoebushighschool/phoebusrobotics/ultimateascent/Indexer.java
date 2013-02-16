@@ -16,8 +16,8 @@ public class Indexer
 
     public Indexer()
     {
-        indexer = new Relay(Parameters.DiscIndexerSolenoidChannel);
-
+        indexer = new Relay(Parameters.PushDiscIntoShooterRelayChannel);
+        indexer.setDirection(Relay.Direction.kForward);
     }
 
     /**
@@ -25,15 +25,13 @@ public class Indexer
      */
     public void setIndexerPiston(boolean value)
     {
-        Relay.Direction direction;
         if (value)
         {
-            direction = Relay.Direction.kForward;
+            indexer.set(Relay.Value.kOn);
         } else
         {
-            direction = Relay.Direction.kReverse;
+            indexer.set(Relay.Value.kOff);
         }
-        indexer.setDirection(direction);
     }
 
     public boolean isDiscLoaded()
