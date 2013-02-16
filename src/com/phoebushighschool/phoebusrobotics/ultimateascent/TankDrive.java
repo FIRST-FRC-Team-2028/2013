@@ -33,7 +33,7 @@ public class TankDrive implements PIDOutput, PIDSource
         leftTread = new Tread(this, Parameters.leftTreadCanID, Parameters.leftGearLowSolenoidChannel);
         rightTread.setGear(Tread.Gear.kLow);
         leftTread.setGear(Tread.Gear.kLow);
-//        gyro = new GyroSensor(Parameters.gyroAnalogChannel);
+        gyro = new GyroSensor(Parameters.gyroAnalogChannel);
         
     }
 
