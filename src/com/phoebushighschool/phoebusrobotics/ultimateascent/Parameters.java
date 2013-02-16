@@ -48,9 +48,9 @@ public class Parameters {
   public static final double kRobotProportional = 0.03;
   public static final double kRobotDifferential = 0.0;
   public static final double kRobotIntegral = 0.0;
-  
-  public static final double TIMER_DELAY = 0.25;
-    
+
+  public static final double TIMER_DELAY = 0.1;
+
   public static final double MAX_CAMERA_INPUT = 25.0;
   
   public static final double MIN_CAMERA_INPUT = -25.0;
@@ -79,17 +79,19 @@ public class Parameters {
   public static int kCameraClimbingButton = 6;
   public static int kCameraShootingButton = 4;
   
-  //shooter controller buttons
+  //shooter controller buttons left arm
   public static int kShootButton = 1;
   public static int kCameraAimButton = 5;
   public static int kReloadButton = 6;
-  public static int kIndexerPistonButton = 7;
-  public static int kTurnShooterButton = 9; 
+  //shooter controller buttons left arm
+  public static int kIndexerPistonButton = 5;
+  public static int kTurnShooterForwardButton = 6; 
+  public static int kTurnShooterReverseButton = 4;
   
   public static double kCameraShooterPosition = 85.0; 
   public static double kCameraClimbPosition = 160.0;
-  
-  public static final double AUTONOMOUS_DRIVE_FORWARD_SPEED = 0.5;
+
+  public static final double AUTONOMOUS_DRIVE_FORWARD_SPEED = 0.1;
 
   public static double kShooterMotorSpeed = 1.0; 
 }
