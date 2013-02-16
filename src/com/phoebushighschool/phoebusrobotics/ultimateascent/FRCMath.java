@@ -1,6 +1,8 @@
 package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
+import java.lang.String;
 import com.sun.squawk.util.MathUtils;
+
 /*
  */
 public class FRCMath {

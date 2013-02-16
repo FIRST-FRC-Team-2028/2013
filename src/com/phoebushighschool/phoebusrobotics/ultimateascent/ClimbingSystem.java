@@ -33,4 +33,16 @@ public class ClimbingSystem {
             backArm.retract();
         
     }
+    public void moveForwardArmByJoystick(double forwardJoystickValue) throws CANTimeoutException
+    {
+        forwardArm.moveByValue(forwardJoystickValue);
+    }
+    public void moveBackArmByJoystick(double backJoystickValue) throws CANTimeoutException     
+    {
+        backArm.moveByValue(backJoystickValue);
+    }
+    public String getArmState()
+    {
+        return forwardArm.armState;
+    }
 }

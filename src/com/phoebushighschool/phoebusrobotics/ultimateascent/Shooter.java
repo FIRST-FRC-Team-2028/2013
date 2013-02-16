@@ -21,16 +21,16 @@ public class Shooter {
     protected GameMech gameMech;
     protected CANJaguar motor;
     protected DigitalInput discSensor;
-    protected DigitalInput isShooterCocked;
-    protected DigitalInput isShooterRetracted;
+    protected DigitalInput shooterCockedSensor;
+    protected DigitalInput shooterRetractedSensor;
 
     public Shooter() throws CANTimeoutException {
         motor = new CANJaguar(Parameters.WheelOneCANJaguarCANID, CANJaguar.ControlMode.kPercentVbus);
         motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
         motor.configNeutralMode(CANJaguar.NeutralMode.kBrake);
         discSensor = new DigitalInput(Parameters.DiscInShooterGPIOChannel);
-        isShooterCocked = new DigitalInput(Parameters.ShooterIsCockedGPIOChannel);
-        isShooterRetracted = new DigitalInput(Parameters.ShooterIsRetractedGPIOChannel);
+        shooterCockedSensor = new DigitalInput(Parameters.ShooterIsCockedGPIOChannel);
+        shooterRetractedSensor = new DigitalInput(Parameters.ShooterIsRetractedGPIOChannel);
 
     }
 
@@ -60,7 +60,7 @@ public class Shooter {
     }
 
     /**
-     * cock()
+     * cockShooter()
      * 
      * This method will move the cam until the arm reaches the "cocked"
      * position.
@@ -71,7 +71,7 @@ public class Shooter {
      * @exception CANTimeoutException - communication with Jaguar over the
      *                                  CAN bus was lost
      */
-    public boolean cock() throws CANTimeoutException {
+    public boolean cockShooter() throws CANTimeoutException {
         if (isShooterCocked()) {
             motor.setX(0.0);
             return true;
@@ -81,19 +81,19 @@ public class Shooter {
     }
 
     /**
-     * isShooterCocked()
+     * shooterCockedSensor()
      * 
      * Getter method to return the state of the shooter arming mechanism.
      * 
      * @return true - the cam is in the "cocked" position
      *         false - the cam is not in the "cocked" position
      */
-    public boolean isShooterCocked() {
-        return isShooterCocked.get();
+    public boolean isShooterCocked() throws CANTimeoutException {
+        return cockShooter();
     }
 
     /**
-     * isShooterRetracted() 
+     * shooterRetractedSensor() 
      * 
      * Method to return the state of the shooter being retracted.
      * 
@@ -101,7 +101,7 @@ public class Shooter {
      *         false - the cam is not in the "retracted" position 
      */
     public boolean isShooterRetracted() {
-        return isShooterRetracted.get();
+        return shooterRetractedSensor.get();
     }
 
     /**
@@ -131,5 +131,25 @@ public class Shooter {
         {
             motor.setX(0.0);
         }
+    }
+    /**
+     *moveShooterManual()
+     * 
+     * This method will move the cam for the shooter at the speed designated by 
+     * Parameters.
+     * 
+     * @param canMove
+     * @throws CANTimeoutException 
+     */
+    public void moveShooterManual(boolean canMove, boolean forward) throws CANTimeoutException
+    {
+        if (canMove && forward)
+            motor.setX(Parameters.kShooterMotorSpeed);
+        else if (canMove)
+        {
+            motor.setX(Parameters.kShooterMotorSpeed * -1.0);
+        }
+        else
+            motor.setX(0.0);
     }
 }

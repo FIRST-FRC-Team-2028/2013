@@ -59,7 +59,7 @@ public class AimingSystem implements PIDSource
     public AimingSystem()
     {
         camera = AxisCamera.getInstance(Parameters.cameraIP);
-        camera.writeResolution(AxisCamera.ResolutionT.k320x240);
+        camera.writeResolution(AxisCamera.ResolutionT.k640x480);
         camera.writeExposurePriority(AxisCamera.ExposurePriorityT.imageQuality);
         camera.writeExposureControl(AxisCamera.ExposureT.hold);
         camera.writeWhiteBalance(AxisCamera.WhiteBalanceT.fixedIndoor);
@@ -114,92 +114,82 @@ public class AimingSystem implements PIDSource
     {
         try
         {
-            if (busy)
-            {
-                return;
-            }
-
 //            if (reports == null)
 //            {
 //                image = camera.getImage();
-//                image.write("/start.jpg");
 //                thresholdImage = image.thresholdRGB(25, 75, 185, 255, 145, 255);  // green values
-//              thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
-//                thresholdImage.write("/threshold.bmp");
+////              thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
 //                convexHullImage = thresholdImage.convexHull(true);
 //                filteredImage = convexHullImage.particleFilter(cc);
 //                reports = filteredImage.getOrderedParticleAnalysisReports();
-//                scoreParticles();
-//            } 
-//            else if (reports != null)
+////                scoreParticles();
+//            } else if (reports != null)
 //            {
             switch (imageState)
             {
                 case 0:
-                    busy = true;
                     image = camera.getImage();
-//                    image.write("/start.jpg");
                     imageState++;
-                    busy = false;
                     break;
                 case 1:
-                    busy = true;
-                    thresholdImage = image.thresholdRGB(0, 70, 185, 255, 145, 255);  // green values
-//                    thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
-//                    thresholdImage.write("/threshold.bmp");
+                    thresholdImage = image.thresholdRGB(25, 75, 185, 255, 145, 225);  // green values
+//                      thresholdImage = image.thresholdHSV(115, 125, 195, 255, 220, 255);
                     imageState++;
-                    busy = false;
                     break;
                 case 2:
-                    busy = true;
                     convexHullImage = thresholdImage.convexHull(true);
                     imageState++;
-                    busy = false;
                     break;
                 case 3:
-                    busy = true;
                     filteredImage = convexHullImage.particleFilter(cc);
                     imageState++;
-                    busy = false;
                     break;
                 case 4:
-                    busy = true;
                     reports = filteredImage.getOrderedParticleAnalysisReports();
+                    scoreParticles(reports);
                     imageState = 0;
-                    busy = false;
                     break;
             }
 //            }
-            if (reports != null)
-            {
-//                ParticleAnalysisReport r = null;
-//                for (int i = 0; i < reports.length; i++)
+
+//            for (int i = 0; i < reports.length; i++)
+//            {
+//                if (r == null)
 //                {
-//                    if (r == null)
-//                    {
-//                        r = reports[i];
-//                    } 
-//                    else if (r.particleArea < reports[i].particleArea)
-//                    {
-//                        r = reports[i];
-//                    }
+//                    r = reports[i];
+//                } else if (r.particleArea < reports[i].particleArea)
+//                {
+//                    r = reports[i];
 //                }
-//                t = r;
-                target = scoreParticles(reports);
-            }
+//            }
 
             if (imageState == 0)
             {
-                filteredImage.free();
-                convexHullImage.free();
-                thresholdImage.free();
                 image.free();
+                thresholdImage.free();
+                convexHullImage.free();
+                filteredImage.free();
             }
         } catch (NIVisionException e)
         {
         } catch (AxisCameraException e)
         {
         }
+    }
+
+    public void DisableAimingSystem()
+    {
+        try
+        {
+            image.free();
+            thresholdImage.free();
+            convexHullImage.free();
+            filteredImage.free();
+        } catch (NIVisionException e)
+        {
+        }
+        imageState = 0;
+        busy = false;
     }
 
     /**
@@ -215,7 +205,7 @@ public class AimingSystem implements PIDSource
      *
      * @throws NIVisionException
      */
-    public Target scoreParticles(ParticleAnalysisReport[] report) throws NIVisionException
+    public void scoreParticles(ParticleAnalysisReport[] report) throws NIVisionException
     {
         boolean middle = Parameters.GO_FOR_MIDDLE_TARGET;
         Vector highTargets = new Vector();
@@ -249,7 +239,7 @@ public class AimingSystem implements PIDSource
             }
         }
 
-        return TargetCompare(highTargets, middleTargets, middle);
+        target = TargetCompare(highTargets, middleTargets, middle);
     }
 
     /**
@@ -486,21 +476,16 @@ public class AimingSystem implements PIDSource
         {
             return true;
         }
-        if (temp == 9999.0)
-        {
-            throw new NoTargetFoundException("No target found.");
-        }
         return false;
     }
 
-    /**
-     *
-     * @return boolean
-     */
     public double pidGet()
     {
-        double temp = getDegreesToTarget();
-        if (temp == 9999.0)
+        double temp;
+        try
+        {
+            temp = getDegreesToTarget();
+        } catch (NoTargetFoundException e)
         {
             return 0.0;
         }
@@ -515,26 +500,26 @@ public class AimingSystem implements PIDSource
      * @return the angle to the target, negative th robot needs to turn left,
      * positive, right
      */
-    public double getDegreesToTarget()
+    public double getDegreesToTarget() throws NoTargetFoundException
     {
-        processImage();
-        double offset = 9999.0;
-        if (target != null)
+        double offset;
+        if (target == null)
         {
-            offset = ((double) target.center_mass_x) - (camera.getResolution().width / 2.0);
-            offset = offset * (TARGET_WIDTH / ((double) target.target_width));
+            throw new NoTargetFoundException("No target found.");
+        } else
+        {
+            offset = target.center_mass_x - (IMAGE_WIDTH / 2.0);
+            offset = offset * (TARGET_WIDTH / target.target_width);
             offset = MathUtils.atan(offset / getDistanceToTarget());
             return offset;
         }
-//        if (t != null)
+//        else
 //        {
-//            offset = ((double) t.center_mass_x) - (IMAGE_WIDTH / 2.0);
-//            offset = offset * (24.0 / ((double) t.boundingRectWidth));
+//            offset = ((double) r.center_mass_x) - (IMAGE_WIDTH / 2.0);
+//            offset = offset * (24.0 / ((double) r.boundingRectWidth));
 //            offset = MathUtils.atan(offset / getDistanceWCamera());
-//            offset = Math.toDegrees(offset);
-//            System.out.println("Angle: " + offset);
+//            return Math.toDegrees(offset);
 //        }
-        return offset;
     }
 
     /**
@@ -574,15 +559,15 @@ public class AimingSystem implements PIDSource
         double w = 0.0;
         if (target != null)
         {
-            w = camera.getResolution().width * (TARGET_WIDTH / target.target_width);
+            w = IMAGE_WIDTH * (TARGET_WIDTH / target.target_width);
             w = w / 2;
         }
 //        if (t != null)
 //        {
-//            w = IMAGE_WIDTH * (24.0 / t.boundingRectWidth);
+//            w = IMAGE_WIDTH * (24.0 / r.boundingRectWidth);
 //            w = w / 2;
 //        }
-        return (w / Math.tan(Math.toRadians(24))) + 10.0;
+        return (w / Math.tan(Math.toRadians(24.0))) + 10.0;
     }
 
     /**
@@ -599,15 +584,14 @@ public class AimingSystem implements PIDSource
     {
         double cameraD = getDistanceWCamera();
         double ultrasonicD = getDistanceWUltrasonic();
-//        if ((cameraD / ultrasonicD) > 1.05
-//                || (cameraD / ultrasonicD) < 0.95)
-//        {
-//            return Math.max(cameraD, ultrasonicD);
-//        } else
-//        {
-//            return (cameraD + ultrasonicD) / 2.0;
-//        }
-        return cameraD;
+        if ((cameraD / ultrasonicD) > 1.05
+                || (cameraD / ultrasonicD) < 0.95)
+        {
+            return Math.max(cameraD, ultrasonicD);
+        } else
+        {
+            return (cameraD + ultrasonicD) / 2.0;
+        }
     }
 
     public double getServoPosition()
