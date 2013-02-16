@@ -237,18 +237,19 @@ public class UltimateAscentBot extends SimpleRobot {
                         currentRobotActivity = "You have control over"
                                 + " the Game Mechanism";
 
-                    } else {
-                        // Game Mech is controlled autonomously
-                        if (armStick.getRawButton(Parameters.kShootButton)) {
-                            gameMech.shoot();
-                            currentRobotActivity = "Shooting";
+                    }
+                    // Game Mech is controlled autonomously
+                    if (armStick.getRawButton(Parameters.kShootButton)) {
+                        gameMech.shoot();
+                        currentRobotActivity = "Shooting";
+                    }
+                    if (armStick.getRawButton(Parameters.kReloadButton)) {
+                        if (gameMech.getDesiredState() != GameMech.GameMechState.kUnloaded) {
+                            gameMech.reload();
                         }
-                        if (armStick.getRawButton(Parameters.kReloadButton)) {
-                            if (gameMech.getDesiredState() != GameMech.GameMechState.kUnloaded) {
-                                gameMech.reload();
-                            }
-                            currentRobotActivity = "Reloading Shooter";
-                        }
+                        currentRobotActivity = "Reloading Shooter";
+                    }
+                    if (state != GameMech.GameMechState.kManualControl) {
                         gameMech.processGameMech();
 
                     }

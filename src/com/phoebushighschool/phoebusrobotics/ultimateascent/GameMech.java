@@ -164,15 +164,6 @@ public class GameMech {
                 currentState = GameMechState.kRecocking;
                 return currentState;
             }
-            else if (!shooter.isShooterCocked() && ! shooter.isDiscLoaded())
-            {
-                currentState = GameMechState.kUnloaded;
-                return currentState;
-            }
-            else
-            {
-                return currentState = GameMechState.kManualControl;
-            }
             }
         if (desiredState == GameMechState.kManualControl) {
             currentState = GameMechState.kManualControl;
