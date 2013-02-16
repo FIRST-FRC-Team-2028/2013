@@ -33,14 +33,39 @@ public class ClimbingSystem {
             backArm.retract();
         
     }
+    
+    /**
+     * moveForwardArmByJoystick()
+     * 
+     * This method will take a joystick value and move the forward arm.
+     * 
+     * @param forwardJoystickValue
+     * @throws CANTimeoutException 
+     */
     public void moveForwardArmByJoystick(double forwardJoystickValue) throws CANTimeoutException
     {
         forwardArm.moveByValue(forwardJoystickValue);
     }
+    /**
+     * moveBackArmByJoystick()
+     * 
+     * This method will take a joystick value and move the back arm.
+     * 
+     * @param backJoystickValue
+     * @throws CANTimeoutException 
+     */
     public void moveBackArmByJoystick(double backJoystickValue) throws CANTimeoutException     
     {
         backArm.moveByValue(backJoystickValue);
     }
+    
+    /**
+     *getArmState()
+     * 
+     * This method will return the state of the forward arm, extended or retracted.
+     * 
+     * @return 
+     */
     public String getArmState()
     {
         return forwardArm.armState;

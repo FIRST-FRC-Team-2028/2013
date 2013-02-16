@@ -46,7 +46,7 @@ public class SmartDashBoard
         dash.putBoolean("Shooter Loaded", robot.isShooterLoaded());
         dash.putNumber("Distance to target", robot.getDistanceToTarget());
         dash.putNumber("Degrees to target", robot.getDegreesToTarget());
-        dash.putString("Arm:", robot.getArmState());
+        dash.putString("Forward Arm:", robot.getArmState());
         dash.putString("The Game Mechanism is:", robot.getCurrentRobotActivity());
     }    
 }
