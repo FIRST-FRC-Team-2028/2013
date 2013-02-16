@@ -14,30 +14,30 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  */
 public class SmartDashBoard
 {
+
     UltimateAscentBot robot;
-    SmartDashboard dash; 
-    
+    SmartDashboard dash;
+
     /**
      * SmartDashBoard
-     * 
+     *
      * This constructor initializes the SmartDashBoard and gives it an
      * UltimateAscentBot
-     * 
-     * @param bot 
+     *
+     * @param bot
      */
     public SmartDashBoard(UltimateAscentBot bot)
     {
         robot = bot;
         dash = new SmartDashboard();
     }
-    
-    
+
     /**
      * updateDashboard()
-     * 
-     * This method will update the Driver Station to the current values for 
-     * the # of discs, true/false shooter ready, distance to target, 
-     * degrees to target.
+     *
+     * This method will update the Driver Station to the current values for the
+     * # of discs, true/false shooter ready, distance to target, degrees to
+     * target.
      */
     public void updateDashboard()
     {
@@ -48,5 +48,5 @@ public class SmartDashBoard
         dash.putNumber("Degrees to target", robot.getDegreesToTarget());
         dash.putString("Forward Arm:", robot.getArmState());
         dash.putString("The Game Mechanism is:", robot.getCurrentRobotActivity());
-    }    
+    }
 }

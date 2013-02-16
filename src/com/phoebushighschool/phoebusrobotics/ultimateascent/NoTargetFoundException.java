@@ -10,11 +10,14 @@ package com.phoebushighschool.phoebusrobotics.ultimateascent;
  */
 public class NoTargetFoundException extends Exception
 {
-    public NoTargetFoundException() {
+
+    public NoTargetFoundException()
+    {
         super();
     }
-    
-    public NoTargetFoundException(String a) {
+
+    public NoTargetFoundException(String a)
+    {
         super(a);
     }
 }

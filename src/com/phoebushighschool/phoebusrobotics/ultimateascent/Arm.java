@@ -3,7 +3,8 @@ package com.phoebushighschool.phoebusrobotics.ultimateascent;
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
-public class Arm {
+public class Arm
+{
 
     protected boolean catchState = false;
     protected CANJaguar motor;
@@ -11,24 +12,29 @@ public class Arm {
 //    protected DigitalInput latchSwitch;
 //    protected DigitalInput handOffSwitch;
 
-    public Arm(int armCANID) {
+    public Arm(int armCANID)
+    {
 //        latchSwitch = new DigitalInput(1,
 //                Parameters.latchLimitSwitchGPIOChannel);
 //        handOffSwitch = new DigitalInput(1
 //                , Parameters.handOffLimitSwitchGPIOChannel);
-        try {
+        try
+        {
             motor = new CANJaguar(armCANID);
             motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
             motor.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             motor.configNeutralMode(CANJaguar.NeutralMode.kBrake);
-        } catch (CANTimeoutException ex) {
+        } catch (CANTimeoutException ex)
+        {
             ex.printStackTrace();
         }
     }
 
-    public boolean extend() throws CANTimeoutException {
+    public boolean extend() throws CANTimeoutException
+    {
         motor.setX(1.0);
-        if (isFullyExtended()) {
+        if (isFullyExtended())
+        {
             motor.setX(0.0);
             armState = "Extended";
             return true;
@@ -36,17 +42,20 @@ public class Arm {
         return false;
     }
 
-    public boolean retract() throws CANTimeoutException {
-        if (isFullyRetracted()) {
+    public boolean retract() throws CANTimeoutException
+    {
+        if (isFullyRetracted())
+        {
             motor.setX(0.0);
             armState = "Retracted";
             return true;
-            }   
-        else {
+        } else
+        {
             motor.setX(-1.0);
         }
         return false;
     }
+
     public void moveByValue(double JoystickValue) throws CANTimeoutException
     {
         motor.setX(JoystickValue);
@@ -59,19 +68,23 @@ public class Arm {
 //        return catchState;
 //    }
 
-
-    public boolean isFullyExtended() throws CANTimeoutException {
+    public boolean isFullyExtended() throws CANTimeoutException
+    {
         return !motor.getForwardLimitOK();
     }
 
-    public boolean isFullyRetracted() throws CANTimeoutException {
+    public boolean isFullyRetracted() throws CANTimeoutException
+    {
         return !motor.getReverseLimitOK();
     }
 
-    public void stop() {
-        try {
+    public void stop()
+    {
+        try
+        {
             motor.setX(0.0);
-        } catch (CANTimeoutException ex) {
+        } catch (CANTimeoutException ex)
+        {
             ex.printStackTrace();
         }
     }

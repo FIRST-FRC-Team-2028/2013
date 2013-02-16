@@ -4,7 +4,8 @@ import edu.wpi.first.wpilibj.can.*;
 /*
  */
 
-public class GameMech {
+public class GameMech
+{
 
     private UltimateAscentBot robot;
     protected Indexer loader;
@@ -17,7 +18,8 @@ public class GameMech {
      * @param bot
      * @throws CANTimeoutException
      */
-    public GameMech(UltimateAscentBot bot) throws CANTimeoutException {
+    public GameMech(UltimateAscentBot bot) throws CANTimeoutException
+    {
         robot = bot;
         loader = new Indexer();
         shooter = new Shooter();
@@ -28,9 +30,11 @@ public class GameMech {
     /**
      * This method will set the desired state to "Unloaded"
      */
-    public boolean shoot() throws CANTimeoutException {
+    public boolean shoot() throws CANTimeoutException
+    {
         desiredState = GameMech.GameMechState.kUnloaded;
-        if (currentState == GameMech.GameMechState.kUnloaded) {
+        if (currentState == GameMech.GameMechState.kUnloaded)
+        {
             return true;
         }
         return false;
@@ -39,9 +43,11 @@ public class GameMech {
     /**
      * This method will set the desired state to "Ready"
      */
-    public boolean reload() {
+    public boolean reload()
+    {
         desiredState = GameMech.GameMechState.kArmed;
-        if (currentState == GameMech.GameMechState.kArmed) {
+        if (currentState == GameMech.GameMechState.kArmed)
+        {
             return true;
         }
         return false;
@@ -53,9 +59,9 @@ public class GameMech {
      * @return
      * @throws CANTimeoutException
      */
-    public boolean cockShooter() throws CANTimeoutException 
+    public boolean cockShooter() throws CANTimeoutException
     {
-        if(shooter.isShooterCocked())
+        if (shooter.isShooterCocked())
         {
             return true;
         }
@@ -66,7 +72,8 @@ public class GameMech {
      *
      * @return
      */
-    public int getDiscCount() {
+    public int getDiscCount()
+    {
         return loader.getDiscCountCurrent();
     }
 
@@ -74,8 +81,10 @@ public class GameMech {
      *
      * @return
      */
-    public boolean isShooterCocked() {
-        if (currentState == GameMech.GameMechState.kArmed) {
+    public boolean isShooterCocked()
+    {
+        if (currentState == GameMech.GameMechState.kArmed)
+        {
             return true;
         }
         return false;
@@ -84,7 +93,8 @@ public class GameMech {
     /**
      *
      */
-    public void setIndexerPiston(boolean value) {
+    public void setIndexerPiston(boolean value)
+    {
         loader.setIndexerPiston(value);
         currentState = GameMechState.kManualControl;
         desiredState = currentState;
@@ -94,7 +104,8 @@ public class GameMech {
      *
      * @return
      */
-    public boolean isShooterLoaded() {
+    public boolean isShooterLoaded()
+    {
         return shooter.isDiscLoaded();
     }
 
@@ -105,7 +116,8 @@ public class GameMech {
      *
      * @throws CANTimeoutException
      */
-    public void moveShooterManual(boolean move, boolean forward) throws CANTimeoutException {
+    public void moveShooterManual(boolean move, boolean forward) throws CANTimeoutException
+    {
         currentState = GameMechState.kManualControl;
         desiredState = currentState;
         shooter.moveShooterManual(move, forward);
@@ -118,7 +130,8 @@ public class GameMech {
      *
      * @return GameMechState
      */
-    public GameMechState getCurrentState() {
+    public GameMechState getCurrentState()
+    {
         return currentState;
     }
 
@@ -129,7 +142,8 @@ public class GameMech {
      *
      * @return GameMechState - Desired state
      */
-    public GameMechState getDesiredState() {
+    public GameMechState getDesiredState()
+    {
         return desiredState;
     }
 
@@ -146,59 +160,68 @@ public class GameMech {
      *
      * @return - the GameMech's current state
      */
-    public GameMechState processGameMech() throws CANTimeoutException {
-        if(currentState == GameMechState.kManualControl)        // $$$ ToDo: Check to see if this is the right condition.
+    public GameMechState processGameMech() throws CANTimeoutException
+    {
+        if (currentState == GameMechState.kManualControl)        // $$$ ToDo: Check to see if this is the right condition.
         {
             if (shooter.isShooterCocked() && shooter.isDiscLoaded())
             {
                 currentState = GameMechState.kArmed;
                 return currentState;
-            }
-            else if (shooter.isShooterCocked())
+            } else if (shooter.isShooterCocked())
             {
                 currentState = GameMechState.kReloading;
                 return currentState;
-            }
-            else if (!shooter.isShooterCocked())
+            } else if (!shooter.isShooterCocked())
             {
                 currentState = GameMechState.kRecocking;
                 return currentState;
             }
-            }
-        if (desiredState == GameMechState.kManualControl) {
+        }
+        if (desiredState == GameMechState.kManualControl)
+        {
             currentState = GameMechState.kManualControl;
             shooter.setShooterMotor(false);
             loader.setIndexerPiston(false);
             return currentState;
         }
 
-        if (currentState == desiredState) {
+        if (currentState == desiredState)
+        {
             return currentState;
         }
 
         // We are not at our desired state yet
-        if (currentState == GameMechState.kRecocking) {
-            if (shooter.cockShooter()) {
+        if (currentState == GameMechState.kRecocking)
+        {
+            if (shooter.cockShooter())
+            {
                 currentState = GameMechState.kReloading;
                 return currentState;
             }
         }
-        if (currentState == GameMechState.kReloading) {
-            if (shooter.isDiscLoaded()) {
+        if (currentState == GameMechState.kReloading)
+        {
+            if (shooter.isDiscLoaded())
+            {
                 loader.setIndexerPiston(false);
                 currentState = GameMechState.kArmed;
                 return currentState;
-            } else {
+            } else
+            {
                 loader.setIndexerPiston(true);
             }
         }
-        if (currentState == GameMechState.kArmed) {
-            if (shooter.shoot()) {
+        if (currentState == GameMechState.kArmed)
+        {
+            if (shooter.shoot())
+            {
                 currentState = GameMechState.kUnloaded;
                 return currentState;
             }
         }
-        if (currentState == GameMechState.kUnloaded) {
+        if (currentState == GameMechState.kUnloaded)
+        {
             currentState = GameMechState.kRecocking;
         }
         return currentState;
@@ -207,7 +230,8 @@ public class GameMech {
     /**
      *
      */
-    public static class GameMechState {
+    public static class GameMechState
+    {
 
         private static final int kManual = 0;
         private static final int kCocking = 1;
@@ -221,7 +245,8 @@ public class GameMech {
         public static final GameMechState kUnloaded = new GameMechState(kEmpty);
         private final int value;
 
-        private GameMechState(int state) {
+        private GameMechState(int state)
+        {
             this.value = state;
         }
     }
