@@ -97,7 +97,7 @@ public class Shooter
      */
     public boolean isShooterCocked() throws CANTimeoutException
     {
-        return cockShooter();
+        return shooterCockedSensor.get();
     }
 
     /**

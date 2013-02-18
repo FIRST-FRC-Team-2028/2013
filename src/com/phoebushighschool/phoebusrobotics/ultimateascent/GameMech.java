@@ -61,11 +61,7 @@ public class GameMech
      */
     public boolean cockShooter() throws CANTimeoutException
     {
-        if (shooter.isShooterCocked())
-        {
-            return true;
-        }
-        return false;
+        return shooter.cockShooter();
     }
 
     /**

@@ -18,7 +18,7 @@ public class Parameters
     public static final int DiscInShooterGPIOChannel = 5;
     public static final int ShooterIsCockedGPIOChannel = 6;
     public static final int ShooterIsRetractedGPIOChannel = 7;
-    public static final double MaxMotorOutputVoltage = 10.0;
+    public static final double MaxMotorOutputVoltage = 12.0;
     // Digital Sidecar 12V Relay channels
     public static final int RelayModule = 1;
     public static final int CompressorRelayChannel = 3;
@@ -34,9 +34,9 @@ public class Parameters
     public static final int leftGearSolenoidChannel = 2;
     public static final int rightGearSolenoidChannel = 3;
     // Aiming PID Constants
-    public static final double kRobotProportional = 0.03;
+    public static final double kRobotProportional = 0.038508249651944666;
     public static final double kRobotDifferential = 0.0;
-    public static final double kRobotIntegral = 0.0;
+    public static final double kRobotIntegral = 0.001481086525074795;
     public static final double TIMER_DELAY = 0.1;
     public static final double MAX_CAMERA_INPUT = 25.0;
     public static final double MIN_CAMERA_INPUT = -25.0;

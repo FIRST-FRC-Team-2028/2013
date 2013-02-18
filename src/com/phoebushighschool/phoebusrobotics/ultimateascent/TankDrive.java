@@ -33,7 +33,7 @@ public class TankDrive implements PIDOutput, PIDSource
         leftTread = new Tread(this, Parameters.leftTreadCanID, Parameters.leftGearSolenoidChannel);
         rightTread.setGear(Tread.Gear.kLow);
         leftTread.setGear(Tread.Gear.kLow);
-        gyro = new GyroSensor(Parameters.gyroAnalogChannel);
+//        gyro = new GyroSensor(Parameters.gyroAnalogChannel);
 
     }
 
@@ -72,16 +72,16 @@ public class TankDrive implements PIDOutput, PIDSource
         {
             adjustedDrivePercentPower = drivePercentPower * 2.27;
         }
+//        System.out.print(drivePercentPower + ", " + turnPercentPower);
         turnPercentPower = decayTurnPower(adjustedDrivePercentPower, turnPercentPower, kDamp);
 
         if (Math.abs(turnPercentPower) + Math.abs(drivePercentPower) > 1.0)
         {
-            drivePercentPower = drivePercentPower / (drivePercentPower + turnPercentPower);
-            turnPercentPower = turnPercentPower / (turnPercentPower + drivePercentPower);
+            drivePercentPower = drivePercentPower / (Math.abs(drivePercentPower) + Math.abs(turnPercentPower));
+            turnPercentPower = turnPercentPower / (Math.abs(drivePercentPower) + Math.abs(turnPercentPower));
         }
-
-
-
+//        System.out.println(", " + drivePercentPower + ", " + turnPercentPower);
+        
         leftSpeed = drivePercentPower + turnPercentPower;
         rightSpeed = drivePercentPower - turnPercentPower;
 
@@ -142,6 +142,7 @@ public class TankDrive implements PIDOutput, PIDSource
     {
         try
         {
+//            System.out.println("pidWrite(" + speedToTurn + ")");
             drive(0.0, speedToTurn, 0.0);
         } catch (CANTimeoutException e)
         {
