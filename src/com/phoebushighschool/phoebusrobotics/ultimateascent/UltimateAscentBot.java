@@ -66,10 +66,10 @@ public class UltimateAscentBot extends SimpleRobot
 //        aimController.setAbsoluteTolerance(Parameters.CAMERA_TOLERANCE);
         if (turnController != null)
         {
-            turnController.setInputRange(Parameters.MIN_GYRO_INPUT, Parameters.MAX_GYRO_INPUT);
+//            turnController.setInputRange(Parameters.MIN_GYRO_INPUT, Parameters.MAX_GYRO_INPUT);
             turnController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
-            turnController.setAbsoluteTolerance(Parameters.GYRO_TOLERANCE);
-            turnController.setContinuous();
+//            turnController.setAbsoluteTolerance(Parameters.GYRO_TOLERANCE);
+//            turnController.setContinuous();
         }
         driveStick = new Joystick(1);
         shooterStick = new Joystick(2);
@@ -83,7 +83,6 @@ public class UltimateAscentBot extends SimpleRobot
             double _P = (ds.getAnalogIn(1) / 3.3);
             double _I = (ds.getAnalogIn(2) / 3.3);
             double _D = (ds.getAnalogIn(3) / 3.3);
-            double kDamp = (ds.getAnalogIn(1) / 3.3) * 50;
             System.out.println("P: " + _P + ", I: " + _I + ", D: " + _D);
             aimController.setPID(_P, _I, _D);
             if (turnController != null)
