@@ -88,7 +88,7 @@ public class Tread {
      * 
      * @return 
      */
-    public boolean isLowGear() 
+    public boolean isLowGear() //FIX ME!!! 
     {
         if (gearShifter.get() == false)     //FIX ME!!! Verify true is really high gear
         {
@@ -107,15 +107,15 @@ public class Tread {
      * 
      * @return
      */
-    public boolean isHighGear() 
+    public boolean isHighGear()
     {
         if (!gearShifter.get())     //FIX ME!!! Verify false is really low gear
         {
-            return false;
+            return true;
         }
         else
         {
-            return true;
+            return false;
         }
     }
     
@@ -123,7 +123,7 @@ public class Tread {
      * 
      * @return 
      */
-    public Gear getGear()
+    public Gear getGear() 
     {
         if (isHighGear())
         {
