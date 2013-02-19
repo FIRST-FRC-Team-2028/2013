@@ -22,7 +22,7 @@ public class Parameters
     // Digital Sidecar 12V Relay channels
     public static final int RelayModule = 1;
     public static final int CompressorRelayChannel = 3;
-    public static final int PushDiscIntoShooterRelayChannel = 1;
+//    public static final int PushDiscIntoShooterRelayChannel = 1;
     //Digital Sidecar PWM channels
     public static final int cameraServoPWMChannel = 1;
     // cRIO 9201 Analog Module Channels
@@ -33,6 +33,8 @@ public class Parameters
     public static final int crioRelayModule = 1;
     public static final int leftGearSolenoidChannel = 2;
     public static final int rightGearSolenoidChannel = 3;
+    public final static int pushDiscOutSolenoidChannel = 4;
+    public final static int pullDiscInSolenoidChannel = 5;
     // Aiming PID Constants
     public static final double kRobotProportional = 0.038508249651944666;
     public static final double kRobotDifferential = 0.0;
@@ -58,9 +60,11 @@ public class Parameters
     public static int kShootButton = 1;
     public static int kCameraAimButton = 5;
     public static int kReloadButton = 6;
+    public static int kManualCockButton = 8;
+    public static int kManualShootButton = 9;
     //shooter controller buttons left arm
-    public static int kIndexerPistonButton = 5;
-    public static int kTurnShooterForwardButton = 6;
+    public static int kIndexerPistonButton = 3;
+    public static int kTurnShooterForwardButton = 5;
     public static int kTurnShooterReverseButton = 4;
     public static double kCameraShooterPosition = 85.0;
     public static double kCameraClimbPosition = 160.0;

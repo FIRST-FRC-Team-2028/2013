@@ -1,6 +1,5 @@
 package com.phoebushighschool.phoebusrobotics.ultimateascent;
 
-import com.sun.squawk.GC;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
@@ -17,7 +16,7 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 public class UltimateAscentBot extends SimpleRobot
 {
 
-    protected AimingSystem visionSystem;
+    protected AimingSystem visionSystem = null;
     protected TankDrive drive;
     public GameMech gameMech = null;
     public Parameters param;
@@ -25,7 +24,7 @@ public class UltimateAscentBot extends SimpleRobot
     public PIDController aimController;
     public PIDController turnController;
     private SmartDashBoard dash = null;
-    public ClimbingSystem climber;
+    public ClimbingSystem climber = null;
     DriverStation ds;
     boolean turning = false;
     protected Joystick driveStick;
@@ -39,18 +38,24 @@ public class UltimateAscentBot extends SimpleRobot
         try
         {
             drive = new TankDrive();
-            climber = new ClimbingSystem();
+//            climber = new ClimbingSystem();
             gameMech = new GameMech(this);
         } catch (CANTimeoutException ex)
         {
             System.out.println(ex);
         }
-        visionSystem = new AimingSystem();
-        aimController = new PIDController(Parameters.kRobotProportional,
-                Parameters.kRobotIntegral,
-                Parameters.kRobotDifferential,
-                visionSystem,
-                drive);
+//        visionSystem = new AimingSystem();
+        if (visionSystem != null)
+        {
+            aimController = new PIDController(Parameters.kRobotProportional,
+                    Parameters.kRobotIntegral,
+                    Parameters.kRobotDifferential,
+                    visionSystem,
+                    drive);
+//        aimController.setInputRange(Parameters.MIN_CAMERA_INPUT, Parameters.MAX_CAMERA_INPUT);
+            aimController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
+//        aimController.setAbsoluteTolerance(Parameters.CAMERA_TOLERANCE);
+        }
         if (drive.isGyroPresent())
         {
             turnController = new PIDController(Parameters.kRobotProportional,
@@ -58,19 +63,13 @@ public class UltimateAscentBot extends SimpleRobot
                     Parameters.kRobotDifferential,
                     drive,
                     drive);
-        }
-//        dash = new SmartDashBoard(this);
-        ds = DriverStation.getInstance();
-//        aimController.setInputRange(Parameters.MIN_CAMERA_INPUT, Parameters.MAX_CAMERA_INPUT);
-        aimController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
-//        aimController.setAbsoluteTolerance(Parameters.CAMERA_TOLERANCE);
-        if (turnController != null)
-        {
 //            turnController.setInputRange(Parameters.MIN_GYRO_INPUT, Parameters.MAX_GYRO_INPUT);
             turnController.setOutputRange(Parameters.MIN_OUTPUT, Parameters.MAX_OUTPUT);
 //            turnController.setAbsoluteTolerance(Parameters.GYRO_TOLERANCE);
 //            turnController.setContinuous();
         }
+//            dash = new SmartDashBoard(this);
+        ds = DriverStation.getInstance();
         driveStick = new Joystick(1);
         shooterStick = new Joystick(2);
         armStick = new Joystick(3);
@@ -91,10 +90,16 @@ public class UltimateAscentBot extends SimpleRobot
             }
             RobotState state = new RobotState();
             int i = 0;
-            visionSystem.DisableAimingSystem();
+            if (visionSystem != null)
+            {
+                visionSystem.DisableAimingSystem();
+            }
             while (isAutonomous() && isEnabled())
             {
-//                dash.updateDashboard();
+                if (dash != null)
+                {
+                    dash.updateDashboard();
+                }
 //                System.out.println("Free memory: " + GC.freeMemory());
                 double time = Timer.getFPGATimestamp();
                 switch (state.getState())
@@ -103,7 +108,7 @@ public class UltimateAscentBot extends SimpleRobot
 //                        drive.drive(Parameters.AUTONOMOUS_DRIVE_FORWARD_SPEED, 0.0, kDamp);
 //                        if (Timer.getFPGATimestamp() - time >= 0.5)
 //                        {
-                            state.nextState();
+                        state.nextState();
 //                        }
 //                        System.out.println("Driving forward");
                         currentRobotActivity = "Driving";
@@ -125,30 +130,38 @@ public class UltimateAscentBot extends SimpleRobot
                             break;
                         }
                     case RobotState.turnToTarget:
-                        boolean aimed;
-                        try
+                        if (visionSystem != null)
                         {
-                            System.out.println("Angle before: " + visionSystem.getDegreesToTarget());
-                            aimed = aim();
-                            System.out.println("Angle after: " + visionSystem.getDegreesToTarget());
-                        } catch (NoTargetFoundException e)
-                        {
-                            switch (i) {
-                                case 3:
-                                    System.out.println(e);
-                                    i = 0;
-                                    break;
-                                default:
-                                    i++;
+                            boolean aimed;
+                            try
+                            {
+                                System.out.println("Angle before: " + visionSystem.getDegreesToTarget());
+                                aimed = aim();
+                                System.out.println("Angle after: " + visionSystem.getDegreesToTarget());
+                            } catch (NoTargetFoundException e)
+                            {
+                                switch (i)
+                                {
+                                    case 3:
+                                        System.out.println(e);
+                                        i = 0;
+                                        break;
+                                    default:
+                                        i++;
+                                }
+                                break;
                             }
-                            break;
-                        }
-                        if (aimed)
+                            if (aimed)
+                            {
+                                state.nextState();
+                                DisableAimController();
+                                visionSystem.DisableAimingSystem();
+                            }
+                        } else
                         {
                             state.nextState();
-                            DisableAimController();
-                            visionSystem.DisableAimingSystem();
                         }
+
                         currentRobotActivity = "Lining up with target";
                         break;
                     case RobotState.cockShooter:
@@ -195,12 +208,12 @@ public class UltimateAscentBot extends SimpleRobot
                 getWatchdog().feed();
             }
             DisableAimController();
-            visionSystem.DisableAimingSystem();
+            if (visionSystem != null)
+            {
+                visionSystem.DisableAimingSystem();
+            }
         } catch (CANTimeoutException e)
         {
-        } catch (RuntimeException e) {
-            System.out.println(e);
-            e.printStackTrace();
         }
     }
 
@@ -221,7 +234,10 @@ public class UltimateAscentBot extends SimpleRobot
         int i = 0;
         while (isOperatorControl() && isEnabled())
         {
-//            dash.updateDashboard();
+            if (dash != null)
+            {
+                dash.updateDashboard();
+            }
             //
             // Driver Controls
             //
@@ -276,16 +292,19 @@ public class UltimateAscentBot extends SimpleRobot
 
             boolean climbPosition = driveStick.getRawButton(Parameters.kCameraClimbingButton);
             boolean shootPosition = driveStick.getRawButton(Parameters.kCameraShootingButton);
-            double currentPosition = visionSystem.getServoPosition();
-            if (climbPosition)
+            if (visionSystem != null)
             {
-                visionSystem.setClimbPosition();
-                currentPosition = Parameters.kCameraClimbPosition;
-            }
-            if (shootPosition)
-            {
-                visionSystem.setShootPosition();
-                currentPosition = Parameters.kCameraShooterPosition;
+                double currentPosition = visionSystem.getServoPosition();
+                if (climbPosition)
+                {
+                    visionSystem.setClimbPosition();
+                    currentPosition = Parameters.kCameraClimbPosition;
+                }
+                if (shootPosition)
+                {
+                    visionSystem.setShootPosition();
+                    currentPosition = Parameters.kCameraShooterPosition;
+                }
             }
             //
             // Shooter Controls
@@ -295,20 +314,40 @@ public class UltimateAscentBot extends SimpleRobot
                 GameMech.GameMechState state = gameMech.getDesiredState();
                 try
                 {
+                    boolean turnShooterButton = shooterStick.getRawButton(Parameters.kTurnShooterForwardButton);  //5
+                    boolean turnShooterReverseButton = shooterStick.getRawButton(Parameters.kTurnShooterReverseButton);  //4                    
+                    boolean indexerButton = shooterStick.getRawButton(Parameters.kIndexerPistonButton);  //3                    
+                    boolean manualShoot = shooterStick.getRawButton(Parameters.kManualShootButton);
+                    boolean manualCock = shooterStick.getRawButton(Parameters.kManualCockButton);
+                    if (turnShooterButton || turnShooterReverseButton || indexerButton || manualShoot || manualCock)
+                    {
+                        gameMech.setManualState();
+                    }
                     if (state == GameMech.GameMechState.kManualControl)
                     {
 
-                        // Manually exercise indexer          
-                        boolean indexerButton = shooterStick.getRawButton(Parameters.kIndexerPistonButton);
+//                         Manually exercise indexer          
                         gameMech.setIndexerPiston(indexerButton);
                         // Manually exercise shooter cam
-                        boolean turnShooterButton = shooterStick.getRawButton(Parameters.kTurnShooterForwardButton);
-                        boolean turnShooterReverseButton = shooterStick.getRawButton(Parameters.kTurnShooterReverseButton);
-                        gameMech.moveShooterManual(turnShooterButton || turnShooterReverseButton, turnShooterButton);
+
+                        if (turnShooterButton || turnShooterReverseButton)
+                        {
+                            gameMech.moveShooterManual(turnShooterButton || turnShooterReverseButton, turnShooterButton);
+                        }
+                        else if (manualShoot)
+                        {
+                            gameMech.manualShoot();
+                        }
+                        else if (manualCock)
+                        {
+                            gameMech.manualCock();
+                        } else {
+                            gameMech.moveShooterManual(false, false);
+                        }
                         currentRobotActivity = "You have control over"
                                 + " the Game Mechanism";
                     }
-                    // Game Mech is controlled autonomously
+//                     Game Mech is controlled autonomously
                     if (armStick.getRawButton(Parameters.kShootButton))
                     {
                         gameMech.shoot();
@@ -357,7 +396,6 @@ public class UltimateAscentBot extends SimpleRobot
                     }
                 } catch (CANTimeoutException ex)
                 {
-                    ex.printStackTrace();
                 }
             }
             Timer.delay(Parameters.TIMER_DELAY);
@@ -431,7 +469,13 @@ public class UltimateAscentBot extends SimpleRobot
      */
     public boolean isAimedAtTarget() throws NoTargetFoundException
     {
-        return visionSystem.isAimedAtTarget();
+        if (visionSystem != null)
+        {
+            return visionSystem.isAimedAtTarget();
+        } else
+        {
+            return false;
+        }
     }
 
     public void DisableAimController()
@@ -439,7 +483,10 @@ public class UltimateAscentBot extends SimpleRobot
         if (turning)
         {
             aimController.disable();
-            visionSystem.DisableAimingSystem();
+            if (visionSystem != null)
+            {
+                visionSystem.DisableAimingSystem();
+            }
         }
         turning = false;
     }
@@ -487,7 +534,13 @@ public class UltimateAscentBot extends SimpleRobot
      */
     public double getDistanceToTarget()
     {
-        return visionSystem.getDistanceToTarget();
+        if (visionSystem != null)
+        {
+            return visionSystem.getDistanceToTarget();
+        } else
+        {
+            return 0.0;
+        }
     }
 
     /**
@@ -539,11 +592,14 @@ public class UltimateAscentBot extends SimpleRobot
     public double getDegreesToTarget()
     {
         double temp = 0.0;
-        try
+        if (visionSystem != null)
         {
-            temp = visionSystem.getDegreesToTarget();
-        } catch (NoTargetFoundException e)
-        {
+            try
+            {
+                temp = visionSystem.getDegreesToTarget();
+            } catch (NoTargetFoundException e)
+            {
+            }
         }
         return temp;
     }
@@ -558,7 +614,13 @@ public class UltimateAscentBot extends SimpleRobot
      */
     public String getArmState()
     {
-        return climber.getArmState();
+        if (climber != null)
+        {
+            return climber.getArmState();
+        } else
+        {
+            return "Arm is null";
+        }
     }
 
     /**

@@ -40,6 +40,19 @@ public class GameMech
         return false;
     }
 
+    public void manualShoot() throws CANTimeoutException {
+        shooter.shoot();
+    }
+    
+    public void manualCock() throws CANTimeoutException {
+        shooter.cockShooter();
+    }
+   
+    public void setManualState() {
+        desiredState = GameMechState.kManualControl;
+        currentState = desiredState;
+    }
+    
     /**
      * This method will set the desired state to "Ready"
      */

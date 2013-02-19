@@ -97,7 +97,14 @@ public class Shooter
      */
     public boolean isShooterCocked() throws CANTimeoutException
     {
-        return shooterCockedSensor.get();
+        boolean temp = shooterCockedSensor.get();
+        if (temp)
+        {
+            System.out.println("Cocked");
+        } else {
+            System.out.println("Not cocked");
+        }
+        return temp;
     }
 
     /**
@@ -110,7 +117,13 @@ public class Shooter
      */
     public boolean isShooterRetracted()
     {
-        return shooterRetractedSensor.get();
+        boolean temp = shooterRetractedSensor.get();
+        if (temp) {
+            System.out.println("Retracted");
+        } else {
+            System.out.println("Not retracted");
+        }
+        return temp;
     }
 
     /**
