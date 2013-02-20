@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
+import edu.wpi.first.wpilibj.Compressor;
 
 /*
  */
@@ -19,6 +20,7 @@ public class UltimateAscentBot extends SimpleRobot
     protected AimingSystem visionSystem = null;
     protected TankDrive drive;
     public GameMech gameMech = null;
+    public Compressor compressor;
     public Parameters param;
     public FRCMath math;
     public PIDController aimController;
@@ -38,13 +40,13 @@ public class UltimateAscentBot extends SimpleRobot
         try
         {
             drive = new TankDrive();
-//            climber = new ClimbingSystem();
+            climber = new ClimbingSystem();
             gameMech = new GameMech(this);
         } catch (CANTimeoutException ex)
         {
             System.out.println(ex);
         }
-//        visionSystem = new AimingSystem();
+        visionSystem = new AimingSystem();
         if (visionSystem != null)
         {
             aimController = new PIDController(Parameters.kRobotProportional,
@@ -68,26 +70,27 @@ public class UltimateAscentBot extends SimpleRobot
 //            turnController.setAbsoluteTolerance(Parameters.GYRO_TOLERANCE);
 //            turnController.setContinuous();
         }
-//            dash = new SmartDashBoard(this);
+        dash = new SmartDashBoard(this);
         ds = DriverStation.getInstance();
         driveStick = new Joystick(1);
         shooterStick = new Joystick(2);
         armStick = new Joystick(3);
+        compressor = new Compressor(Parameters.CompressorPressureSwitchGPIOChannel, Parameters.CompressorRelayChannel);
     }
 
     public void autonomous()
     {
         try
         {
-            double _P = (ds.getAnalogIn(1) / 3.3);
-            double _I = (ds.getAnalogIn(2) / 3.3);
-            double _D = (ds.getAnalogIn(3) / 3.3);
-            System.out.println("P: " + _P + ", I: " + _I + ", D: " + _D);
-            aimController.setPID(_P, _I, _D);
-            if (turnController != null)
-            {
-                turnController.setPID(_P, _I, _D);
-            }
+//            double _P = (ds.getAnalogIn(1) / 3.3);
+//            double _I = (ds.getAnalogIn(2) / 3.3);
+//            double _D = (ds.getAnalogIn(3) / 3.3);
+//            System.out.println("P: " + _P + ", I: " + _I + ", D: " + _D);
+//            aimController.setPID(_P, _I, _D);
+//            if (turnController != null)
+//            {
+//                turnController.setPID(_P, _I, _D);
+//            }
             RobotState state = new RobotState();
             int i = 0;
             if (visionSystem != null)
@@ -234,6 +237,7 @@ public class UltimateAscentBot extends SimpleRobot
         int i = 0;
         while (isOperatorControl() && isEnabled())
         {
+            compressor.start();
             if (dash != null)
             {
                 dash.updateDashboard();
@@ -241,59 +245,62 @@ public class UltimateAscentBot extends SimpleRobot
             //
             // Driver Controls
             //
-            try
+            if (drive != null)
             {
-                double drivePercent = driveStick.getY() * -1.0;
-                if (drivePercent < Parameters.kJoystickDeadband
-                        && drivePercent > (-1.0 * Parameters.kJoystickDeadband))
+                try
                 {
-                    drivePercent = 0.0;
-                }
-                double turnPercent = driveStick.getX();
-                if (turnPercent < Parameters.kJoystickDeadband
-                        && turnPercent > (-1.0 * Parameters.kJoystickDeadband))
-                {
-                    turnPercent = 0.0;
-                }
-                switch (i)
-                {
-                    default:
-                        i++;
-                        break;
-                    case 3:
+                    double drivePercent = driveStick.getY() * -1.0;
+                    if (drivePercent < Parameters.kJoystickDeadband
+                            && drivePercent > (-1.0 * Parameters.kJoystickDeadband))
+                    {
+                        drivePercent = 0.0;
+                    }
+                    double turnPercent = driveStick.getX();
+                    if (turnPercent < Parameters.kJoystickDeadband
+                            && turnPercent > (-1.0 * Parameters.kJoystickDeadband))
+                    {
+                        turnPercent = 0.0;
+                    }
+                    switch (i)
+                    {
+                        default:
+                            i++;
+                            break;
+                        case 3:
 //                        System.out.println("Drive value: " + drivePercent + ", Turn value: " + turnPercent);
-                        i = 0;
-                        break;
+                            i = 0;
+                            break;
+                    }
+                    drive.drive(drivePercent, turnPercent, kDamp);
+                } catch (CANTimeoutException e)
+                {
+                    System.out.println(e);
                 }
-                drive.drive(drivePercent, turnPercent, kDamp);
-            } catch (CANTimeoutException e)
-            {
-                System.out.println(e);
+
+                boolean lowGear = driveStick.getRawButton(Parameters.kLowGearButton);
+                boolean highGear = driveStick.getRawButton(Parameters.kHighGearButton);
+                Tread.Gear presentGear = drive.getGear();
+                Tread.Gear newGear = presentGear;
+                if (highGear)
+                {
+                    newGear = Tread.Gear.kHigh;
+                    currentGear = "High Gear";
+                }
+                if (lowGear)
+                {
+                    newGear = Tread.Gear.kLow;
+                    currentGear = "Low Gear";
+                }
+                if (presentGear != newGear)
+                {
+                    drive.setGear(newGear);
+                }
             }
 
-            boolean lowGear = driveStick.getRawButton(Parameters.kLowGearButton);
-            boolean highGear = driveStick.getRawButton(Parameters.kHighGearButton);
-            Tread.Gear presentGear = drive.getGear();
-            Tread.Gear newGear = presentGear;
-            if (highGear)
-            {
-                newGear = Tread.Gear.kHigh;
-                currentGear = "High Gear";
-            }
-            if (lowGear)
-            {
-                newGear = Tread.Gear.kLow;
-                currentGear = "Low Gear";
-            }
-            if (presentGear != newGear)
-            {
-                drive.setGear(newGear);
-            }
-
-            boolean climbPosition = driveStick.getRawButton(Parameters.kCameraClimbingButton);
-            boolean shootPosition = driveStick.getRawButton(Parameters.kCameraShootingButton);
             if (visionSystem != null)
             {
+                boolean climbPosition = driveStick.getRawButton(Parameters.kCameraClimbingButton);
+                boolean shootPosition = driveStick.getRawButton(Parameters.kCameraShootingButton);
                 double currentPosition = visionSystem.getServoPosition();
                 if (climbPosition)
                 {
@@ -333,15 +340,14 @@ public class UltimateAscentBot extends SimpleRobot
                         if (turnShooterButton || turnShooterReverseButton)
                         {
                             gameMech.moveShooterManual(turnShooterButton || turnShooterReverseButton, turnShooterButton);
-                        }
-                        else if (manualShoot)
+                        } else if (manualShoot)
                         {
                             gameMech.manualShoot();
-                        }
-                        else if (manualCock)
+                        } else if (manualCock)
                         {
                             gameMech.manualCock();
-                        } else {
+                        } else
+                        {
                             gameMech.moveShooterManual(false, false);
                         }
                         currentRobotActivity = "You have control over"
@@ -355,10 +361,10 @@ public class UltimateAscentBot extends SimpleRobot
                     }
                     if (armStick.getRawButton(Parameters.kReloadButton))
                     {
-                        if (gameMech.getDesiredState() != GameMech.GameMechState.kUnloaded)
-                        {
-                            gameMech.reload();
-                        }
+//                        if (gameMech.getDesiredState() != GameMech.GameMechState.kUnloaded)
+//                        {
+                        gameMech.reload();
+//                        }
                         currentRobotActivity = "Reloading Shooter";
                     }
                     if (state != GameMech.GameMechState.kManualControl)
@@ -401,6 +407,7 @@ public class UltimateAscentBot extends SimpleRobot
             Timer.delay(Parameters.TIMER_DELAY);
             getWatchdog().feed();
         }
+        compressor.stop();
     }
 
     public void test()

@@ -203,16 +203,20 @@ public class GameMech
         // We are not at our desired state yet
         if (currentState == GameMechState.kRecocking)
         {
+            System.out.println("Cocking");
             if (shooter.cockShooter())
             {
+                System.out.println("Cocked");
                 currentState = GameMechState.kReloading;
                 return currentState;
             }
         }
         if (currentState == GameMechState.kReloading)
         {
+            System.out.println("Reloading");
             if (shooter.isDiscLoaded())
             {
+                System.out.println("Reloaded");
                 loader.setIndexerPiston(false);
                 currentState = GameMechState.kArmed;
                 return currentState;
@@ -223,8 +227,10 @@ public class GameMech
         }
         if (currentState == GameMechState.kArmed)
         {
+            System.out.println("Shooting");
             if (shooter.shoot())
             {
+                System.out.println("Shot");
                 currentState = GameMechState.kUnloaded;
                 return currentState;
             }
