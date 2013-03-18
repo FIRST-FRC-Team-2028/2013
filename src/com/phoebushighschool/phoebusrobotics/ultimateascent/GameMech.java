@@ -12,6 +12,8 @@ public class GameMech
     public Shooter shooter;
     private GameMechState currentState;
     private GameMechState desiredState;
+    public int switcher = 0;
+    public boolean switched = true;
 
     /**
      *
@@ -222,8 +224,13 @@ public class GameMech
                 return currentState;
             } else
             {
-                loader.setIndexerPiston(true);
+                loader.setIndexerPiston(switched);
+                if (switcher  == 9) {
+                    switcher = 0;
+                    switched = !switched;
+                }
             }
+            switcher++;
         }
         if (currentState == GameMechState.kArmed)
         {

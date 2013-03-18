@@ -45,6 +45,13 @@ public class GyroSensor extends Gyro
         return temp;
     }
 
+    public boolean atTargetAngle(double target) {
+        if (target < readAngle() + 1 && target > readAngle() -1) {
+            return true;
+        }
+        return false;
+    } 
+    
     public double pidGet()
     {
         return readAngle();

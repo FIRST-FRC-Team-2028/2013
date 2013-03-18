@@ -39,8 +39,8 @@ public class AimingSystem implements PIDSource
     final int X_EDGE_LIMIT = 40;
     final int Y_EDGE_LIMIT = 60;
     final double TARGET_WIDTH = 62.0;
-    final double climbPosition = 50.0;
-    final double shootPosition = 100.0;
+    final double climbPosition = Parameters.kCameraClimbPosition;
+    final double shootPosition = Parameters.kCameraShooterPosition;
     int imageState = 0;
     AxisCamera camera;
     Ultrasonic ultrasonicSensor;
@@ -489,6 +489,27 @@ public class AimingSystem implements PIDSource
         return false;
     }
 
+    /**
+     * isDistance();
+     * 
+     * This method determines if we are the right distance to the target to make
+     * our shots.
+     * 
+     * @return true - we are the right distance from the target
+     *         false - we are not the right distance from the target
+     */
+    public boolean isCorrectDistance(boolean middle) throws NoTargetFoundException {
+        double temp = getDistanceToTarget();
+        if (temp < Parameters.MAX_SHOOT_DISTANCE && temp > Parameters.MIN_SHOOT_DISTANCE && middle) {
+            return true;
+        }
+        if (temp < (Parameters.MAX_SHOOT_DISTANCE + 36.0) && temp > (Parameters.MIN_SHOOT_DISTANCE + 36.0) && !middle)
+        {
+            return true;
+        }
+        return false;
+    }
+    
     public double pidGet()
     {
         double temp;
@@ -565,14 +586,15 @@ public class AimingSystem implements PIDSource
      *
      * @return the distance to what the camera thinks is the target in inches
      */
-    public double getDistanceWCamera()
+    public double getDistanceWCamera() throws NoTargetFoundException
     {
         double w = 0.0;
-        if (target != null)
+        if (target == null)
         {
+            throw new NoTargetFoundException("No target found");
+        }
             w = ((double) camera.getResolution().width) * (TARGET_WIDTH / target.target_width);
             w = w / 2;
-        }
 //        if (t != null)
 //        {
 //            w = IMAGE_WIDTH * (24.0 / r.boundingRectWidth);
@@ -591,19 +613,19 @@ public class AimingSystem implements PIDSource
      *
      * @return the distance to the target.
      */
-    public double getDistanceToTarget()
+    public double getDistanceToTarget() throws NoTargetFoundException
     {
         double cameraD = getDistanceWCamera();
-//        double ultrasonicD = getDistanceWUltrasonic();
-//        if ((cameraD / ultrasonicD) > 1.05
-//                || (cameraD / ultrasonicD) < 0.95)
-//        {
-//            return Math.max(cameraD, ultrasonicD);
-//        } else
-//        {
-//            return (cameraD + ultrasonicD) / 2.0;
-//        }
-        return cameraD;
+        double ultrasonicD = getDistanceWUltrasonic();
+        if ((cameraD / ultrasonicD) > 1.05
+                || (cameraD / ultrasonicD) < 0.95)
+        {
+            return Math.max(cameraD, ultrasonicD);
+        } else
+        {
+            return (cameraD + ultrasonicD) / 2.0;
+        }
+//        return cameraD;
     }
 
     public double getServoPosition()

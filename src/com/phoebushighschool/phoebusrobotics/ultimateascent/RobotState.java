@@ -12,16 +12,22 @@ public class RobotState
 {
 
     public static final int drive = 0;
-    public static final int turnTowardsTarget = 1;
-    public static final int turnToTarget = 2;
+    public static final int turnTowardsTarget = 2;
+    public static final int turnToTarget = 1;
     public static final int cockShooter = 3;
     public static final int loadShooter = 4;
     public static final int shootShooter = 5;
     int state;
 
-    public RobotState()
+    public RobotState(boolean stay)
     {
-        state = drive;
+        if (stay)
+        {
+            state = cockShooter;
+        } else
+        {
+            state = turnToTarget;
+        }
     }
 
     /**

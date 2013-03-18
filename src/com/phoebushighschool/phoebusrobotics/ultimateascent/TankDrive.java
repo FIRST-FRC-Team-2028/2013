@@ -62,28 +62,26 @@ public class TankDrive implements PIDOutput, PIDSource
     {
         drivePercentPower = (drivePercentPower * -1.0);
         turnPercentPower = (turnPercentPower * -1.0);
-        double leftSpeed;
-        double rightSpeed;
 
         //when in high gear, adjust drivePercentPower for higher gear ratio 
 
-        double adjustedDrivePercentPower = drivePercentPower;
-        if (leftTread.isHighGear())
-        {
-            adjustedDrivePercentPower = drivePercentPower * 2.27;
-        }
-//        System.out.print(drivePercentPower + ", " + turnPercentPower);
-        turnPercentPower = decayTurnPower(adjustedDrivePercentPower, turnPercentPower, kDamp);
-
-        if (Math.abs(turnPercentPower) + Math.abs(drivePercentPower) > 1.0)
-        {
-            drivePercentPower = drivePercentPower / (Math.abs(drivePercentPower) + Math.abs(turnPercentPower));
-            turnPercentPower = turnPercentPower / (Math.abs(drivePercentPower) + Math.abs(turnPercentPower));
-        }
-//        System.out.println(", " + drivePercentPower + ", " + turnPercentPower);
+//        double adjustedDrivePercentPower = drivePercentPower;
+//        if (leftTread.isHighGear())
+//        {
+//            adjustedDrivePercentPower = drivePercentPower * 2.27;
+//        }
+////        System.out.print(drivePercentPower + ", " + turnPercentPower);
+//        turnPercentPower = decayTurnPower(adjustedDrivePercentPower, turnPercentPower, kDamp);
+//
+//        if (Math.abs(turnPercentPower) + Math.abs(drivePercentPower) > 1.0)
+//        {
+//            drivePercentPower = drivePercentPower / (Math.abs(drivePercentPower) + Math.abs(turnPercentPower));
+//            turnPercentPower = turnPercentPower / (Math.abs(drivePercentPower) + Math.abs(turnPercentPower));
+//        }
+////        System.out.println(", " + drivePercentPower + ", " + turnPercentPower);
         
-        leftSpeed = drivePercentPower + turnPercentPower;
-        rightSpeed = drivePercentPower - turnPercentPower;
+        double leftSpeed = drivePercentPower + turnPercentPower;
+        double rightSpeed = drivePercentPower - turnPercentPower;
 
         leftTread.drive(leftSpeed * -1.0);
         rightTread.drive(rightSpeed);
@@ -105,31 +103,21 @@ public class TankDrive implements PIDOutput, PIDSource
      */
     public double decayTurnPower(double forwardPercentPower, double turnPercentPower, double kDamp)
     {
-        double decayValue;
+        double decayValue = 1.0 / (FRCMath.pow(forwardPercentPower, 2) + 1.0);
 
-        decayValue = (-1.0 / (kDamp * FRCMath.pow(forwardPercentPower, 2) + 1.0)) + 1.0;
-
-        if (turnPercentPower > 0.0)
-        {
-            turnPercentPower -= decayValue;
-            if (turnPercentPower < 0.0)
-            {
-                turnPercentPower = 0.0;
-            }
-        }
-
-        if (turnPercentPower < 0.0)
-        {
-            turnPercentPower += decayValue;
-            if (turnPercentPower > 0.0)
-            {
-                turnPercentPower = 0.0;
-            }
-        }
+        turnPercentPower *= decayValue;
 
         return turnPercentPower;
     }
 
+    public double readAngle() {
+        return gyro.readAngle();
+    }
+    
+    public boolean atTargetAngle(double target) {
+        return gyro.atTargetAngle(target);
+    }
+    
     /**
      * This method takes a joystick value, and turns the robot according to the
      * value
