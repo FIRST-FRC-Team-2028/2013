@@ -45,15 +45,23 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
         try {
             if (Parameters.kDriveExists) {
                 drive = new TankDrive();
+            } else {
+                System.out.println("No drive");
             }
             if (Parameters.kClimberExists) {
                 climber = new ClimbingSystem();
+            } else {
+                System.out.println("No climber");
             }
             if (Parameters.kGameMechExists) {
                 gameMech = new GameMech(this);
+            } else {
+                System.out.println("No gamemech");
             }
             if (Parameters.kCameraExists) {
                 visionSystem = new AimingSystem();
+            } else {
+                System.out.println("No camera");
             }
         } catch (CANTimeoutException ex) {
             System.out.println(ex);
@@ -83,7 +91,7 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
                     this,
                     this);
         }
-        dash = new SmartDashBoard(this);
+//        dash = new SmartDashBoard(this);
         ds = DriverStation.getInstance();
         driveStick = new Joystick(1);
         leftStick = new Joystick(2);
@@ -93,7 +101,7 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
 
     public void autonomous() {
         try {
-            RobotState state = new RobotState(ds.getDigitalIn(Parameters.kStaySwitch));
+            RobotState state = new RobotState(true);
             int i = 0;
             if (visionSystem != null) {
                 visionSystem.DisableAimingSystem();
@@ -160,6 +168,7 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
                         if (gameMech != null) {
                             if (gameMech.reload()) {
                                 state.nextState();
+                                i = 0;
                                 currentRobotActivity = "Reloading";
                             }
                             gameMech.processGameMech();
@@ -169,11 +178,14 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
                         break;
                     case RobotState.shootShooter:
                         if (gameMech != null) {
-                            if (gameMech.shoot()) {
-                                state.nextState();
-                                currentRobotActivity = "shooting. Faint Wheeeeeee is heard";
+                            if (i >= 3) {
+                                if (gameMech.shoot()) {
+                                    state.nextState();
+                                    currentRobotActivity = "shooting. Faint Wheeeeeee is heard";
+                                }
+                                gameMech.processGameMech();
                             }
-                            gameMech.processGameMech();
+                            i++;
                         } else {
                             state.nextState();
                         }
@@ -197,8 +209,9 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
      *
      */
     public void operatorControl() {
-        double kDamp = 15.0;
+        double kDamp = 20.0;
         int i = 0;
+        boolean shootingMemory = true;
         while (isOperatorControl() && isEnabled()) {
             compressor.start();
             if (dash != null) {
@@ -207,6 +220,7 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
 
             boolean shooting = ds.getDigitalIn(Parameters.kShootingSwitch);
             Parameters.GO_FOR_MIDDLE_TARGET = ds.getDigitalIn(Parameters.kShootMiddleSwitch);
+            boolean highGear = ds.getDigitalIn(Parameters.kGearShiftSwitch);
             // Driver Controls
             //
             if (drive != null) {
@@ -226,15 +240,13 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
                     System.out.println(e);
                 }
 
-                boolean lowGear = driveStick.getRawButton(Parameters.kLowGearButton);
-                boolean highGear = driveStick.getRawButton(Parameters.kHighGearButton);
                 Tread.Gear presentGear = drive.getGear();
                 Tread.Gear newGear = presentGear;
                 if (highGear) {
                     newGear = Tread.Gear.kHigh;
                     currentGear = "High Gear";
                 }
-                if (lowGear || !shooting) {
+                if (!highGear) {
                     newGear = Tread.Gear.kLow;
                     currentGear = "Low Gear";
                 }
@@ -247,6 +259,11 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
                 boolean climbPosition = driveStick.getRawButton(Parameters.kCameraClimbingButton);
                 boolean shootPosition = driveStick.getRawButton(Parameters.kCameraShootingButton);
                 boolean aiming = driveStick.getRawButton(Parameters.kCameraAimButton);
+                if (shootingMemory != shooting) {
+                    climbPosition = !shooting;
+                    shootPosition = shooting;
+                }
+
                 if (climbPosition) {
                     visionSystem.setClimbPosition();
                 }
@@ -283,7 +300,7 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
 
                     GameMech.GameMechState state = gameMech.getDesiredState();
 
-                    //Game mech is controlled autonomously
+                    //Game mech is controlled by operator
                     if (state == GameMech.GameMechState.kManualControl) {
                         if (turnShooterButton || turnShooterReverseButton) {
                             gameMech.moveShooterManual(turnShooterButton || turnShooterReverseButton, turnShooterButton);
@@ -299,6 +316,7 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
                         currentRobotActivity = "You have control over"
                                 + " the Game Mechanism";
                     }
+
 //                     Game Mech is controlled autonomously
                     if (rightStick.getRawButton(Parameters.kShootButton)) {
                         gameMech.shoot();
@@ -311,6 +329,11 @@ public class UltimateAscentBot extends SimpleRobot implements PIDSource, PIDOutp
                     if (state != GameMech.GameMechState.kManualControl) {
                         gameMech.processGameMech();
 
+                    }
+                    if (gameMech.isShooterLoaded()) {
+                        ds.setDigitalOut(1, true);
+                    } else {
+                        ds.setDigitalOut(1, false);
                     }
                 } catch (CANTimeoutException e) {
                     System.out.println(e);

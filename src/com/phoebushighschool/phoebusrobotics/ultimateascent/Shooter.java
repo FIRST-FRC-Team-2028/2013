@@ -27,7 +27,7 @@ public class Shooter
 
     public Shooter() throws CANTimeoutException
     {
-        motor = new CANJaguar(Parameters.WheelOneCANJaguarCANID, CANJaguar.ControlMode.kCurrent);
+        motor = new CANJaguar(Parameters.WheelOneCANJaguarCANID, CANJaguar.ControlMode.kPercentVbus);
         motor.configMaxOutputVoltage(Parameters.MaxMotorOutputVoltage);
         motor.configNeutralMode(CANJaguar.NeutralMode.kBrake);
         discSensor = new DigitalInput(Parameters.DiscInShooterGPIOChannel);
@@ -95,7 +95,7 @@ public class Shooter
      * @return true - the cam is in the "cocked" position false - the cam is not
      * in the "cocked" position
      */
-    public boolean isShooterCocked() throws CANTimeoutException
+    public boolean isShooterCocked()
     {
         boolean temp = shooterCockedSensor.get();
         if (temp)
@@ -179,11 +179,6 @@ public class Shooter
     }
     
     public void set(double value) throws CANTimeoutException {
-        if (motor.getControlMode() == CANJaguar.ControlMode.kPercentVbus) {
             motor.setX(value);
-        }
-        if (motor.getControlMode() == CANJaguar.ControlMode.kCurrent) {
-            motor.setX(value * Parameters.MaxMotorOutputCurrent);
-        }
     }
 }

@@ -65,20 +65,20 @@ public class TankDrive implements PIDOutput, PIDSource
 
         //when in high gear, adjust drivePercentPower for higher gear ratio 
 
-//        double adjustedDrivePercentPower = drivePercentPower;
-//        if (leftTread.isHighGear())
-//        {
-//            adjustedDrivePercentPower = drivePercentPower * 2.27;
-//        }
-////        System.out.print(drivePercentPower + ", " + turnPercentPower);
-//        turnPercentPower = decayTurnPower(adjustedDrivePercentPower, turnPercentPower, kDamp);
-//
-//        if (Math.abs(turnPercentPower) + Math.abs(drivePercentPower) > 1.0)
-//        {
-//            drivePercentPower = drivePercentPower / (Math.abs(drivePercentPower) + Math.abs(turnPercentPower));
-//            turnPercentPower = turnPercentPower / (Math.abs(drivePercentPower) + Math.abs(turnPercentPower));
-//        }
-////        System.out.println(", " + drivePercentPower + ", " + turnPercentPower);
+        double adjustedDrivePercentPower = drivePercentPower;
+        if (leftTread.isHighGear())
+        {
+            adjustedDrivePercentPower = drivePercentPower * 2.27;
+        }
+//        System.out.print(drivePercentPower + ", " + turnPercentPower);
+        turnPercentPower = decayTurnPower(adjustedDrivePercentPower, turnPercentPower, kDamp);
+
+        if (Math.abs(turnPercentPower) + Math.abs(drivePercentPower) > 1.0)
+        {
+            drivePercentPower = drivePercentPower / (Math.abs(drivePercentPower) + Math.abs(turnPercentPower));
+            turnPercentPower = turnPercentPower / (Math.abs(drivePercentPower) + Math.abs(turnPercentPower));
+        }
+//        System.out.println(", " + drivePercentPower + ", " + turnPercentPower);
         
         double leftSpeed = drivePercentPower + turnPercentPower;
         double rightSpeed = drivePercentPower - turnPercentPower;
@@ -103,6 +103,8 @@ public class TankDrive implements PIDOutput, PIDSource
      */
     public double decayTurnPower(double forwardPercentPower, double turnPercentPower, double kDamp)
     {
+        forwardPercentPower = Math.abs(forwardPercentPower);
+        
         double decayValue = 1.0 / (FRCMath.pow(forwardPercentPower, 2) + 1.0);
 
         turnPercentPower *= decayValue;

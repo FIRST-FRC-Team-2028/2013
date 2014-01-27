@@ -77,9 +77,9 @@ public class Parameters
     public static int kManualCockButton = 8;
     public static int kManualShootButton = 9;
     //Driver Station switches
-    public final static int kShootMiddleSwitch = 1;
-    public final static int kStaySwitch = 2;
-    public final static int kShootingSwitch = 3;
+    public final static int kShootingSwitch = 1;
+    public final static int kShootMiddleSwitch = 2;
+    public final static int kGearShiftSwitch = 3;
     
     public static double kCameraShooterPosition = 45.0;
     public static double kCameraClimbPosition = 105.0;

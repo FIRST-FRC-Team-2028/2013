@@ -68,9 +68,11 @@ public class Tread
         if (gear == Gear.kLow)
         {
             gearShifter.set(false);
+//            System.out.println("We are in low gear");
         } else
         {
             gearShifter.set(true);
+//            System.out.println("We are in High Gear");
         }
     }
 
